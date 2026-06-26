@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DVP Chaco — Infraestructura Vial</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/proj4@2.9.0/dist/proj4.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0e8e0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.hdr{background:#0a140a;border-bottom:1px solid #1e3a1e;padding:8px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap}
+.hdr-title{font-size:13px;font-weight:700;color:#c8e0c8}
+.hdr-sub{font-size:10px;color:#4a7a4a;margin-top:1px}
+.hdr-right{margin-left:auto;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.hbtn{padding:5px 10px;border-radius:6px;border:1px solid #1e3a1e;background:#111e11;color:#8aba8a;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.hbtn:hover{background:#1e3a1e;color:#c8e0c8}
+.hbtn.warn{border-color:#3a1e0a;color:#b07040}
+.hbtn.warn:hover{background:#2a1008}
+#save-st{font-size:10px;color:#3a6a3a}
+.app{display:flex;flex:1;overflow:hidden}
+.panel{width:290px;flex-shrink:0;background:#0d170d;border-right:1px solid #1a2e1a;display:flex;flex-direction:column;overflow:hidden}
+.ptabs{display:flex;border-bottom:1px solid #1a2e1a;flex-shrink:0}
+.ptab{flex:1;padding:8px 2px;text-align:center;font-size:10px;font-weight:700;color:#3a5a3a;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.ptab.on{color:#6aaf6a;border-bottom-color:#6aaf6a}
+.pbody{flex:1;overflow-y:auto;padding:10px}
+.pbody::-webkit-scrollbar{width:3px}
+.pbody::-webkit-scrollbar-thumb{background:#1e3a1e;border-radius:2px}
+.sbox input{width:100%;padding:7px 10px;border-radius:7px;border:1px solid #1a2e1a;background:#111811;color:#d0d8d0;font-size:12px;outline:none;margin-bottom:8px}
+.sbox input:focus{border-color:#2a5a2a}
+.sbox input::placeholder{color:#3a4a3a}
+.abar{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:8px}
+.ab{width:20px;height:20px;border-radius:4px;border:1px solid #1a2e1a;background:#111811;font-size:9px;font-weight:700;cursor:pointer;color:#3a5a3a;display:flex;align-items:center;justify-content:center;transition:all .1s}
+.ab:hover:not(.off){border-color:#2a5a2a;color:#6aaf6a}
+.ab.on{background:#1a3d1a;color:#6aaf6a;border-color:#2a5a2a}
+.ab.off{opacity:.2;cursor:default}
+.ab.all{width:auto;padding:0 5px;font-size:9px}
+.clist{margin-bottom:8px}
+.ccat{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;border:1px solid transparent;background:#111811;cursor:pointer;font-size:11px;color:#8a9a8a;transition:all .12s;width:100%;margin-bottom:3px}
+.ccat:hover{background:#151e15;border-color:#1e3a1e}
+.ccat.on{background:#141e14;border-color:#2a5a2a;color:#c8e0c8}
+.cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ccnt{margin-left:auto;font-size:9px;opacity:.5}
+.add-cat{width:100%;padding:5px;border-radius:6px;border:1px dashed #1e2e1e;background:transparent;color:#3a5a3a;font-size:10px;cursor:pointer;transition:all .15s;margin-top:2px}
+.add-cat:hover{border-color:#2a5a2a;color:#6aaf6a}
+.rmeta{font-size:10px;color:#3a5a3a;margin-bottom:6px}
+.rcard{padding:8px 10px;border-radius:7px;border:1px solid #1a2a1a;background:#111811;cursor:pointer;margin-bottom:4px;transition:all .12s}
+.rcard:hover{border-color:#2a5a2a;background:#141e14}
+.rcard.sel{border-color:#4a8a4a;background:#141e14}
+.rname{font-size:12px;font-weight:600;color:#c0d0c0;display:flex;align-items:center;gap:5px}
+.rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rsub{font-size:10px;color:#3a5a3a;margin-top:1px;padding-left:11px}
+.rtags{padding-left:11px;margin-top:4px;display:flex;gap:4px;flex-wrap:wrap}
+.rtag{font-size:9px;padding:1px 6px;border-radius:10px;font-weight:700}
+.loc-btn{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;border:1px solid #1a2a1a;background:#111811;cursor:pointer;font-size:11px;color:#8a9a8a;width:100%;text-align:left;margin-bottom:3px;transition:all .12s}
+.loc-btn:hover{background:#151e15;border-color:#2a5a2a;color:#c8e0c8}
+.lcnt{margin-left:auto;font-size:9px;opacity:.5}
+
+/* === COORD PANEL === */
+.csec{margin-bottom:14px;padding:11px;background:#111811;border-radius:9px;border:1px solid #1a2a1a}
+.clabel{font-size:10px;font-weight:700;color:#4a8a4a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.clabel-arrow{font-size:13px;color:#2a6a2a}
+.crow{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}
+.cinput{width:100%;padding:6px 8px;border-radius:5px;border:1px solid #1a2a1a;background:#0d170d;color:#c0d0c0;font-size:11px;font-family:monospace;outline:none;transition:border .15s}
+.cinput:focus{border-color:#2a5a2a}
+.cinput::placeholder{color:#2a3a2a;font-size:9px}
+.cinput.result{background:#0a200a;border-color:#1a4a1a;color:#6aaf6a;cursor:default}
+.cbtn{width:100%;padding:7px;border-radius:6px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:11px;font-weight:700;cursor:pointer;margin-bottom:6px;transition:background .15s}
+.cbtn:hover{background:#1e4d1e}
+.cres-box{background:#0a1a0a;border:1px solid #1e3a1e;border-radius:6px;padding:8px 10px;margin-top:6px;font-size:11px;color:#6aaf6a;line-height:1.9;display:none}
+.cres-box.show{display:block}
+.cres-box b{color:#a0d0a0}
+.cres-box .copy-row{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+.copy-btn{font-size:9px;padding:2px 7px;border-radius:4px;border:1px solid #2a5a2a;background:transparent;color:#4a8a4a;cursor:pointer}
+.copy-btn:hover{background:#1a3a1a;color:#6aaf6a}
+.fsel{width:100%;padding:5px 7px;border-radius:5px;border:1px solid #1a2a1a;background:#0d170d;color:#c0d0c0;font-size:10px;outline:none;margin-bottom:6px}
+.cnote{font-size:9px;color:#4a7a4a;margin-top:5px;line-height:1.6}
+.csep{text-align:center;color:#2a5a2a;font-size:16px;margin:4px 0;line-height:1}
+.err-msg{font-size:10px;color:#c07070;margin-top:4px;padding:5px 8px;background:#2a0a0a;border-radius:5px;border:1px solid #4a1a1a;display:none}
+.err-msg.show{display:block}
+
+.det{position:absolute;bottom:14px;right:14px;width:270px;background:#0d170d;border:1px solid #2a5a2a;border-radius:10px;padding:12px;z-index:1000;display:none;max-height:70vh;overflow-y:auto}
+.det.show{display:block}
+.det::-webkit-scrollbar{width:3px}
+.det::-webkit-scrollbar-thumb{background:#1e3a1e}
+.det-title{font-size:13px;font-weight:700;color:#c8e0c8;margin-bottom:1px;padding-right:20px}
+.det-cat{font-size:10px;color:#4a8a4a;margin-bottom:8px}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.det-f{background:#111811;border-radius:5px;padding:6px 8px}
+.det-f label{font-size:9px;font-weight:700;color:#3a6a3a;text-transform:uppercase;display:block;margin-bottom:2px}
+.det-f span{font-size:11px;color:#a0b8a0;font-weight:500;word-break:break-word}
+.det-f.full{grid-column:1/-1}
+.det-obs{font-size:10px;color:#6a8a6a;line-height:1.5;background:#111811;border-radius:5px;padding:7px;border:1px solid #1a2a1a}
+.det-acts{display:flex;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid #1a2a1a}
+.det-edit{flex:1;padding:6px;border-radius:6px;border:1px solid #2a5a2a;background:transparent;color:#6aaf6a;font-size:11px;cursor:pointer;font-weight:600}
+.det-edit:hover{background:#141e14}
+.det-del{padding:6px 9px;border-radius:6px;border:1px solid #4a1a1a;background:transparent;color:#c07070;font-size:11px;cursor:pointer}
+.det-close{position:absolute;top:8px;right:8px;background:transparent;border:none;color:#3a5a3a;font-size:13px;cursor:pointer;line-height:1}
+.det-close:hover{color:#8aaa8a}
+.est-b{color:#6aaf6a}.est-r{color:#c8a050}.est-c{color:#c07070}.est-s{color:#3a5a3a}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:2000;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:#0d170d;border:1px solid #1e3a1e;border-radius:12px;padding:20px;width:95%;max-width:480px;max-height:92vh;overflow-y:auto}
+.modal::-webkit-scrollbar{width:3px}
+.modal::-webkit-scrollbar-thumb{background:#1e3a1e}
+.modal h2{font-size:14px;font-weight:700;color:#c8e0c8;margin-bottom:14px}
+.fg{margin-bottom:9px}
+.fg label{display:block;font-size:10px;font-weight:700;color:#4a8a4a;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.fg input,.fg select,.fg textarea{width:100%;padding:7px 9px;border-radius:6px;border:1px solid #1a2a1a;background:#111811;color:#c0d0c0;font-size:12px;font-family:inherit;outline:none;transition:border .15s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#2a5a2a}
+.fg textarea{resize:vertical;min-height:56px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mact{display:flex;gap:6px;margin-top:14px}
+.bsave{flex:1;padding:9px;border-radius:7px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:13px;font-weight:700;cursor:pointer}
+.bsave:hover{background:#1e4d1e}
+.bcanc{padding:9px 14px;border-radius:7px;border:1px solid #1e2e1e;background:transparent;color:#5a7a5a;font-size:12px;cursor:pointer}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#1a3d1a;color:#6aaf6a;border:1px solid #2a5a2a;padding:7px 16px;border-radius:20px;font-size:11px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.legend{position:absolute;bottom:18px;left:8px;background:rgba(10,20,10,.92);border:1px solid #1e3a1e;border-radius:8px;padding:8px 10px;z-index:900;font-size:10px;color:#5a8a5a;min-width:110px}
+.li{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.li:last-child{margin-bottom:0}
+.ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.fab{position:absolute;top:10px;right:10px;z-index:900;padding:7px 13px;border-radius:7px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.fab:hover{background:#1e4d1e}
+.coord-box{background:#0d170d;border:1px solid #1a2a1a;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.coord-sec-label{font-size:9px;font-weight:700;color:#4a8a4a;margin-bottom:4px}
+.coord-row{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.coord-sep{text-align:center;font-size:10px;color:#2a4a2a}
+.coord-hint{font-size:9px;color:#3a5a3a;margin-top:4px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <div class="hdr-title">Sistema de Registro de Infraestructura Vial</div>
+    <div class="hdr-sub">Direccion de Vialidad Provincial — Provincia del Chaco &nbsp;|&nbsp; Datum: POSGAR 2007 / WGS84</div>
+  </div>
+  <div class="hdr-right">
+    <span id="save-st"></span>
+    <button class="hbtn" onclick="exportDB()">Exportar copia</button>
+    <button class="hbtn" onclick="document.getElementById('imp').click()">Importar</button>
+    <input type="file" id="imp" accept=".json" style="display:none" onchange="importDB(event)">
+    <button class="hbtn warn" onclick="confirmReset()">Limpiar</button>
+  </div>
+</div>
+
+<div class="app">
+  <div class="panel">
+    <div class="ptabs">
+      <div class="ptab on" id="tab-b" onclick="setTab('b')">BUSCAR</div>
+      <div class="ptab" id="tab-l" onclick="setTab('l')">LOCALIDAD</div>
+      <div class="ptab" id="tab-c" onclick="setTab('c')">COORD</div>
+      <div class="ptab" id="tab-i" onclick="setTab('i')">AYUDA</div>
+    </div>
+
+    <!-- BUSCAR -->
+    <div class="pbody" id="body-b">
+      <div class="sbox">
+        <input type="text" id="q" placeholder="Buscar nombre, ruta, km, empresa..." oninput="render()">
+      </div>
+      <div class="abar" id="abar"></div>
+      <div class="clist" id="clist"></div>
+      <div class="rmeta" id="rcount"></div>
+      <div id="rlist"></div>
+    </div>
+
+    <!-- LOCALIDAD -->
+    <div class="pbody" id="body-l" style="display:none">
+      <div class="sbox">
+        <input type="text" id="qloc" placeholder="Filtrar localidades..." oninput="renderLocs()">
+      </div>
+      <div id="loc-list"></div>
+    </div>
+
+    <!-- COORD -->
+    <div class="pbody" id="body-c" style="display:none">
+
+      <!-- BLOQUE 1: Lat/Lon → GK -->
+      <div class="csec">
+        <div class="clabel">
+          Lat / Lon <span class="clabel-arrow">→</span> Gauss-Kruger
+        </div>
+        <div class="cnote" style="margin-bottom:8px">Ingresa latitud y longitud (decimal o GMS) y el sistema calcula el X,Y en GK Faja 5 automaticamente.</div>
+
+        <div style="margin-bottom:4px;font-size:9px;color:#3a6a3a">LATITUD</div>
+        <input class="cinput" id="c-lat" placeholder="Ej: -27.4510  o  27 20 7.90 S" style="width:100%;margin-bottom:6px">
+
+        <div style="margin-bottom:4px;font-size:9px;color:#3a6a3a">LONGITUD</div>
+        <input class="cinput" id="c-lon" placeholder="Ej: -58.9870  o  58 59 13.20 O" style="width:100%;margin-bottom:8px">
+
+        <button class="cbtn" onclick="goLL()">Ir al punto y calcular X,Y GK</button>
+        <div class="err-msg" id="err-ll"></div>
+
+        <div class="cres-box" id="r-ll"></div>
+        <div class="cnote">Acepta decimal (-27.451), grados minutos segundos (27 20 7.9 S), S / O / W se detectan automaticamente. Datum POSGAR 2007 / WGS84.</div>
+      </div>
+
+      <!-- BLOQUE 2: GK → Lat/Lon -->
+      <div class="csec">
+        <div class="clabel">
+          Gauss-Kruger <span class="clabel-arrow">→</span> Lat / Lon
+        </div>
+        <div class="cnote" style="margin-bottom:8px">Ingresa X,Y GK y el sistema convierte a lat/lon y va al punto en el mapa.</div>
+
+        <select class="fsel" id="gk-faja">
+          <option value="5">Faja 5 — Chaco (predeterminada)</option>
+          <option value="4">Faja 4 — Pampeana Este</option>
+          <option value="3">Faja 3 — Centro</option>
+          <option value="2">Faja 2 — Cuyo / Centro-Oeste</option>
+          <option value="1">Faja 1 — NOA</option>
+          <option value="6">Faja 6 — Patagonia Oeste</option>
+          <option value="7">Faja 7 — Patagonia Este</option>
+        </select>
+
+        <div style="margin-bottom:4px;font-size:9px;color:#3a6a3a">X (ESTE)</div>
+        <input class="cinput" id="gk-x" placeholder="Ej: 5547320" style="width:100%;margin-bottom:6px">
+
+        <div style="margin-bottom:4px;font-size:9px;color:#3a6a3a">Y (NORTE)</div>
+        <input class="cinput" id="gk-y" placeholder="Ej: 6959800" style="width:100%;margin-bottom:8px">
+
+        <button class="cbtn" onclick="goGK()">Convertir e ir al punto</button>
+        <div class="err-msg" id="err-gk"></div>
+
+        <div class="cres-box" id="r-gk"></div>
+        <div class="cnote">Datum POSGAR 2007 / WGS84 — marco geodesico oficial de Argentina (IGN). Compatible con GPS y cartografia vigente. Faja 5 predeterminada para la provincia del Chaco.</div>
+      </div>
+
+    </div>
+
+    <!-- AYUDA -->
+    <div class="pbody" id="body-i" style="display:none">
+      <div style="font-size:11px;font-weight:700;color:#6aaf6a;margin-bottom:8px">INSTRUCTIVO DE USO</div>
+
+      <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin-bottom:5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px">A — Nuevo registro</div>
+      <div style="padding:7px 10px;border-radius:6px;border-left:3px solid #2a5a2a;background:#111811;margin-bottom:4px;font-size:10px;color:#6a8a6a;line-height:1.6">
+        1. Clic en <b style="color:#c0d0c0">+ Nuevo registro</b> (mapa, esquina superior derecha)<br>
+        2. Completar Nombre, Categoria, Ruta, Localidad, Estado<br>
+        3. Ingresar coordenadas (lat/lon decimal, GMS, GK, o clic en el mapa)<br>
+        4. Clic en <b style="color:#c0d0c0">Guardar registro</b>
+      </div>
+
+      <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin:8px 0 5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px">B — Conversor de coordenadas (pestana COORD)</div>
+      <div style="padding:7px 10px;border-radius:6px;border-left:3px solid #2a5a2a;background:#111811;margin-bottom:4px;font-size:10px;color:#6a8a6a;line-height:1.6">
+        <b style="color:#c0d0c0">Lat/Lon → GK:</b> ingresa lat/lon (decimal o GMS) y presiona el boton. Te lleva al punto en el mapa y muestra el X,Y GK Faja 5 en datum POSGAR 2007 / WGS84.<br><br>
+        <b style="color:#c0d0c0">GK → Lat/Lon:</b> ingresa X,Y GK (POSGAR 2007) y presiona el boton. Convierte a lat/lon, va al punto y muestra ambos resultados.
+      </div>
+
+      <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin:8px 0 5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px">C — Exportar / Importar</div>
+      <div style="padding:7px 10px;border-radius:6px;border-left:3px solid #2a5a2a;background:#111811;margin-bottom:4px;font-size:10px;color:#6a8a6a;line-height:1.6">
+        <b style="color:#c0d0c0">Exportar:</b> guarda un .json con todos los datos. Subilo a Drive para respaldo.<br>
+        <b style="color:#c0d0c0">Importar:</b> carga un .json en cualquier PC. No se pierde nada.
+      </div>
+
+      <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin:8px 0 5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px">D — Estados</div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="padding:6px 8px;border-radius:5px;background:#0a2a0a;border-left:3px solid #6aaf6a;font-size:10px"><b style="color:#6aaf6a">BUENO</b> — Funciona normalmente. Sin danos.</div>
+        <div style="padding:6px 8px;border-radius:5px;background:#2a1a00;border-left:3px solid #c8a050;font-size:10px"><b style="color:#c8a050">REGULAR</b> — Requiere mantenimiento proximo.</div>
+        <div style="padding:6px 8px;border-radius:5px;background:#2a0a0a;border-left:3px solid #c07070;font-size:10px"><b style="color:#c07070">CRITICO</b> — Requiere intervencion urgente.</div>
+        <div style="padding:6px 8px;border-radius:5px;background:#1a1a1a;border-left:3px solid #3a5a3a;font-size:10px"><b style="color:#3a5a3a">SIN DATOS</b> — Estado no verificado.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAPA -->
+  <div style="flex:1;position:relative;overflow:hidden">
+    <div id="map" style="width:100%;height:100%"></div>
+    <button class="fab" onclick="openRecordModal()">+ Nuevo registro</button>
+    <div class="legend" id="legend"></div>
+    <div class="det" id="det">
+      <button class="det-close" onclick="closeDet()">✕</button>
+      <div id="det-inner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL REGISTRO -->
+<div class="overlay" id="rm">
+  <div class="modal">
+    <h2 id="mtitle">Nuevo registro</h2>
+    <div class="fg"><label>Nombre / Denominacion *</label><input type="text" id="f-name" placeholder="Ej: Cruce Ruta 11 — Km 234"></div>
+    <div class="fg"><label>Categoria *</label><select id="f-cat"></select></div>
+    <div class="frow">
+      <div class="fg"><label>Ruta / Calle</label><input type="text" id="f-ruta" placeholder="Ruta Nacional 11"></div>
+      <div class="fg"><label>Km / Progresiva</label><input type="text" id="f-km" placeholder="Km 234,5"></div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Localidad</label><input type="text" id="f-loc" placeholder="Castelli, Resistencia..."></div>
+      <div class="fg"><label>Estado</label>
+        <select id="f-est">
+          <option>Bueno</option><option>Regular</option><option>Critico</option><option>Sin datos</option>
+        </select>
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fg"><label>Profundidad / Altura</label><input type="text" id="f-prof" placeholder="1,20 m"></div>
+      <div class="fg"><label>Diametro / Tension / Tipo</label><input type="text" id="f-mat" placeholder="200mm - PVC - 13kV"></div>
+    </div>
+    <div class="fg"><label>Empresa / Responsable</label><input type="text" id="f-resp" placeholder="SAMEEP — SECHEEP — Camuzzi — DPV Chaco..."></div>
+    <div class="fg">
+      <label>Coordenadas</label>
+      <div class="coord-box">
+        <div>
+          <div class="coord-sec-label">LATITUD / LONGITUD (decimal o GMS de Google Earth)</div>
+          <div class="coord-row">
+            <input class="cinput" id="f-lat" placeholder="Lat: -27.4510" oninput="formConvFromLL()">
+            <input class="cinput" id="f-lon" placeholder="Lon: -58.9870" oninput="formConvFromLL()">
+          </div>
+          <div class="coord-hint">S, O y W se detectan automaticamente</div>
+        </div>
+        <div class="coord-sep">↕ conversion automatica ↕</div>
+        <div>
+          <div class="coord-sec-label">GAUSS-KRUGER POSGAR 2007 / WGS84 — FAJA 5</div>
+          <div class="coord-row">
+            <input class="cinput" id="f-gkx" placeholder="X (Este)" oninput="formConvFromGK()">
+            <input class="cinput" id="f-gky" placeholder="Y (Norte)" oninput="formConvFromGK()">
+          </div>
+        </div>
+        <div class="coord-hint">Con el formulario abierto podes hacer clic en el mapa para capturar la ubicacion automaticamente.</div>
+      </div>
+    </div>
+    <div class="fg"><label>Observaciones</label><textarea id="f-obs" placeholder="Notas, condiciones, historial de inspecciones..."></textarea></div>
+    <div class="mact">
+      <button class="bcanc" onclick="closeModal('rm')">Cancelar</button>
+      <button class="bsave" onclick="saveRecord()">Guardar registro</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CATEGORIA -->
+<div class="overlay" id="cm">
+  <div class="modal">
+    <h2>Nueva categoria</h2>
+    <div class="fg"><label>Nombre *</label><input type="text" id="cn" placeholder="Ej: Pluviales, Oleoducto..."></div>
+    <div class="fg"><label>Color identificador</label><div id="cpick" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:4px"></div></div>
+    <div class="mact">
+      <button class="bcanc" onclick="closeModal('cm')">Cancelar</button>
+      <button class="bsave" onclick="saveCat()">Crear categoria</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ========== PROYECCIONES GK — POSGAR 2007 (WGS84) ==========
+// Datum: POSGAR 2007 — marco geodesico oficial de Argentina
+// Elipsoide: WGS84 (identico a GRS80 a efectos practicos)
+// Compatible con GPS y cartografia IGN vigente
+const GKP = {
+  1:'+proj=tmerc +lat_0=-90 +lon_0=-72 +k=1 +x_0=1500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
+  2:'+proj=tmerc +lat_0=-90 +lon_0=-69 +k=1 +x_0=2500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
+  3:'+proj=tmerc +lat_0=-90 +lon_0=-66 +k=1 +x_0=3500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
+  4:'+proj=tmerc +lat_0=-90 +lon_0=-63 +k=1 +x_0=4500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
+  5:'+proj=tmerc +lat_0=-90 +lon_0=-60 +k=1 +x_0=5500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
+  6:'+proj=tmerc +lat_0=-90 +lon_0=-57 +k=1 +x_0=6500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
+  7:'+proj=tmerc +lat_0=-90 +lon_0=-54 +k=1 +x_0=7500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs'
+};
+
+function gkToLL(faja, x, y) {
+  try {
+    const r = proj4(GKP[faja], 'EPSG:4326', [x, y]);
+    if (!r || isNaN(r[0]) || isNaN(r[1])) return null;
+    return { lat: r[1], lon: r[0] };
+  } catch(e) { return null; }
+}
+
+function llToGK(faja, lat, lon) {
+  try {
+    const r = proj4('EPSG:4326', GKP[faja], [lon, lat]);
+    if (!r || isNaN(r[0]) || isNaN(r[1])) return null;
+    return { x: r[0], y: r[1] };
+  } catch(e) { return null; }
+}
+
+// ========== PARSECOORD ==========
+// Acepta: decimal, GMS (grados min seg), S/O/W => negativo
+function parseCoord(raw) {
+  if (!raw || !raw.trim()) return NaN;
+  raw = raw.trim();
+  // Numero decimal puro (con signo opcional)
+  if (/^-?\d+(\.\d+)?$/.test(raw)) return parseFloat(raw);
+  const up = raw.toUpperCase();
+  const isNeg = /[SOW]/.test(up);
+  // Extraer todos los numeros (enteros y decimales)
+  const parts = [];
+  const re = /\d+(\.\d+)?/g;
+  let m;
+  while ((m = re.exec(raw)) !== null) parts.push(parseFloat(m[0]));
+  if (!parts.length) return NaN;
+  const deg = parts[0];
+  const min = parts.length >= 2 ? parts[1] : 0;
+  const sec = parts.length >= 3 ? parts[2] : 0;
+  const dec = deg + min / 60 + sec / 3600;
+  return isNeg ? -dec : dec;
+}
+
+// ========== PALETA ==========
+const PALETTE = ['#1565c0','#1a8a5a','#c0392b','#b35900','#7b4fcf','#00838f','#ad1457','#2e7d32','#6d4c41','#00695c','#4527a0','#c62828'];
+let selCol = PALETTE[0];
+
+// ========== DATOS INICIALES ==========
+const INIT = {
+  categories: [
+    {id:'c1',name:'Cruce de ruta',color:'#1565c0'},
+    {id:'c2',name:'Tuberia de agua / Acueducto',color:'#1a8a5a'},
+    {id:'c3',name:'Gasoducto / Ducto de gas',color:'#b35900'},
+    {id:'c4',name:'Tendido electrico',color:'#c0392b'},
+    {id:'c5',name:'Obstaculo / Peligro',color:'#7b4fcf'},
+    {id:'c6',name:'Cloaca / Desague',color:'#6d4c41'},
+    {id:'c7',name:'Fibra optica / Telecom',color:'#00838f'},
+    {id:'c8',name:'Otros',color:'#4527a0'}
+  ],
+  records: [
+    {id:'r1',name:'Cruce Ruta 11 Km 234',catId:'c1',ruta:'Ruta Nacional 11',km:'Km 234,5',loc:'Resistencia',estado:'Bueno',prof:'1,20 m',mat:'Hormigon',resp:'DPV Chaco',obs:'Verificado 2024.',lat:-27.4510,lon:-58.9870},
+    {id:'r2',name:'Cruce Ruta 16 Km 89',catId:'c1',ruta:'Ruta Nacional 16',km:'Km 89,0',loc:'Saenz Pena',estado:'Regular',prof:'0,90 m',mat:'Hormigon',resp:'Vialidad Nacional',obs:'Monitorear en lluvias.',lat:-27.000,lon:-61.500},
+    {id:'r3',name:'Cruce Castelli Ruta 89',catId:'c1',ruta:'Ruta Provincial 89',km:'Km 0,5',loc:'Castelli',estado:'Regular',prof:'1,10 m',mat:'Hormigon',resp:'DPV Chaco',obs:'',lat:-25.950,lon:-60.620},
+    {id:'r4',name:'Gasoducto Norte Ruta 89',catId:'c3',ruta:'Ruta Provincial 89',km:'Km 12,3',loc:'Villa Rio Bermejito',estado:'Bueno',prof:'1,50 m',mat:'Acero 8 pulgadas',resp:'Camuzzi Gas',obs:'',lat:-25.200,lon:-60.800},
+    {id:'r5',name:'Gasoducto Sur Barranqueras',catId:'c3',ruta:'Acceso Barranqueras',km:'Km 3,1',loc:'Barranqueras',estado:'Critico',prof:'0,80 m',mat:'Acero 6 pulgadas',resp:'Camuzzi Gas',obs:'Senalizacion deteriorada.',lat:-27.490,lon:-58.940},
+    {id:'r6',name:'Tuberia principal Ruta 7',catId:'c2',ruta:'Ruta Provincial 7',km:'Km 45,0',loc:'Fontana',estado:'Bueno',prof:'2,00 m',mat:'PVC 200mm',resp:'SAMEEP',obs:'',lat:-27.430,lon:-58.720},
+    {id:'r7',name:'Acueducto Castelli Centro',catId:'c2',ruta:'Av. San Martin',km:'--',loc:'Castelli',estado:'Bueno',prof:'1,50 m',mat:'PVC 160mm',resp:'SAMEEP',obs:'',lat:-25.955,lon:-60.625},
+    {id:'r8',name:'Linea 13,2 kV Ruta 11',catId:'c4',ruta:'Ruta Nacional 11',km:'Km 198,0',loc:'Quitilipi',estado:'Bueno',prof:'--',mat:'13,2 kV aereo',resp:'SECHEEP',obs:'',lat:-26.870,lon:-60.220},
+    {id:'r9',name:'Tendido electrico Norte',catId:'c4',ruta:'Ruta Provincial 5',km:'Km 2,0',loc:'Castelli',estado:'Bueno',prof:'--',mat:'33 kV aereo',resp:'SECHEEP',obs:'',lat:-25.940,lon:-60.610},
+    {id:'r10',name:'Fibra optica Ruta 16',catId:'c7',ruta:'Ruta Nacional 16',km:'Km 102,0',loc:'Saenz Pena',estado:'Bueno',prof:'0,60 m',mat:'Fibra 96 hilos',resp:'Telecom Argentina',obs:'',lat:-27.010,lon:-61.490}
+  ],
+  savedAt: new Date().toISOString()
+};
+
+function enrichRecs(recs) {
+  return recs.map(r => {
+    if (r.lat && r.lon && (!r.gkx || !r.gky)) {
+      try {
+        const gk = llToGK(5, r.lat, r.lon);
+        if (gk) { r.gkx = Math.round(gk.x); r.gky = Math.round(gk.y); }
+      } catch(e) {}
+    }
+    return r;
+  });
+}
+
+let db = JSON.parse(localStorage.getItem('infra_chaco') || 'null') || JSON.parse(JSON.stringify(INIT));
+db.records = enrichRecs(db.records);
+let selCat = 'all', selAlpha = 'all', selRec = null, editId = null;
+let markers = {}, tmpMark = null, map;
+
+function uid() { return 'id' + Date.now() + Math.random().toString(36).slice(2,5); }
+function getCat(id) { return db.categories.find(c => c.id === id) || {name:'Otro',color:'#555'}; }
+function toast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+const EC = {Bueno:'est-b', Regular:'est-r', Critico:'est-c', 'Sin datos':'est-s'};
+const EB = {Bueno:'#0a2a0a', Regular:'#2a1a00', Critico:'#2a0a0a', 'Sin datos':'#1a1a1a'};
+const ET = {Bueno:'#6aaf6a', Regular:'#c8a050', Critico:'#c07070', 'Sin datos':'#3a5a3a'};
+
+function save() {
+  db.savedAt = new Date().toISOString();
+  localStorage.setItem('infra_chaco', JSON.stringify(db));
+  const d = new Date(db.savedAt);
+  document.getElementById('save-st').textContent = 'Guardado ' + d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+}
+
+// ========== MAPA ==========
+function initMap() {
+  map = L.map('map', {center:[-26.5,-60.5], zoom:8});
+  const googleHyb = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {attribution:'Google Hybrid',maxZoom:21,minZoom:1});
+  const googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {attribution:'Google Satellite',maxZoom:21,minZoom:1});
+  const esriSat   = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution:'Esri',maxZoom:19,minZoom:4});
+  const osm       = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'OpenStreetMap',maxZoom:19,minZoom:1});
+  googleHyb.addTo(map);
+  L.control.layers(
+    {'Google Hibrido (recomendado)':googleHyb,'Google Satelite':googleSat,'Esri Satelite':esriSat,'OpenStreetMap (calles)':osm},
+    {}, {position:'topleft', collapsed:true}
+  ).addTo(map);
+  map.on('click', function(e) {
+    if (document.getElementById('rm').classList.contains('open')) {
+      document.getElementById('f-lat').value = e.latlng.lat.toFixed(6);
+      document.getElementById('f-lon').value = e.latlng.lng.toFixed(6);
+      formConvFromLL();
+      if (tmpMark) map.removeLayer(tmpMark);
+      tmpMark = L.circleMarker([e.latlng.lat, e.latlng.lng], {radius:7,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.5,weight:2}).addTo(map);
+      toast('Coordenadas capturadas del mapa');
+      return;
+    }
+    closeDet();
+  });
+  refreshMarkers();
+  renderLegend();
+}
+
+function mkIcon(color) {
+  const s = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30">
+    <path d="M11 0C4.9 0 0 4.9 0 11c0 8.25 11 19 11 19s11-10.75 11-19C22 4.9 17.1 0 11 0z" fill="${color}" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/>
+    <circle cx="11" cy="11" r="4.5" fill="#fff" opacity=".85"/></svg>`;
+  return L.divIcon({html:s, className:'', iconSize:[22,30], iconAnchor:[11,30], popupAnchor:[0,-30]});
+}
+
+function refreshMarkers() {
+  Object.values(markers).forEach(m => map.removeLayer(m));
+  markers = {};
+  db.records.forEach(r => {
+    if (!r.lat || !r.lon) return;
+    const cat = getCat(r.catId);
+    const m = L.marker([r.lat, r.lon], {icon:mkIcon(cat.color)}).addTo(map);
+    m.on('click', () => { selRec = r.id; showDet(r.id); renderList(); });
+    markers[r.id] = m;
+  });
+}
+
+function fly(lat, lon, z=15) { map.flyTo([lat,lon], z, {duration:1.2}); }
+
+function renderLegend() {
+  document.getElementById('legend').innerHTML = db.categories.map(c =>
+    `<div class="li"><div class="ldot" style="background:${c.color}"></div><span>${c.name}</span></div>`
+  ).join('');
+}
+
+// ========== PESTANAS ==========
+function setTab(t) {
+  ['b','l','c','i'].forEach(x => {
+    document.getElementById('tab-'+x).classList.toggle('on', x===t);
+    document.getElementById('body-'+x).style.display = x===t ? '' : 'none';
+  });
+  if (t==='l') renderLocs();
+}
+
+// ========== BUSCAR ==========
+function getLetters() {
+  const base = selCat==='all' ? db.records : db.records.filter(r => r.catId===selCat);
+  return [...new Set(base.map(r => r.name[0].toUpperCase()))].sort();
+}
+function getFiltered() {
+  const q = document.getElementById('q').value.toLowerCase();
+  return db.records.filter(r => {
+    if (selCat!=='all' && r.catId!==selCat) return false;
+    if (selAlpha!=='all' && !r.name.toUpperCase().startsWith(selAlpha)) return false;
+    if (q && !`${r.name} ${r.ruta||''} ${r.km||''} ${r.loc||''} ${r.obs||''} ${r.resp||''}`.toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b) => a.name.localeCompare(b.name,'es'));
+}
+function renderAlpha() {
+  const letters = getLetters();
+  const t = `<button class="ab all ${selAlpha==='all'?'on':''}" onclick="selAlpha='all';render()">Todos</button>`;
+  const bs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l =>
+    `<button class="ab ${!letters.includes(l)?'off':''} ${selAlpha===l?'on':''}" onclick="${letters.includes(l)?`selAlpha='${l}';render()`:''}">${l}</button>`
+  ).join('');
+  document.getElementById('abar').innerHTML = t+bs;
+}
+function renderCats() {
+  const all = `<button class="ccat ${selCat==='all'?'on':''}" onclick="selCat='all';selAlpha='all';render()">
+    <span class="cdot" style="background:#4a8a4a"></span>Todas las categorias<span class="ccnt">${db.records.length}</span></button>`;
+  const cats = db.categories.map(c => {
+    const cnt = db.records.filter(r => r.catId===c.id).length;
+    return `<button class="ccat ${selCat===c.id?'on':''}" onclick="selCat='${c.id}';selAlpha='all';render()">
+      <span class="cdot" style="background:${c.color}"></span>${c.name}<span class="ccnt">${cnt}</span></button>`;
+  }).join('');
+  document.getElementById('clist').innerHTML = all+cats+`<button class="add-cat" onclick="openCatModal()">+ Nueva categoria</button>`;
+}
+function renderList() {
+  const list = getFiltered();
+  document.getElementById('rcount').textContent = `${list.length} registro${list.length!==1?'s':''}`;
+  if (!list.length) {
+    document.getElementById('rlist').innerHTML = '<div style="color:#2a4a2a;font-size:11px;text-align:center;padding:18px 0">Sin resultados</div>';
+    return;
+  }
+  document.getElementById('rlist').innerHTML = list.map(r => {
+    const cat = getCat(r.catId);
+    return `<div class="rcard ${selRec===r.id?'sel':''}" onclick="clickRec('${r.id}')">
+      <div class="rname"><span class="rdot" style="background:${cat.color}"></span>${r.name}</div>
+      <div class="rsub">${[r.ruta,r.km,r.loc].filter(Boolean).join(' - ')}</div>
+      <div class="rtags">
+        <span class="rtag" style="background:${cat.color}25;color:${cat.color}">${cat.name}</span>
+        <span class="rtag" style="background:${EB[r.estado]||'#1a1a1a'};color:${ET[r.estado]||'#3a5a3a'}">${r.estado}</span>
+        ${r.lat?'<span class="rtag" style="background:#0a1a0a;color:#2a6a2a">GPS</span>':''}
+      </div></div>`;
+  }).join('');
+}
+function render() { renderCats(); renderAlpha(); renderList(); }
+
+// ========== LOCALIDAD ==========
+function renderLocs() {
+  const q = (document.getElementById('qloc').value || '').toLowerCase();
+  const locs = [...new Set(db.records.map(r => r.loc).filter(Boolean))].sort((a,b) => a.localeCompare(b,'es'));
+  const f = q ? locs.filter(l => l.toLowerCase().includes(q)) : locs;
+  document.getElementById('loc-list').innerHTML = f.map(loc => {
+    const cnt = db.records.filter(r => r.loc===loc).length;
+    const cols = [...new Set(db.records.filter(r => r.loc===loc).map(r => getCat(r.catId).color))];
+    const dots = cols.map(c => `<span style="width:6px;height:6px;border-radius:50%;background:${c};display:inline-block"></span>`).join('');
+    return `<button class="loc-btn" onclick="selectLoc('${loc.replace(/'/g,"\\'")}')">
+      <span style="display:flex;gap:3px;align-items:center">${dots}</span>
+      <span style="flex:1">${loc}</span><span class="lcnt">${cnt}</span></button>`;
+  }).join('');
+}
+function selectLoc(loc) {
+  const recs = db.records.filter(r => r.loc===loc && r.lat && r.lon);
+  if (recs.length) {
+    const lats=recs.map(r=>r.lat), lons=recs.map(r=>r.lon);
+    map.fitBounds([[Math.min(...lats),Math.min(...lons)],[Math.max(...lats),Math.max(...lons)]],{padding:[50,50],maxZoom:15});
+  }
+  setTab('b');
+  document.getElementById('q').value = loc;
+  render();
+  toast(loc + ' — ' + db.records.filter(r=>r.loc===loc).length + ' registros');
+}
+
+// ========== PANEL COORD ==========
+
+function showErrLL(msg) {
+  const el = document.getElementById('err-ll');
+  el.textContent = msg;
+  el.classList.add('show');
+  document.getElementById('r-ll').classList.remove('show');
+}
+function hideErrLL() { document.getElementById('err-ll').classList.remove('show'); }
+
+function showErrGK(msg) {
+  const el = document.getElementById('err-gk');
+  el.textContent = msg;
+  el.classList.add('show');
+  document.getElementById('r-gk').classList.remove('show');
+}
+function hideErrGK() { document.getElementById('err-gk').classList.remove('show'); }
+
+function showResLL(html) {
+  const el = document.getElementById('r-ll');
+  el.innerHTML = html;
+  el.classList.add('show');
+  hideErrLL();
+}
+function showResGK(html) {
+  const el = document.getElementById('r-gk');
+  el.innerHTML = html;
+  el.classList.add('show');
+  hideErrGK();
+}
+
+function copyText(txt) {
+  navigator.clipboard.writeText(txt).then(() => toast('Copiado: ' + txt)).catch(() => toast('No se pudo copiar'));
+}
+
+// LAT/LON → GK
+function goLL() {
+  const latRaw = document.getElementById('c-lat').value;
+  const lonRaw = document.getElementById('c-lon').value;
+
+  if (!latRaw.trim() || !lonRaw.trim()) {
+    showErrLL('Ingresa latitud y longitud antes de convertir.');
+    return;
+  }
+
+  const lat = parseCoord(latRaw);
+  const lon = parseCoord(lonRaw);
+
+  if (isNaN(lat)) { showErrLL('Latitud invalida. Revisa el formato.'); return; }
+  if (isNaN(lon)) { showErrLL('Longitud invalida. Revisa el formato.'); return; }
+  if (lat < -90 || lat > 90) { showErrLL('Latitud fuera de rango (-90 a 90).'); return; }
+  if (lon < -180 || lon > 180) { showErrLL('Longitud fuera de rango (-180 a 180).'); return; }
+
+  // Calcular GK Faja 5
+  const gk = llToGK(5, lat, lon);
+  if (!gk) { showErrLL('No se pudo calcular GK. Verifica los valores.'); return; }
+
+  const xR = Math.round(gk.x);
+  const yR = Math.round(gk.y);
+
+  // Actualizar campos GK del bloque 2
+  document.getElementById('gk-x').value = xR;
+  document.getElementById('gk-y').value = yR;
+
+  // Ir al punto en el mapa
+  fly(lat, lon);
+  if (tmpMark) map.removeLayer(tmpMark);
+  tmpMark = L.circleMarker([lat, lon], {radius:9, color:'#6aaf6a', fillColor:'#6aaf6a', fillOpacity:.4, weight:2}).addTo(map);
+
+  showResLL(
+    '<b>Latitud:</b> ' + lat.toFixed(6) + ' <button class="copy-btn" onclick="copyText(\''+lat.toFixed(6)+'\')">copiar</button><br>' +
+    '<b>Longitud:</b> ' + lon.toFixed(6) + ' <button class="copy-btn" onclick="copyText(\''+lon.toFixed(6)+'\')">copiar</button><br>' +
+    '<br><b>GK Faja 5 — X (Este):</b> ' + xR + ' <button class="copy-btn" onclick="copyText(\''+xR+'\')">copiar</button><br>' +
+    '<b>GK Faja 5 — Y (Norte):</b> ' + yR + ' <button class="copy-btn" onclick="copyText(\''+yR+'\')">copiar</button>'
+  );
+  toast('Punto localizado — GK calculado');
+}
+
+// GK → LAT/LON
+function goGK() {
+  const faja = parseInt(document.getElementById('gk-faja').value);
+  const xRaw = document.getElementById('gk-x').value.trim();
+  const yRaw = document.getElementById('gk-y').value.trim();
+
+  if (!xRaw || !yRaw) { showErrGK('Ingresa X e Y antes de convertir.'); return; }
+
+  const x = parseFloat(xRaw.replace(/\./g,'').replace(',','.'));
+  const y = parseFloat(yRaw.replace(/\./g,'').replace(',','.'));
+
+  if (isNaN(x)) { showErrGK('X (Este) invalido. Ingresa un numero.'); return; }
+  if (isNaN(y)) { showErrGK('Y (Norte) invalido. Ingresa un numero.'); return; }
+
+  const ll = gkToLL(faja, x, y);
+  if (!ll || isNaN(ll.lat) || isNaN(ll.lon)) {
+    showErrGK('No se pudo convertir. Verifica la faja y los valores.');
+    return;
+  }
+
+  // Completar campos lat/lon del bloque 1
+  document.getElementById('c-lat').value = ll.lat.toFixed(6);
+  document.getElementById('c-lon').value = ll.lon.toFixed(6);
+
+  // Ir al punto en el mapa
+  fly(ll.lat, ll.lon);
+  if (tmpMark) map.removeLayer(tmpMark);
+  tmpMark = L.circleMarker([ll.lat, ll.lon], {radius:9, color:'#c8a050', fillColor:'#c8a050', fillOpacity:.4, weight:2}).addTo(map);
+
+  showResGK(
+    '<b>GK Faja ' + faja + ' — X:</b> ' + Math.round(x) + '<br>' +
+    '<b>GK Faja ' + faja + ' — Y:</b> ' + Math.round(y) + '<br><br>' +
+    '<b>Latitud:</b> ' + ll.lat.toFixed(6) + ' <button class="copy-btn" onclick="copyText(\''+ll.lat.toFixed(6)+'\')">copiar</button><br>' +
+    '<b>Longitud:</b> ' + ll.lon.toFixed(6) + ' <button class="copy-btn" onclick="copyText(\''+ll.lon.toFixed(6)+'\')">copiar</button>'
+  );
+  toast('Convertido — punto localizado en el mapa');
+}
+
+// ========== DETALLE ==========
+function showDet(id) {
+  const r = db.records.find(x => x.id===id); if (!r) return;
+  const cat = getCat(r.catId);
+  document.getElementById('det-inner').innerHTML = `
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+      <div style="width:9px;height:9px;border-radius:50%;background:${cat.color};flex-shrink:0"></div>
+      <div class="det-title">${r.name}</div>
+    </div>
+    <div class="det-cat">${cat.name}</div>
+    <div class="det-grid">
+      <div class="det-f"><label>Ruta / Calle</label><span>${r.ruta||'--'}</span></div>
+      <div class="det-f"><label>Kilometro</label><span>${r.km||'--'}</span></div>
+      <div class="det-f"><label>Localidad</label><span>${r.loc||'--'}</span></div>
+      <div class="det-f"><label>Estado</label><span class="${EC[r.estado]||'est-s'}" style="font-weight:700">${r.estado||'--'}</span></div>
+      <div class="det-f"><label>Profundidad</label><span>${r.prof||'--'}</span></div>
+      <div class="det-f"><label>Diam. / Tension</label><span>${r.mat||'--'}</span></div>
+      <div class="det-f full"><label>Empresa / Responsable</label><span>${r.resp||'--'}</span></div>
+      ${r.lat?`<div class="det-f"><label>Latitud</label><span style="font-family:monospace;font-size:10px">${r.lat.toFixed(6)}</span></div>`:''}
+      ${r.lon?`<div class="det-f"><label>Longitud</label><span style="font-family:monospace;font-size:10px">${r.lon.toFixed(6)}</span></div>`:''}
+      ${r.gkx?`<div class="det-f"><label>POSGAR 2007 GK F5 — X</label><span style="font-family:monospace;font-size:10px">${r.gkx}</span></div>`:''}
+      ${r.gky?`<div class="det-f"><label>POSGAR 2007 GK F5 — Y</label><span style="font-family:monospace;font-size:10px">${r.gky}</span></div>`:''}
+      ${r.obs?`<div class="det-f full"><label>Observaciones</label><div class="det-obs">${r.obs}</div></div>`:''}
+    </div>
+    <div class="det-acts">
+      <button class="det-edit" onclick="openEditModal('${r.id}')">Editar</button>
+      <button class="det-del" onclick="delRec('${r.id}')">Eliminar</button>
+    </div>`;
+  document.getElementById('det').classList.add('show');
+}
+function closeDet() { document.getElementById('det').classList.remove('show'); selRec=null; renderList(); }
+function clickRec(id) {
+  selRec = id; showDet(id);
+  const r = db.records.find(x => x.id===id);
+  if (r && r.lat && r.lon) fly(r.lat, r.lon);
+  renderList();
+}
+function delRec(id) {
+  if (!confirm('Eliminar este registro?')) return;
+  db.records = db.records.filter(r => r.id!==id);
+  save();
+  if (markers[id]) { map.removeLayer(markers[id]); delete markers[id]; }
+  closeDet(); render(); toast('Registro eliminado');
+}
+
+// ========== CONVERSION EN FORMULARIO ==========
+let _formLLtimer = null;
+function formConvFromLL() {
+  clearTimeout(_formLLtimer);
+  _formLLtimer = setTimeout(() => {
+    const latRaw = document.getElementById('f-lat').value;
+    const lonRaw = document.getElementById('f-lon').value;
+    const lat = parseCoord(latRaw);
+    const lon = parseCoord(lonRaw);
+    if (!isNaN(lat) && !isNaN(lon)) {
+      const gk = llToGK(5, lat, lon);
+      if (gk) {
+        document.getElementById('f-gkx').value = Math.round(gk.x);
+        document.getElementById('f-gky').value = Math.round(gk.y);
+      }
+    } else {
+      // limpiar GK si lat/lon invalidos
+      if (isNaN(lat) || isNaN(lon)) {
+        document.getElementById('f-gkx').value = '';
+        document.getElementById('f-gky').value = '';
+      }
+    }
+  }, 400);
+}
+let _formGKtimer = null;
+function formConvFromGK() {
+  clearTimeout(_formGKtimer);
+  _formGKtimer = setTimeout(() => {
+    const x = parseFloat(document.getElementById('f-gkx').value);
+    const y = parseFloat(document.getElementById('f-gky').value);
+    if (!isNaN(x) && !isNaN(y)) {
+      const ll = gkToLL(5, x, y);
+      if (ll) {
+        document.getElementById('f-lat').value = ll.lat.toFixed(6);
+        document.getElementById('f-lon').value = ll.lon.toFixed(6);
+      }
+    }
+  }, 400);
+}
+
+// ========== MODAL REGISTRO ==========
+function openRecordModal() {
+  editId = null;
+  document.getElementById('mtitle').textContent = 'Nuevo registro';
+  ['name','ruta','km','loc','prof','mat','resp','obs'].forEach(f => document.getElementById('f-'+f).value='');
+  document.getElementById('f-est').value = 'Sin datos';
+  document.getElementById('f-lat').value = '';
+  document.getElementById('f-lon').value = '';
+  document.getElementById('f-gkx').value = '';
+  document.getElementById('f-gky').value = '';
+  document.getElementById('f-cat').innerHTML = db.categories.map(c =>
+    `<option value="${c.id}" ${c.id===(selCat!=='all'?selCat:db.categories[0]?.id)?'selected':''}>${c.name}</option>`
+  ).join('');
+  if (tmpMark) { map.removeLayer(tmpMark); tmpMark=null; }
+  document.getElementById('rm').classList.add('open');
+  toast('Con el formulario abierto podes hacer clic en el mapa');
+}
+function openEditModal(id) {
+  const r = db.records.find(x => x.id===id); if (!r) return;
+  editId = id;
+  document.getElementById('mtitle').textContent = 'Editar registro';
+  document.getElementById('f-name').value = r.name;
+  document.getElementById('f-ruta').value = r.ruta||'';
+  document.getElementById('f-km').value = r.km||'';
+  document.getElementById('f-loc').value = r.loc||'';
+  document.getElementById('f-est').value = r.estado||'Sin datos';
+  document.getElementById('f-prof').value = r.prof||'';
+  document.getElementById('f-mat').value = r.mat||'';
+  document.getElementById('f-resp').value = r.resp||'';
+  document.getElementById('f-obs').value = r.obs||'';
+  document.getElementById('f-lat').value = r.lat||'';
+  document.getElementById('f-lon').value = r.lon||'';
+  if (r.lat && r.lon) {
+    const gk = llToGK(5, r.lat, r.lon);
+    if (gk) { document.getElementById('f-gkx').value=Math.round(gk.x); document.getElementById('f-gky').value=Math.round(gk.y); }
+  } else {
+    document.getElementById('f-gkx').value='';
+    document.getElementById('f-gky').value='';
+  }
+  document.getElementById('f-cat').innerHTML = db.categories.map(c =>
+    `<option value="${c.id}" ${r.catId===c.id?'selected':''}>${c.name}</option>`
+  ).join('');
+  document.getElementById('rm').classList.add('open');
+}
+function saveRecord() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('El nombre es obligatorio.'); return; }
+  const latRaw = document.getElementById('f-lat').value;
+  const lonRaw = document.getElementById('f-lon').value;
+  const lat = parseCoord(latRaw);
+  const lon = parseCoord(lonRaw);
+  const hasCoord = !isNaN(lat) && !isNaN(lon);
+  const rec = {
+    id: editId||uid(), name,
+    catId: document.getElementById('f-cat').value,
+    ruta: document.getElementById('f-ruta').value.trim(),
+    km: document.getElementById('f-km').value.trim(),
+    loc: document.getElementById('f-loc').value.trim(),
+    estado: document.getElementById('f-est').value,
+    prof: document.getElementById('f-prof').value.trim(),
+    mat: document.getElementById('f-mat').value.trim(),
+    resp: document.getElementById('f-resp').value.trim(),
+    obs: document.getElementById('f-obs').value.trim(),
+    lat: hasCoord?lat:null, lon: hasCoord?lon:null, gkx:null, gky:null
+  };
+  if (hasCoord) {
+    const gk = llToGK(5, lat, lon);
+    if (gk) { rec.gkx=Math.round(gk.x); rec.gky=Math.round(gk.y); }
+  }
+  if (editId) db.records = db.records.map(r => r.id===editId ? rec : r);
+  else db.records.push(rec);
+  save();
+  if (tmpMark) { map.removeLayer(tmpMark); tmpMark=null; }
+  closeModal('rm');
+  if (markers[rec.id]) map.removeLayer(markers[rec.id]);
+  if (rec.lat && rec.lon) {
+    const m = L.marker([rec.lat, rec.lon], {icon:mkIcon(getCat(rec.catId).color)}).addTo(map);
+    m.on('click', () => { selRec=rec.id; showDet(rec.id); renderList(); });
+    markers[rec.id] = m;
+    fly(rec.lat, rec.lon);
+  }
+  selRec = rec.id; render(); showDet(rec.id);
+  toast(editId ? 'Registro actualizado' : 'Registro guardado');
+}
+
+// ========== CATEGORIA ==========
+function openCatModal() { selCol=PALETTE[0]; document.getElementById('cn').value=''; renderCP(); document.getElementById('cm').classList.add('open'); }
+function renderCP() {
+  document.getElementById('cpick').innerHTML = PALETTE.map(c =>
+    `<div onclick="selCol='${c}';renderCP()" style="width:24px;height:24px;border-radius:50%;background:${c};cursor:pointer;outline:3px solid ${c===selCol?'#fff':'transparent'};outline-offset:2px;transition:all .1s"></div>`
+  ).join('');
+}
+function saveCat() {
+  const name = document.getElementById('cn').value.trim();
+  if (!name) { alert('Ingresa un nombre.'); return; }
+  db.categories.push({id:uid(), name, color:selCol});
+  save(); closeModal('cm'); renderLegend(); render(); toast('Categoria creada');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(m => m.addEventListener('click', e => { if (e.target===m) m.classList.remove('open'); }));
+
+// ========== EXPORT / IMPORT / RESET ==========
+function exportDB() {
+  const b = new Blob([JSON.stringify(db, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = 'infraestructura_chaco_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  toast('Copia exportada');
+}
+function importDB(e) {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    try {
+      const p = JSON.parse(ev.target.result);
+      if (!p.categories || !p.records) throw 0;
+      if (!confirm('Importar base con ' + p.records.length + ' registros? Se reemplazara la actual.')) return;
+      db = p;
+      db.records = enrichRecs(db.records);
+      save(); selRec=null; selCat='all'; selAlpha='all';
+      closeDet(); refreshMarkers(); renderLegend(); render();
+      toast('Base importada: ' + db.records.length + ' registros');
+    } catch(e) { alert('Archivo invalido.'); }
+  };
+  r.readAsText(f);
+  e.target.value = '';
+}
+function confirmReset() {
+  if (confirm('Limpiar toda la base de datos?') && confirm('Segunda confirmacion: borrar todo?')) {
+    db = JSON.parse(JSON.stringify(INIT));
+    db.records = enrichRecs(db.records);
+    save(); selRec=null; selCat='all'; selAlpha='all';
+    closeDet(); refreshMarkers(); renderLegend(); render();
+    toast('Base reiniciada');
+  }
+}
+
+save();
+render();
+initMap();
+</script>
+</body>
+</html>
