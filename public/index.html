@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/proj4@2.9.0/dist/proj4.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0e8e0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
@@ -16,8 +17,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 .hdr-right{margin-left:auto;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
 .hbtn{padding:5px 10px;border-radius:6px;border:1px solid #1e3a1e;background:#111e11;color:#8aba8a;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
 .hbtn:hover{background:#1e3a1e;color:#c8e0c8}
-.hbtn.warn{border-color:#3a1e0a;color:#b07040}
-.hbtn.warn:hover{background:#2a1008}
+.hbtn.warn{border-color:#3a1e0a;color:#b07040}.hbtn.warn:hover{background:#2a1008}
 #save-st{font-size:10px;color:#3a6a3a}
 .app{display:flex;flex:1;overflow:hidden}
 .panel{width:290px;flex-shrink:0;background:#0d170d;border-right:1px solid #1a2e1a;display:flex;flex-direction:column;overflow:hidden}
@@ -56,30 +56,23 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 .loc-btn{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;border:1px solid #1a2a1a;background:#111811;cursor:pointer;font-size:11px;color:#8a9a8a;width:100%;text-align:left;margin-bottom:3px;transition:all .12s}
 .loc-btn:hover{background:#151e15;border-color:#2a5a2a;color:#c8e0c8}
 .lcnt{margin-left:auto;font-size:9px;opacity:.5}
-
-/* === COORD PANEL === */
-.csec{margin-bottom:14px;padding:11px;background:#111811;border-radius:9px;border:1px solid #1a2a1a}
-.clabel{font-size:10px;font-weight:700;color:#4a8a4a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;display:flex;align-items:center;gap:6px}
-.clabel-arrow{font-size:13px;color:#2a6a2a}
-.crow{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}
-.cinput{width:100%;padding:6px 8px;border-radius:5px;border:1px solid #1a2a1a;background:#0d170d;color:#c0d0c0;font-size:11px;font-family:monospace;outline:none;transition:border .15s}
+.csec{margin-bottom:12px;padding:10px;background:#111811;border-radius:8px;border:1px solid #1a2a1a}
+.clabel{font-size:10px;font-weight:700;color:#4a8a4a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.cinput{width:100%;padding:6px 8px;border-radius:5px;border:1px solid #1a2a1a;background:#0d170d;color:#c0d0c0;font-size:11px;font-family:monospace;outline:none;margin-bottom:5px;transition:border .15s}
 .cinput:focus{border-color:#2a5a2a}
 .cinput::placeholder{color:#2a3a2a;font-size:9px}
-.cinput.result{background:#0a200a;border-color:#1a4a1a;color:#6aaf6a;cursor:default}
-.cbtn{width:100%;padding:7px;border-radius:6px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:11px;font-weight:700;cursor:pointer;margin-bottom:6px;transition:background .15s}
+.cbtn{width:100%;padding:7px;border-radius:6px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:11px;font-weight:700;cursor:pointer;margin-top:2px;transition:background .15s}
 .cbtn:hover{background:#1e4d1e}
-.cres-box{background:#0a1a0a;border:1px solid #1e3a1e;border-radius:6px;padding:8px 10px;margin-top:6px;font-size:11px;color:#6aaf6a;line-height:1.9;display:none}
-.cres-box.show{display:block}
-.cres-box b{color:#a0d0a0}
-.cres-box .copy-row{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
-.copy-btn{font-size:9px;padding:2px 7px;border-radius:4px;border:1px solid #2a5a2a;background:transparent;color:#4a8a4a;cursor:pointer}
-.copy-btn:hover{background:#1a3a1a;color:#6aaf6a}
+.cres{font-size:10px;color:#6aaf6a;margin-top:6px;padding:7px 9px;background:#0a1a0a;border:1px solid #1e3a1e;border-radius:6px;display:none;line-height:1.8}
+.cres.show{display:block}
+.cerr{font-size:10px;color:#c07070;margin-top:4px;padding:5px 8px;background:#2a0a0a;border-radius:5px;display:none}
+.cerr.show{display:block}
 .fsel{width:100%;padding:5px 7px;border-radius:5px;border:1px solid #1a2a1a;background:#0d170d;color:#c0d0c0;font-size:10px;outline:none;margin-bottom:6px}
-.cnote{font-size:9px;color:#4a7a4a;margin-top:5px;line-height:1.6}
-.csep{text-align:center;color:#2a5a2a;font-size:16px;margin:4px 0;line-height:1}
-.err-msg{font-size:10px;color:#c07070;margin-top:4px;padding:5px 8px;background:#2a0a0a;border-radius:5px;border:1px solid #4a1a1a;display:none}
-.err-msg.show{display:block}
-
+.cnote{font-size:9px;color:#3a6a3a;margin-top:5px;line-height:1.5}
+.copy-btn{font-size:9px;padding:2px 6px;border-radius:4px;border:1px solid #2a5a2a;background:transparent;color:#4a8a4a;cursor:pointer;margin-left:4px}
+.copy-btn:hover{background:#1a3a1a;color:#6aaf6a}
+.inst-s{padding:7px 10px;border-radius:6px;border-left:3px solid #2a5a2a;background:#111811;margin-bottom:5px;font-size:10px;color:#6a8a6a;line-height:1.7}
+.inst-h{font-size:10px;font-weight:700;color:#4a8a4a;text-transform:uppercase;letter-spacing:.06em;margin:8px 0 5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px}
 .det{position:absolute;bottom:14px;right:14px;width:270px;background:#0d170d;border:1px solid #2a5a2a;border-radius:10px;padding:12px;z-index:1000;display:none;max-height:70vh;overflow-y:auto}
 .det.show{display:block}
 .det::-webkit-scrollbar{width:3px}
@@ -96,12 +89,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 .det-edit{flex:1;padding:6px;border-radius:6px;border:1px solid #2a5a2a;background:transparent;color:#6aaf6a;font-size:11px;cursor:pointer;font-weight:600}
 .det-edit:hover{background:#141e14}
 .det-del{padding:6px 9px;border-radius:6px;border:1px solid #4a1a1a;background:transparent;color:#c07070;font-size:11px;cursor:pointer}
-.det-close{position:absolute;top:8px;right:8px;background:transparent;border:none;color:#3a5a3a;font-size:13px;cursor:pointer;line-height:1}
+.det-close{position:absolute;top:8px;right:8px;background:transparent;border:none;color:#3a5a3a;font-size:13px;cursor:pointer}
 .det-close:hover{color:#8aaa8a}
 .est-b{color:#6aaf6a}.est-r{color:#c8a050}.est-c{color:#c07070}.est-s{color:#3a5a3a}
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:2000;align-items:center;justify-content:center}
 .overlay.open{display:flex}
-.modal{background:#0d170d;border:1px solid #1e3a1e;border-radius:12px;padding:20px;width:95%;max-width:480px;max-height:92vh;overflow-y:auto}
+.modal{background:#0d170d;border:1px solid #1e3a1e;border-radius:12px;padding:20px;width:95%;max-width:500px;max-height:92vh;overflow-y:auto}
 .modal::-webkit-scrollbar{width:3px}
 .modal::-webkit-scrollbar-thumb{background:#1e3a1e}
 .modal h2{font-size:14px;font-weight:700;color:#c8e0c8;margin-bottom:14px}
@@ -115,6 +108,30 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 .bsave{flex:1;padding:9px;border-radius:7px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:13px;font-weight:700;cursor:pointer}
 .bsave:hover{background:#1e4d1e}
 .bcanc{padding:9px 14px;border-radius:7px;border:1px solid #1e2e1e;background:transparent;color:#5a7a5a;font-size:12px;cursor:pointer}
+.coord-box{background:#0d170d;border:1px solid #1a2a1a;border-radius:8px;padding:10px;margin-top:4px}
+.coord-lbl{font-size:9px;font-weight:700;color:#4a8a4a;margin-bottom:4px}
+.coord-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:4px}
+.coord-sep{text-align:center;font-size:10px;color:#2a5a2a;margin:4px 0}
+.coord-hint{font-size:9px;color:#3a5a3a;margin-top:4px}
+.imp-tabs{display:flex;gap:6px;margin-bottom:12px}
+.imp-tab{flex:1;padding:7px;border-radius:6px;border:1px solid #1a2a1a;background:#111811;color:#5a7a5a;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s}
+.imp-tab.on{border-color:#2a5a2a;background:#141e14;color:#6aaf6a}
+.imp-body{display:none}.imp-body.on{display:block}
+.drop-zone{border:2px dashed #1e3a1e;border-radius:8px;padding:20px 14px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:8px}
+.drop-zone:hover,.drop-zone.over{border-color:#2a5a2a;background:#0a1e0a}
+.dz-icon{font-size:26px;margin-bottom:5px;color:#2a5a2a}
+.dz-lbl{font-size:11px;color:#4a7a4a;line-height:1.5}
+.dz-lbl b{color:#6aaf6a}
+.imp-note{font-size:10px;color:#3a6a3a;line-height:1.6;padding:7px 9px;background:#0a1a0a;border-radius:6px;border-left:3px solid #1e3a1e;margin-bottom:8px}
+.imp-note b{color:#6aaf6a}
+.prev-box{background:#0a1a0a;border:1px solid #1e3a1e;border-radius:6px;padding:9px;margin-top:7px;font-size:10px;color:#4a8a4a;line-height:1.8;max-height:160px;overflow-y:auto;display:none}
+.prev-box.show{display:block}
+.csv-map-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:8px 0}
+.csv-map-row{display:flex;flex-direction:column;gap:2px}
+.csv-map-lbl{font-size:9px;font-weight:700;color:#4a8a4a;text-transform:uppercase}
+.bsave-imp{width:100%;padding:9px;border-radius:7px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px}
+.bsave-imp:hover{background:#1e4d1e}
+.bsave-imp:disabled{opacity:.4;cursor:default}
 .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#1a3d1a;color:#6aaf6a;border:1px solid #2a5a2a;padding:7px 16px;border-radius:20px;font-size:11px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1}
 .legend{position:absolute;bottom:18px;left:8px;background:rgba(10,20,10,.92);border:1px solid #1e3a1e;border-radius:8px;padding:8px 10px;z-index:900;font-size:10px;color:#5a8a5a;min-width:110px}
@@ -123,25 +140,21 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 .ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .fab{position:absolute;top:10px;right:10px;z-index:900;padding:7px 13px;border-radius:7px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
 .fab:hover{background:#1e4d1e}
-.coord-box{background:#0d170d;border:1px solid #1a2a1a;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px}
-.coord-sec-label{font-size:9px;font-weight:700;color:#4a8a4a;margin-bottom:4px}
-.coord-row{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.coord-sep{text-align:center;font-size:10px;color:#2a4a2a}
-.coord-hint{font-size:9px;color:#3a5a3a;margin-top:4px}
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div>
     <div class="hdr-title">Sistema de Registro de Infraestructura Vial</div>
-    <div class="hdr-sub">Direccion de Vialidad Provincial — Provincia del Chaco &nbsp;|&nbsp; Datum: POSGAR 2007 / WGS84</div>
+    <div class="hdr-sub">Direccion de Vialidad Provincial — Provincia del Chaco &nbsp;|&nbsp; POSGAR 2007 / WGS84</div>
   </div>
   <div class="hdr-right">
     <span id="save-st"></span>
-    <button class="hbtn" onclick="exportDB()">Exportar copia</button>
-    <button class="hbtn" onclick="document.getElementById('imp').click()">Importar</button>
-    <input type="file" id="imp" accept=".json" style="display:none" onchange="importDB(event)">
+    <button class="hbtn" onclick="exportDB()">Exportar JSON</button>
+    <button class="hbtn" onclick="openExportExcelModal()">Exportar Excel</button>
+    <button class="hbtn" onclick="openImportModal()">Importar</button>
+    <input type="file" id="f-imp-json" accept=".json" style="display:none" onchange="importJSON(event)">
+    <input type="file" id="f-imp-csv" accept=".csv,.xlsx,.xls" style="display:none" onchange="importCSV(event)">
     <button class="hbtn warn" onclick="confirmReset()">Limpiar</button>
   </div>
 </div>
@@ -155,121 +168,137 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
       <div class="ptab" id="tab-i" onclick="setTab('i')">AYUDA</div>
     </div>
 
-    <!-- BUSCAR -->
     <div class="pbody" id="body-b">
-      <div class="sbox">
-        <input type="text" id="q" placeholder="Buscar nombre, ruta, km, empresa..." oninput="render()">
-      </div>
+      <div class="sbox"><input type="text" id="q" placeholder="Buscar nombre, ruta, km, empresa..." oninput="render()"></div>
       <div class="abar" id="abar"></div>
       <div class="clist" id="clist"></div>
       <div class="rmeta" id="rcount"></div>
       <div id="rlist"></div>
     </div>
 
-    <!-- LOCALIDAD -->
     <div class="pbody" id="body-l" style="display:none">
-      <div class="sbox">
-        <input type="text" id="qloc" placeholder="Filtrar localidades..." oninput="renderLocs()">
-      </div>
+      <div class="sbox"><input type="text" id="qloc" placeholder="Filtrar localidades..." oninput="renderLocs()"></div>
       <div id="loc-list"></div>
     </div>
 
-    <!-- COORD -->
     <div class="pbody" id="body-c" style="display:none">
-
-      <!-- BLOQUE 1: Lat/Lon → GK -->
       <div class="csec">
-        <div class="clabel">
-          Lat / Lon <span class="clabel-arrow">→</span> Gauss-Kruger
-        </div>
-        <div class="cnote" style="margin-bottom:8px">Ingresa latitud y longitud (decimal o GMS) y el sistema calcula el X,Y en GK Faja 5 automaticamente.</div>
-
-        <div style="margin-bottom:4px;font-size:9px;color:#3a6a3a">LATITUD</div>
-        <input class="cinput" id="c-lat" placeholder="Ej: -27.4510  o  27 20 7.90 S" style="width:100%;margin-bottom:6px">
-
-        <div style="margin-bottom:4px;font-size:9px;color:#3a6a3a">LONGITUD</div>
-        <input class="cinput" id="c-lon" placeholder="Ej: -58.9870  o  58 59 13.20 O" style="width:100%;margin-bottom:8px">
-
-        <button class="cbtn" onclick="goLL()">Ir al punto y calcular X,Y GK</button>
-        <div class="err-msg" id="err-ll"></div>
-
-        <div class="cres-box" id="r-ll"></div>
-        <div class="cnote">Acepta decimal (-27.451), grados minutos segundos (27 20 7.9 S), S / O / W se detectan automaticamente. Datum POSGAR 2007 / WGS84.</div>
+        <div class="clabel">Lat / Lon &rarr; Gauss-Kruger</div>
+        <div class="cnote" style="margin-bottom:8px">Acepta: decimal (-27.451), con letra (27.451 S), grados/min/seg (27&deg;20'7.9"S). Mientras escribis, el X,Y GK se completa automaticamente.</div>
+        <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">LATITUD</div>
+        <input class="cinput" id="c-lat" placeholder="-27.4510  o  27&deg;20'7.90&quot;S" oninput="liveConvLL()">
+        <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">LONGITUD</div>
+        <input class="cinput" id="c-lon" placeholder="-58.9870  o  58&deg;59'13&quot;O" oninput="liveConvLL()">
+        <button class="cbtn" onclick="goLL()">Ir al punto en el mapa</button>
+        <div class="cerr" id="err-ll"></div>
+        <div class="cres" id="r-ll"></div>
       </div>
-
-      <!-- BLOQUE 2: GK → Lat/Lon -->
       <div class="csec">
-        <div class="clabel">
-          Gauss-Kruger <span class="clabel-arrow">→</span> Lat / Lon
-        </div>
-        <div class="cnote" style="margin-bottom:8px">Ingresa X,Y GK y el sistema convierte a lat/lon y va al punto en el mapa.</div>
-
+        <div class="clabel">Gauss-Kruger &rarr; Lat / Lon</div>
+        <div class="cnote" style="margin-bottom:8px">Mientras escribis el X e Y, la Lat/Lon se completa automaticamente.</div>
         <select class="fsel" id="gk-faja">
           <option value="5">Faja 5 — Chaco (predeterminada)</option>
           <option value="4">Faja 4 — Pampeana Este</option>
           <option value="3">Faja 3 — Centro</option>
-          <option value="2">Faja 2 — Cuyo / Centro-Oeste</option>
+          <option value="2">Faja 2 — Cuyo</option>
           <option value="1">Faja 1 — NOA</option>
           <option value="6">Faja 6 — Patagonia Oeste</option>
           <option value="7">Faja 7 — Patagonia Este</option>
         </select>
-
-        <div style="margin-bottom:4px;font-size:9px;color:#3a6a3a">X (ESTE)</div>
-        <input class="cinput" id="gk-x" placeholder="Ej: 5547320" style="width:100%;margin-bottom:6px">
-
-        <div style="margin-bottom:4px;font-size:9px;color:#3a6a3a">Y (NORTE)</div>
-        <input class="cinput" id="gk-y" placeholder="Ej: 6959800" style="width:100%;margin-bottom:8px">
-
-        <button class="cbtn" onclick="goGK()">Convertir e ir al punto</button>
-        <div class="err-msg" id="err-gk"></div>
-
-        <div class="cres-box" id="r-gk"></div>
-        <div class="cnote">Datum POSGAR 2007 / WGS84 — marco geodesico oficial de Argentina (IGN). Compatible con GPS y cartografia vigente. Faja 5 predeterminada para la provincia del Chaco.</div>
+        <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">X (ESTE)</div>
+        <input class="cinput" id="gk-x" placeholder="Ej: 5547320" oninput="liveConvGK()">
+        <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">Y (NORTE)</div>
+        <input class="cinput" id="gk-y" placeholder="Ej: 6959800" oninput="liveConvGK()">
+        <button class="cbtn" onclick="goGK()">Ir al punto en el mapa</button>
+        <div class="cerr" id="err-gk"></div>
+        <div class="cres" id="r-gk"></div>
+        <div class="cnote">Datum POSGAR 2007 / WGS84. Faja 5 predeterminada para Chaco.</div>
       </div>
-
     </div>
 
-    <!-- AYUDA -->
     <div class="pbody" id="body-i" style="display:none">
-      <div style="font-size:11px;font-weight:700;color:#6aaf6a;margin-bottom:8px">INSTRUCTIVO DE USO</div>
+      <div style="font-size:12px;font-weight:700;color:#6aaf6a;margin-bottom:10px">INSTRUCTIVO DE USO</div>
 
-      <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin-bottom:5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px">A — Nuevo registro</div>
-      <div style="padding:7px 10px;border-radius:6px;border-left:3px solid #2a5a2a;background:#111811;margin-bottom:4px;font-size:10px;color:#6a8a6a;line-height:1.6">
-        1. Clic en <b style="color:#c0d0c0">+ Nuevo registro</b> (mapa, esquina superior derecha)<br>
-        2. Completar Nombre, Categoria, Ruta, Localidad, Estado<br>
-        3. Ingresar coordenadas (lat/lon decimal, GMS, GK, o clic en el mapa)<br>
+      <div class="inst-h">A — Instalar la app</div>
+      <div class="inst-s">
+        1. Guarda el archivo <b style="color:#c0d0c0">infraestructura_vial.html</b> en tu PC<br>
+        2. Doble clic para abrirlo en Chrome, Edge o Firefox<br>
+        3. Si ya tenes datos guardados: clic en <b style="color:#c0d0c0">Importar &rarr; JSON</b><br>
+        &nbsp;&nbsp;Necesitas internet para ver el mapa satelital
+      </div>
+
+      <div class="inst-h">B — Cargar un nuevo registro</div>
+      <div class="inst-s">
+        1. Clic en <b style="color:#c0d0c0">+ Nuevo registro</b> (esquina superior derecha del mapa)<br>
+        2. Completar: Nombre (*obligatorio), Categoria, Ruta, Km, Localidad, Estado, Empresa<br>
+        3. Coordenadas — elegir una opcion:<br>
+        &nbsp;&nbsp;· Escribir Lat/Lon decimal o GMS &rarr; el X,Y GK se calcula solo<br>
+        &nbsp;&nbsp;· Escribir X,Y GK &rarr; la Lat/Lon se calcula sola<br>
+        &nbsp;&nbsp;· Con el formulario abierto, hacer clic en el mapa para capturar la ubicacion<br>
         4. Clic en <b style="color:#c0d0c0">Guardar registro</b>
       </div>
 
-      <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin:8px 0 5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px">B — Conversor de coordenadas (pestana COORD)</div>
-      <div style="padding:7px 10px;border-radius:6px;border-left:3px solid #2a5a2a;background:#111811;margin-bottom:4px;font-size:10px;color:#6a8a6a;line-height:1.6">
-        <b style="color:#c0d0c0">Lat/Lon → GK:</b> ingresa lat/lon (decimal o GMS) y presiona el boton. Te lleva al punto en el mapa y muestra el X,Y GK Faja 5 en datum POSGAR 2007 / WGS84.<br><br>
-        <b style="color:#c0d0c0">GK → Lat/Lon:</b> ingresa X,Y GK (POSGAR 2007) y presiona el boton. Convierte a lat/lon, va al punto y muestra ambos resultados.
+      <div class="inst-h">C — Buscar registros</div>
+      <div class="inst-s">
+        <b style="color:#c0d0c0">Por nombre:</b> pestana BUSCAR, escribi en la barra o usa las letras del abecedario<br>
+        <b style="color:#c0d0c0">Por localidad:</b> pestana LOCALIDAD, clic en el pueblo deseado<br>
+        <b style="color:#c0d0c0">Por categoria:</b> en BUSCAR, filtrar por categoria en la lista lateral<br>
+        <b style="color:#c0d0c0">Por coordenadas:</b> pestana COORD, ingresar X,Y o Lat/Lon
       </div>
 
-      <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin:8px 0 5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px">C — Exportar / Importar</div>
-      <div style="padding:7px 10px;border-radius:6px;border-left:3px solid #2a5a2a;background:#111811;margin-bottom:4px;font-size:10px;color:#6a8a6a;line-height:1.6">
-        <b style="color:#c0d0c0">Exportar:</b> guarda un .json con todos los datos. Subilo a Drive para respaldo.<br>
-        <b style="color:#c0d0c0">Importar:</b> carga un .json en cualquier PC. No se pierde nada.
+      <div class="inst-h">D — Conversor de coordenadas (pestana COORD)</div>
+      <div class="inst-s">
+        <b style="color:#c0d0c0">Lat/Lon &rarr; GK:</b> escribi lat/lon (cualquier formato) y mientras escribis el X,Y GK Faja 5 se completa automaticamente. Luego "Ir al punto" mueve el mapa y muestra todos los valores.<br><br>
+        <b style="color:#c0d0c0">GK &rarr; Lat/Lon:</b> escribi X e Y y la Lat/Lon se completa sola. "Ir al punto" mueve el mapa.<br><br>
+        <b style="color:#c0d0c0">Google Earth:</b> pega el formato GMS (ej: 27&deg;20'7.9"S) directamente en el campo Latitud — el sistema lo convierte automaticamente.
       </div>
 
-      <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin:8px 0 5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px">D — Estados</div>
-      <div style="display:flex;flex-direction:column;gap:4px">
-        <div style="padding:6px 8px;border-radius:5px;background:#0a2a0a;border-left:3px solid #6aaf6a;font-size:10px"><b style="color:#6aaf6a">BUENO</b> — Funciona normalmente. Sin danos.</div>
-        <div style="padding:6px 8px;border-radius:5px;background:#2a1a00;border-left:3px solid #c8a050;font-size:10px"><b style="color:#c8a050">REGULAR</b> — Requiere mantenimiento proximo.</div>
-        <div style="padding:6px 8px;border-radius:5px;background:#2a0a0a;border-left:3px solid #c07070;font-size:10px"><b style="color:#c07070">CRITICO</b> — Requiere intervencion urgente.</div>
-        <div style="padding:6px 8px;border-radius:5px;background:#1a1a1a;border-left:3px solid #3a5a3a;font-size:10px"><b style="color:#3a5a3a">SIN DATOS</b> — Estado no verificado.</div>
+      <div class="inst-h">E — Exportar datos</div>
+      <div class="inst-s">
+        <b style="color:#c0d0c0">Exportar JSON:</b> copia de seguridad completa para Drive o pendrive. Usar para pasar datos entre PCs.<br><br>
+        <b style="color:#c0d0c0">Exportar Excel:</b> genera un archivo .xlsx con el formato oficial DVP. Aparece un selector para elegir que exportar:<br>
+        &nbsp;&nbsp;· "Todas las categorias" &rarr; exporta todos los registros<br>
+        &nbsp;&nbsp;· Elegir una categoria (ej: Gasoductos) &rarr; solo esos registros<br>
+        El archivo incluye: fecha, tramite, coordenadas Lat/Lon y GK Faja 5, estado, empresa y mas.
+      </div>
+
+      <div class="inst-h">F — Importar datos</div>
+      <div class="inst-s">
+        <b style="color:#c0d0c0">JSON:</b> restaura una copia completa. Reemplaza TODOS los datos actuales.<br><br>
+        <b style="color:#c0d0c0">CSV / Excel:</b> agrega registros sin borrar los existentes. El sistema detecta las columnas automaticamente. Para saber el formato correcto, descarga la <b style="color:#c0d0c0">plantilla Excel de ejemplo</b> desde el modal de Importar.<br><br>
+        La plantilla tiene dos hojas: "Registros" (para completar) y "Guia" (con categorias y estados validos).
+      </div>
+
+      <div class="inst-h">G — Compartir la base de datos</div>
+      <div class="inst-s">
+        1. Al terminar de cargar datos, clic en <b style="color:#c0d0c0">Exportar JSON</b><br>
+        2. Subir el .json generado a la carpeta compartida de Google Drive de la oficina<br>
+        3. Los demas agentes abren el .html &rarr; Importar &rarr; JSON &rarr; eligen el archivo de Drive<br>
+        <b style="color:#c0d0c0">Para llevar a otra reparticion:</b> copiar el .html + el ultimo .json en un pendrive
+      </div>
+
+      <div class="inst-h">H — Estados de infraestructura</div>
+      <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
+        <div style="padding:6px 9px;border-radius:5px;background:#0a2a0a;border-left:3px solid #6aaf6a;font-size:10px"><b style="color:#6aaf6a">BUENO</b> — Funciona normalmente. Sin danos ni riesgo.</div>
+        <div style="padding:6px 9px;border-radius:5px;background:#2a1a00;border-left:3px solid #c8a050;font-size:10px"><b style="color:#c8a050">REGULAR</b> — Deterioro visible. Requiere mantenimiento proximo.</div>
+        <div style="padding:6px 9px;border-radius:5px;background:#2a0a0a;border-left:3px solid #c07070;font-size:10px"><b style="color:#c07070">CRITICO</b> — Dano importante. Requiere intervencion urgente.</div>
+        <div style="padding:6px 9px;border-radius:5px;background:#1a1a1a;border-left:3px solid #3a5a3a;font-size:10px"><b style="color:#3a5a3a">SIN DATOS</b> — Estado no verificado. Actualizar al inspeccionar.</div>
+      </div>
+      <div style="padding:6px 9px;border-radius:5px;background:#1a1a08;border:1px solid #3a3a1a;font-size:10px;color:#8a8a4a;line-height:1.5">
+        La categoria "Otros" sirve para infraestructura que no entra en las 8 categorias predefinidas (pluviales, alcantarillas, etc). Si hay muchos del mismo tipo nuevo, crear una categoria personalizada con <b>+ Nueva categoria</b> en la lista de categorias.
+      </div>
+      <div style="font-size:10px;color:#2a4a2a;text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid #1a2a1a;line-height:1.6">
+        Infraestructura Vial — Provincia del Chaco<br>Base de datos interna DVP
       </div>
     </div>
   </div>
 
-  <!-- MAPA -->
   <div style="flex:1;position:relative;overflow:hidden">
     <div id="map" style="width:100%;height:100%"></div>
     <button class="fab" onclick="openRecordModal()">+ Nuevo registro</button>
     <div class="legend" id="legend"></div>
     <div class="det" id="det">
-      <button class="det-close" onclick="closeDet()">✕</button>
+      <button class="det-close" onclick="closeDet()">&#10005;</button>
       <div id="det-inner"></div>
     </div>
   </div>
@@ -279,7 +308,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 <div class="overlay" id="rm">
   <div class="modal">
     <h2 id="mtitle">Nuevo registro</h2>
-    <div class="fg"><label>Nombre / Denominacion *</label><input type="text" id="f-name" placeholder="Ej: Cruce Ruta 11 — Km 234"></div>
+    <div class="fg"><label>Nombre / Denominacion *</label><input type="text" id="f-name" placeholder="Ej: Cruce Ruta 11 - Km 234"></div>
     <div class="fg"><label>Categoria *</label><select id="f-cat"></select></div>
     <div class="frow">
       <div class="fg"><label>Ruta / Calle</label><input type="text" id="f-ruta" placeholder="Ruta Nacional 11"></div>
@@ -287,40 +316,31 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
     </div>
     <div class="frow">
       <div class="fg"><label>Localidad</label><input type="text" id="f-loc" placeholder="Castelli, Resistencia..."></div>
-      <div class="fg"><label>Estado</label>
-        <select id="f-est">
-          <option>Bueno</option><option>Regular</option><option>Critico</option><option>Sin datos</option>
-        </select>
-      </div>
+      <div class="fg"><label>Estado</label><select id="f-est"><option>Bueno</option><option>Regular</option><option>Critico</option><option>Sin datos</option></select></div>
     </div>
     <div class="frow">
       <div class="fg"><label>Profundidad / Altura</label><input type="text" id="f-prof" placeholder="1,20 m"></div>
       <div class="fg"><label>Diametro / Tension / Tipo</label><input type="text" id="f-mat" placeholder="200mm - PVC - 13kV"></div>
     </div>
-    <div class="fg"><label>Empresa / Responsable</label><input type="text" id="f-resp" placeholder="SAMEEP — SECHEEP — Camuzzi — DPV Chaco..."></div>
+    <div class="fg"><label>Empresa / Responsable</label><input type="text" id="f-resp" placeholder="SAMEEP - SECHEEP - Camuzzi - DPV Chaco..."></div>
     <div class="fg">
       <label>Coordenadas</label>
       <div class="coord-box">
-        <div>
-          <div class="coord-sec-label">LATITUD / LONGITUD (decimal o GMS de Google Earth)</div>
-          <div class="coord-row">
-            <input class="cinput" id="f-lat" placeholder="Lat: -27.4510" oninput="formConvFromLL()">
-            <input class="cinput" id="f-lon" placeholder="Lon: -58.9870" oninput="formConvFromLL()">
-          </div>
-          <div class="coord-hint">S, O y W se detectan automaticamente</div>
+        <div class="coord-lbl">LATITUD / LONGITUD (decimal o GMS de Google Earth)</div>
+        <div class="coord-row">
+          <input class="cinput" id="f-lat" placeholder="Lat: -27.4510" oninput="fConvLL()">
+          <input class="cinput" id="f-lon" placeholder="Lon: -58.9870" oninput="fConvLL()">
         </div>
-        <div class="coord-sep">↕ conversion automatica ↕</div>
-        <div>
-          <div class="coord-sec-label">GAUSS-KRUGER POSGAR 2007 / WGS84 — FAJA 5</div>
-          <div class="coord-row">
-            <input class="cinput" id="f-gkx" placeholder="X (Este)" oninput="formConvFromGK()">
-            <input class="cinput" id="f-gky" placeholder="Y (Norte)" oninput="formConvFromGK()">
-          </div>
+        <div class="coord-sep">convierte automaticamente</div>
+        <div class="coord-lbl">GAUSS-KRUGER FAJA 5</div>
+        <div class="coord-row">
+          <input class="cinput" id="f-gkx" placeholder="X (Este)" oninput="fConvGK()">
+          <input class="cinput" id="f-gky" placeholder="Y (Norte)" oninput="fConvGK()">
         </div>
-        <div class="coord-hint">Con el formulario abierto podes hacer clic en el mapa para capturar la ubicacion automaticamente.</div>
+        <div class="coord-hint">Con el formulario abierto podes hacer clic en el mapa para capturar la ubicacion.</div>
       </div>
     </div>
-    <div class="fg"><label>Observaciones</label><textarea id="f-obs" placeholder="Notas, condiciones, historial de inspecciones..."></textarea></div>
+    <div class="fg"><label>Observaciones</label><textarea id="f-obs" placeholder="Notas, condiciones, historial..."></textarea></div>
     <div class="mact">
       <button class="bcanc" onclick="closeModal('rm')">Cancelar</button>
       <button class="bsave" onclick="saveRecord()">Guardar registro</button>
@@ -330,13 +350,66 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 
 <!-- MODAL CATEGORIA -->
 <div class="overlay" id="cm">
-  <div class="modal">
+  <div class="modal" style="max-width:380px">
     <h2>Nueva categoria</h2>
     <div class="fg"><label>Nombre *</label><input type="text" id="cn" placeholder="Ej: Pluviales, Oleoducto..."></div>
-    <div class="fg"><label>Color identificador</label><div id="cpick" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:4px"></div></div>
+    <div class="fg"><label>Color</label><div id="cpick" style="display:flex;gap:7px;flex-wrap:wrap;margin-top:4px"></div></div>
     <div class="mact">
       <button class="bcanc" onclick="closeModal('cm')">Cancelar</button>
-      <button class="bsave" onclick="saveCat()">Crear categoria</button>
+      <button class="bsave" onclick="saveCat()">Crear</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL IMPORTAR -->
+<div class="overlay" id="im">
+  <div class="modal" style="max-width:520px">
+    <h2>Importar registros</h2>
+    <div class="imp-tabs">
+      <div class="imp-tab on" id="itab-json" onclick="setImpTab('json')">Archivo JSON</div>
+      <div class="imp-tab" id="itab-csv" onclick="setImpTab('csv')">CSV / Excel</div>
+    </div>
+    <div class="imp-body on" id="ibody-json">
+      <div class="imp-note">El JSON debe ser una copia exportada desde esta misma app. <b>Reemplaza toda la base actual.</b></div>
+      <div class="drop-zone" id="dz-json" onclick="document.getElementById('f-imp-json').click()" ondragover="dzOver(event,'dz-json')" ondragleave="dzOut('dz-json')" ondrop="dzDrop(event,'json')">
+        <div class="dz-icon">&#128193;</div>
+        <div class="dz-lbl">Arrasta el .json aqui<br>o <b>hace clic para seleccionarlo</b></div>
+      </div>
+      <div class="prev-box" id="prev-json"></div>
+    </div>
+    <div class="imp-body" id="ibody-csv">
+      <div class="imp-note">Acepta CSV o Excel (.xlsx). Las columnas se detectan automaticamente. Los registros se <b>agregan</b> a la base existente sin borrar nada.</div>
+      <div class="drop-zone" id="dz-csv" onclick="document.getElementById('f-imp-csv').click()" ondragover="dzOver(event,'dz-csv')" ondragleave="dzOut('dz-csv')" ondrop="dzDrop(event,'csv')">
+        <div class="dz-icon">&#128202;</div>
+        <div class="dz-lbl">Arrasta el .csv o .xlsx aqui<br>o <b>hace clic para seleccionarlo</b></div>
+      </div>
+      <div class="prev-box" id="prev-csv"></div>
+      <div id="csv-map-wrap" style="display:none">
+        <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin:10px 0 6px">Mapeo de columnas detectadas</div>
+        <div class="csv-map-grid" id="csv-map-grid"></div>
+      </div>
+      <button class="bsave-imp" id="btn-imp-csv" onclick="doImportCSV()" disabled>Importar registros</button>
+      <div style="margin-top:8px;text-align:center">
+        <button style="background:transparent;border:none;color:#3a6a3a;font-size:10px;cursor:pointer;text-decoration:underline" onclick="downloadExcelTemplate()">Descargar plantilla Excel de ejemplo</button>
+      </div>
+    </div>
+    <div class="mact" style="margin-top:12px"><button class="bcanc" onclick="closeModal('im')">Cerrar</button></div>
+  </div>
+</div>
+
+<!-- MODAL EXPORTAR EXCEL -->
+<div class="overlay" id="em">
+  <div class="modal" style="max-width:400px">
+    <h2>Exportar a Excel</h2>
+    <div style="font-size:11px;color:#6a8a6a;margin-bottom:12px;line-height:1.6">Genera un archivo .xlsx con el formato oficial DVP. Elegir que categoria exportar:</div>
+    <div class="fg">
+      <label>Categoria a exportar</label>
+      <select id="exp-cat" style="background:#111811;color:#c0d0c0;border:1px solid #1a2a1a;border-radius:6px;padding:8px;width:100%;font-size:13px;outline:none" onchange="updateExpCount()"></select>
+    </div>
+    <div style="font-size:10px;color:#3a6a3a;margin-top:4px;margin-bottom:12px" id="exp-count"></div>
+    <div class="mact">
+      <button class="bcanc" onclick="closeModal('em')">Cancelar</button>
+      <button class="bsave" onclick="doExportExcel()">Descargar Excel</button>
     </div>
   </div>
 </div>
@@ -344,11 +417,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 <div class="toast" id="toast"></div>
 
 <script>
-// ========== PROYECCIONES GK — POSGAR 2007 (WGS84) ==========
-// Datum: POSGAR 2007 — marco geodesico oficial de Argentina
-// Elipsoide: WGS84 (identico a GRS80 a efectos practicos)
-// Compatible con GPS y cartografia IGN vigente
-const GKP = {
+// ===== PROYECCIONES POSGAR 2007 / WGS84 =====
+const GKP={
   1:'+proj=tmerc +lat_0=-90 +lon_0=-72 +k=1 +x_0=1500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
   2:'+proj=tmerc +lat_0=-90 +lon_0=-69 +k=1 +x_0=2500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
   3:'+proj=tmerc +lat_0=-90 +lon_0=-66 +k=1 +x_0=3500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
@@ -357,52 +427,32 @@ const GKP = {
   6:'+proj=tmerc +lat_0=-90 +lon_0=-57 +k=1 +x_0=6500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs',
   7:'+proj=tmerc +lat_0=-90 +lon_0=-54 +k=1 +x_0=7500000 +y_0=0 +ellps=WGS84 +towgs84=0,0,0 +units=m +no_defs'
 };
+function gkToLL(faja,x,y){try{const r=proj4(GKP[faja],'EPSG:4326',[x,y]);return(!r||isNaN(r[0]))?null:{lat:r[1],lon:r[0]};}catch(e){return null;}}
+function llToGK(faja,lat,lon){try{const r=proj4('EPSG:4326',GKP[faja],[lon,lat]);return(!r||isNaN(r[0]))?null:{x:r[0],y:r[1]};}catch(e){return null;}}
 
-function gkToLL(faja, x, y) {
-  try {
-    const r = proj4(GKP[faja], 'EPSG:4326', [x, y]);
-    if (!r || isNaN(r[0]) || isNaN(r[1])) return null;
-    return { lat: r[1], lon: r[0] };
-  } catch(e) { return null; }
-}
-
-function llToGK(faja, lat, lon) {
-  try {
-    const r = proj4('EPSG:4326', GKP[faja], [lon, lat]);
-    if (!r || isNaN(r[0]) || isNaN(r[1])) return null;
-    return { x: r[0], y: r[1] };
-  } catch(e) { return null; }
-}
-
-// ========== PARSECOORD ==========
-// Acepta: decimal, GMS (grados min seg), S/O/W => negativo
-function parseCoord(raw) {
-  if (!raw || !raw.trim()) return NaN;
-  raw = raw.trim();
-  // Numero decimal puro (con signo opcional)
-  if (/^-?\d+(\.\d+)?$/.test(raw)) return parseFloat(raw);
-  const up = raw.toUpperCase();
-  const isNeg = /[SOW]/.test(up);
-  // Extraer todos los numeros (enteros y decimales)
-  const parts = [];
-  const re = /\d+(\.\d+)?/g;
+// ===== PARSECOORD =====
+function parseCoord(raw){
+  if(!raw||!raw.trim())return NaN;
+  raw=raw.trim();
+  if(/^-?\d+(\.\d+)?$/.test(raw))return parseFloat(raw);
+  const up=raw.toUpperCase();
+  const isNeg=/[SOW]/.test(up);
+  const parts=[];
+  const re=/\d+(\.\d+)?/g;
   let m;
-  while ((m = re.exec(raw)) !== null) parts.push(parseFloat(m[0]));
-  if (!parts.length) return NaN;
-  const deg = parts[0];
-  const min = parts.length >= 2 ? parts[1] : 0;
-  const sec = parts.length >= 3 ? parts[2] : 0;
-  const dec = deg + min / 60 + sec / 3600;
-  return isNeg ? -dec : dec;
+  while((m=re.exec(raw))!==null)parts.push(parseFloat(m[0]));
+  if(!parts.length)return NaN;
+  const dec=parts[0]+(parts[1]||0)/60+(parts[2]||0)/3600;
+  return isNeg?-dec:dec;
 }
 
-// ========== PALETA ==========
-const PALETTE = ['#1565c0','#1a8a5a','#c0392b','#b35900','#7b4fcf','#00838f','#ad1457','#2e7d32','#6d4c41','#00695c','#4527a0','#c62828'];
-let selCol = PALETTE[0];
+// ===== PALETA =====
+const PAL=['#1565c0','#1a8a5a','#c0392b','#b35900','#7b4fcf','#00838f','#ad1457','#2e7d32','#6d4c41','#00695c','#4527a0','#c62828'];
+let selCol=PAL[0];
 
-// ========== DATOS INICIALES ==========
-const INIT = {
-  categories: [
+// ===== DATOS INICIALES =====
+const INIT={
+  categories:[
     {id:'c1',name:'Cruce de ruta',color:'#1565c0'},
     {id:'c2',name:'Tuberia de agua / Acueducto',color:'#1a8a5a'},
     {id:'c3',name:'Gasoducto / Ducto de gas',color:'#b35900'},
@@ -412,7 +462,7 @@ const INIT = {
     {id:'c7',name:'Fibra optica / Telecom',color:'#00838f'},
     {id:'c8',name:'Otros',color:'#4527a0'}
   ],
-  records: [
+  records:[
     {id:'r1',name:'Cruce Ruta 11 Km 234',catId:'c1',ruta:'Ruta Nacional 11',km:'Km 234,5',loc:'Resistencia',estado:'Bueno',prof:'1,20 m',mat:'Hormigon',resp:'DPV Chaco',obs:'Verificado 2024.',lat:-27.4510,lon:-58.9870},
     {id:'r2',name:'Cruce Ruta 16 Km 89',catId:'c1',ruta:'Ruta Nacional 16',km:'Km 89,0',loc:'Saenz Pena',estado:'Regular',prof:'0,90 m',mat:'Hormigon',resp:'Vialidad Nacional',obs:'Monitorear en lluvias.',lat:-27.000,lon:-61.500},
     {id:'r3',name:'Cruce Castelli Ruta 89',catId:'c1',ruta:'Ruta Provincial 89',km:'Km 0,5',loc:'Castelli',estado:'Regular',prof:'1,10 m',mat:'Hormigon',resp:'DPV Chaco',obs:'',lat:-25.950,lon:-60.620},
@@ -420,157 +470,144 @@ const INIT = {
     {id:'r5',name:'Gasoducto Sur Barranqueras',catId:'c3',ruta:'Acceso Barranqueras',km:'Km 3,1',loc:'Barranqueras',estado:'Critico',prof:'0,80 m',mat:'Acero 6 pulgadas',resp:'Camuzzi Gas',obs:'Senalizacion deteriorada.',lat:-27.490,lon:-58.940},
     {id:'r6',name:'Tuberia principal Ruta 7',catId:'c2',ruta:'Ruta Provincial 7',km:'Km 45,0',loc:'Fontana',estado:'Bueno',prof:'2,00 m',mat:'PVC 200mm',resp:'SAMEEP',obs:'',lat:-27.430,lon:-58.720},
     {id:'r7',name:'Acueducto Castelli Centro',catId:'c2',ruta:'Av. San Martin',km:'--',loc:'Castelli',estado:'Bueno',prof:'1,50 m',mat:'PVC 160mm',resp:'SAMEEP',obs:'',lat:-25.955,lon:-60.625},
-    {id:'r8',name:'Linea 13,2 kV Ruta 11',catId:'c4',ruta:'Ruta Nacional 11',km:'Km 198,0',loc:'Quitilipi',estado:'Bueno',prof:'--',mat:'13,2 kV aereo',resp:'SECHEEP',obs:'',lat:-26.870,lon:-60.220},
-    {id:'r9',name:'Tendido electrico Norte',catId:'c4',ruta:'Ruta Provincial 5',km:'Km 2,0',loc:'Castelli',estado:'Bueno',prof:'--',mat:'33 kV aereo',resp:'SECHEEP',obs:'',lat:-25.940,lon:-60.610},
+    {id:'r8',name:'Linea 13.2 kV Ruta 11',catId:'c4',ruta:'Ruta Nacional 11',km:'Km 198,0',loc:'Quitilipi',estado:'Bueno',prof:'--',mat:'13,2 kV aereo',resp:'SECHEEP',obs:'',lat:-26.870,lon:-60.220},
+    {id:'r9',name:'Tendido electrico Castelli Norte',catId:'c4',ruta:'Ruta Provincial 5',km:'Km 2,0',loc:'Castelli',estado:'Bueno',prof:'--',mat:'33 kV aereo',resp:'SECHEEP',obs:'',lat:-25.940,lon:-60.610},
     {id:'r10',name:'Fibra optica Ruta 16',catId:'c7',ruta:'Ruta Nacional 16',km:'Km 102,0',loc:'Saenz Pena',estado:'Bueno',prof:'0,60 m',mat:'Fibra 96 hilos',resp:'Telecom Argentina',obs:'',lat:-27.010,lon:-61.490}
   ],
-  savedAt: new Date().toISOString()
+  savedAt:new Date().toISOString()
 };
 
-function enrichRecs(recs) {
-  return recs.map(r => {
-    if (r.lat && r.lon && (!r.gkx || !r.gky)) {
-      try {
-        const gk = llToGK(5, r.lat, r.lon);
-        if (gk) { r.gkx = Math.round(gk.x); r.gky = Math.round(gk.y); }
-      } catch(e) {}
+function enrichRecs(recs){
+  return recs.map(r=>{
+    if(r.lat&&r.lon&&!r.gkx){
+      const gk=llToGK(5,r.lat,r.lon);
+      if(gk){r.gkx=Math.round(gk.x);r.gky=Math.round(gk.y);}
     }
     return r;
   });
 }
 
-let db = JSON.parse(localStorage.getItem('infra_chaco') || 'null') || JSON.parse(JSON.stringify(INIT));
-db.records = enrichRecs(db.records);
-let selCat = 'all', selAlpha = 'all', selRec = null, editId = null;
-let markers = {}, tmpMark = null, map;
+let db=JSON.parse(localStorage.getItem('infra_chaco')||'null')||JSON.parse(JSON.stringify(INIT));
+db.records=enrichRecs(db.records);
+let selCat='all',selAlpha='all',selRec=null,editId=null,markers={},tmpMark=null,map;
 
-function uid() { return 'id' + Date.now() + Math.random().toString(36).slice(2,5); }
-function getCat(id) { return db.categories.find(c => c.id === id) || {name:'Otro',color:'#555'}; }
-function toast(m) {
-  const t = document.getElementById('toast');
-  t.textContent = m;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2600);
-}
-const EC = {Bueno:'est-b', Regular:'est-r', Critico:'est-c', 'Sin datos':'est-s'};
-const EB = {Bueno:'#0a2a0a', Regular:'#2a1a00', Critico:'#2a0a0a', 'Sin datos':'#1a1a1a'};
-const ET = {Bueno:'#6aaf6a', Regular:'#c8a050', Critico:'#c07070', 'Sin datos':'#3a5a3a'};
+function uid(){return 'id'+Date.now()+Math.random().toString(36).slice(2,5);}
+function getCat(id){return db.categories.find(c=>c.id===id)||{name:'Otro',color:'#555'};}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600);}
+const EC={Bueno:'est-b',Regular:'est-r',Critico:'est-c','Sin datos':'est-s'};
+const EB={Bueno:'#0a2a0a',Regular:'#2a1a00',Critico:'#2a0a0a','Sin datos':'#1a1a1a'};
+const ET={Bueno:'#6aaf6a',Regular:'#c8a050',Critico:'#c07070','Sin datos':'#3a5a3a'};
 
-function save() {
-  db.savedAt = new Date().toISOString();
-  localStorage.setItem('infra_chaco', JSON.stringify(db));
-  const d = new Date(db.savedAt);
-  document.getElementById('save-st').textContent = 'Guardado ' + d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+function save(){
+  db.savedAt=new Date().toISOString();
+  localStorage.setItem('infra_chaco',JSON.stringify(db));
+  const d=new Date(db.savedAt);
+  document.getElementById('save-st').textContent='Guardado '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
 }
 
-// ========== MAPA ==========
-function initMap() {
-  map = L.map('map', {center:[-26.5,-60.5], zoom:8});
-  const googleHyb = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {attribution:'Google Hybrid',maxZoom:21,minZoom:1});
-  const googleSat = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {attribution:'Google Satellite',maxZoom:21,minZoom:1});
-  const esriSat   = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution:'Esri',maxZoom:19,minZoom:4});
-  const osm       = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:'OpenStreetMap',maxZoom:19,minZoom:1});
+// ===== MAPA =====
+function initMap(){
+  map=L.map('map',{center:[-26.5,-60.5],zoom:8});
+  const googleHyb=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{attribution:'Google Hybrid',maxZoom:21,minZoom:1});
+  const googleSat=L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{attribution:'Google Satellite',maxZoom:21,minZoom:1});
+  const esri=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19,minZoom:4});
+  const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap',maxZoom:19});
   googleHyb.addTo(map);
-  L.control.layers(
-    {'Google Hibrido (recomendado)':googleHyb,'Google Satelite':googleSat,'Esri Satelite':esriSat,'OpenStreetMap (calles)':osm},
-    {}, {position:'topleft', collapsed:true}
-  ).addTo(map);
-  map.on('click', function(e) {
-    if (document.getElementById('rm').classList.contains('open')) {
-      document.getElementById('f-lat').value = e.latlng.lat.toFixed(6);
-      document.getElementById('f-lon').value = e.latlng.lng.toFixed(6);
-      formConvFromLL();
-      if (tmpMark) map.removeLayer(tmpMark);
-      tmpMark = L.circleMarker([e.latlng.lat, e.latlng.lng], {radius:7,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.5,weight:2}).addTo(map);
-      toast('Coordenadas capturadas del mapa');
-      return;
+  L.control.layers({'Google Hibrido (recomendado)':googleHyb,'Google Satelite':googleSat,'Esri Satelite':esri,'OpenStreetMap (calles)':osm},{},{position:'topleft',collapsed:true}).addTo(map);
+  map.on('click',function(e){
+    if(document.getElementById('rm').classList.contains('open')){
+      document.getElementById('f-lat').value=e.latlng.lat.toFixed(6);
+      document.getElementById('f-lon').value=e.latlng.lng.toFixed(6);
+      fConvLL();
+      if(tmpMark)map.removeLayer(tmpMark);
+      tmpMark=L.circleMarker([e.latlng.lat,e.latlng.lng],{radius:7,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.5,weight:2}).addTo(map);
+      toast('Coordenadas capturadas del mapa');return;
     }
     closeDet();
   });
-  refreshMarkers();
-  renderLegend();
+  refreshMarkers();renderLegend();
 }
 
-function mkIcon(color) {
-  const s = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30">
-    <path d="M11 0C4.9 0 0 4.9 0 11c0 8.25 11 19 11 19s11-10.75 11-19C22 4.9 17.1 0 11 0z" fill="${color}" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/>
-    <circle cx="11" cy="11" r="4.5" fill="#fff" opacity=".85"/></svg>`;
-  return L.divIcon({html:s, className:'', iconSize:[22,30], iconAnchor:[11,30], popupAnchor:[0,-30]});
+function mkIcon(color){
+  const s=`<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30"><path d="M11 0C4.9 0 0 4.9 0 11c0 8.25 11 19 11 19s11-10.75 11-19C22 4.9 17.1 0 11 0z" fill="${color}" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/><circle cx="11" cy="11" r="4.5" fill="#fff" opacity=".85"/></svg>`;
+  return L.divIcon({html:s,className:'',iconSize:[22,30],iconAnchor:[11,30],popupAnchor:[0,-30]});
 }
 
-function refreshMarkers() {
-  Object.values(markers).forEach(m => map.removeLayer(m));
-  markers = {};
-  db.records.forEach(r => {
-    if (!r.lat || !r.lon) return;
-    const cat = getCat(r.catId);
-    const m = L.marker([r.lat, r.lon], {icon:mkIcon(cat.color)}).addTo(map);
-    m.on('click', () => { selRec = r.id; showDet(r.id); renderList(); });
-    markers[r.id] = m;
+function refreshMarkers(){
+  Object.values(markers).forEach(m=>map.removeLayer(m));markers={};
+  db.records.forEach(r=>{
+    if(!r.lat||!r.lon)return;
+    const cat=getCat(r.catId);
+    const m=L.marker([r.lat,r.lon],{icon:mkIcon(cat.color)}).addTo(map);
+    m.on('click',()=>{selRec=r.id;showDet(r.id);renderList();});
+    markers[r.id]=m;
   });
 }
 
-function fly(lat, lon, z=15) { map.flyTo([lat,lon], z, {duration:1.2}); }
-
-function renderLegend() {
-  document.getElementById('legend').innerHTML = db.categories.map(c =>
-    `<div class="li"><div class="ldot" style="background:${c.color}"></div><span>${c.name}</span></div>`
-  ).join('');
+function fly(lat,lon,z){map.flyTo([lat,lon],z||15,{duration:1.2});}
+function renderLegend(){
+  document.getElementById('legend').innerHTML=db.categories.map(c=>`<div class="li"><div class="ldot" style="background:${c.color}"></div><span>${c.name}</span></div>`).join('');
 }
 
-// ========== PESTANAS ==========
-function setTab(t) {
-  ['b','l','c','i'].forEach(x => {
-    document.getElementById('tab-'+x).classList.toggle('on', x===t);
-    document.getElementById('body-'+x).style.display = x===t ? '' : 'none';
+// ===== TABS =====
+function setTab(t){
+  ['b','l','c','i'].forEach(x=>{
+    document.getElementById(`tab-${x}`).classList.toggle('on',x===t);
+    document.getElementById(`body-${x}`).style.display=x===t?'':'none';
   });
-  if (t==='l') renderLocs();
+  if(t==='l')renderLocs();
 }
 
-// ========== BUSCAR ==========
-function getLetters() {
-  const base = selCat==='all' ? db.records : db.records.filter(r => r.catId===selCat);
-  return [...new Set(base.map(r => r.name[0].toUpperCase()))].sort();
+// ===== BUSCAR =====
+function getLetters(){
+  const base=selCat==='all'?db.records:db.records.filter(r=>r.catId===selCat);
+  return[...new Set(base.map(r=>r.name[0].toUpperCase()))].sort();
 }
-function getFiltered() {
-  const q = document.getElementById('q').value.toLowerCase();
-  return db.records.filter(r => {
-    if (selCat!=='all' && r.catId!==selCat) return false;
-    if (selAlpha!=='all' && !r.name.toUpperCase().startsWith(selAlpha)) return false;
-    if (q && !`${r.name} ${r.ruta||''} ${r.km||''} ${r.loc||''} ${r.obs||''} ${r.resp||''}`.toLowerCase().includes(q)) return false;
+function getFiltered(){
+  const q=document.getElementById('q').value.toLowerCase();
+  return db.records.filter(r=>{
+    if(selCat!=='all'&&r.catId!==selCat)return false;
+    if(selAlpha!=='all'&&!r.name.toUpperCase().startsWith(selAlpha))return false;
+    if(q&&!(r.name+' '+(r.ruta||'')+' '+(r.km||'')+' '+(r.loc||'')+' '+(r.obs||'')+' '+(r.resp||'')).toLowerCase().includes(q))return false;
     return true;
-  }).sort((a,b) => a.name.localeCompare(b.name,'es'));
+  }).sort((a,b)=>a.name.localeCompare(b.name,'es'));
 }
-function renderAlpha() {
-  const letters = getLetters();
-  const t = `<button class="ab all ${selAlpha==='all'?'on':''}" onclick="selAlpha='all';render()">Todos</button>`;
-  const bs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l =>
-    `<button class="ab ${!letters.includes(l)?'off':''} ${selAlpha===l?'on':''}" onclick="${letters.includes(l)?`selAlpha='${l}';render()`:''}">${l}</button>`
-  ).join('');
-  document.getElementById('abar').innerHTML = t+bs;
+
+function renderAlpha(){
+  const letters=getLetters();
+  const all=`<button class="ab all ${selAlpha==='all'?'on':''}" onclick="selAlpha='all';render()">Todos</button>`;
+  const bs='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l=>{
+    const has=letters.includes(l);
+    const active=selAlpha===l;
+    return `<button class="ab ${!has?'off':''} ${active?'on':''}" ${has?`onclick="selAlpha='${l}';render()"`:''} >${l}</button>`;
+  }).join('');
+  document.getElementById('abar').innerHTML=all+bs;
 }
-function renderCats() {
-  const all = `<button class="ccat ${selCat==='all'?'on':''}" onclick="selCat='all';selAlpha='all';render()">
+
+function renderCats(){
+  const all=`<button class="ccat ${selCat==='all'?'on':''}" onclick="selCat='all';selAlpha='all';render()">
     <span class="cdot" style="background:#4a8a4a"></span>Todas las categorias<span class="ccnt">${db.records.length}</span></button>`;
-  const cats = db.categories.map(c => {
-    const cnt = db.records.filter(r => r.catId===c.id).length;
+  const cats=db.categories.map(c=>{
+    const cnt=db.records.filter(r=>r.catId===c.id).length;
     return `<button class="ccat ${selCat===c.id?'on':''}" onclick="selCat='${c.id}';selAlpha='all';render()">
       <span class="cdot" style="background:${c.color}"></span>${c.name}<span class="ccnt">${cnt}</span></button>`;
   }).join('');
-  document.getElementById('clist').innerHTML = all+cats+`<button class="add-cat" onclick="openCatModal()">+ Nueva categoria</button>`;
+  document.getElementById('clist').innerHTML=all+cats+`<button class="add-cat" onclick="openCatModal()">+ Nueva categoria</button>`;
 }
-function renderList() {
-  const list = getFiltered();
-  document.getElementById('rcount').textContent = `${list.length} registro${list.length!==1?'s':''}`;
-  if (!list.length) {
-    document.getElementById('rlist').innerHTML = '<div style="color:#2a4a2a;font-size:11px;text-align:center;padding:18px 0">Sin resultados</div>';
+
+function renderList(){
+  const list=getFiltered();
+  document.getElementById('rcount').textContent=`${list.length} registro${list.length!==1?'s':''}`;
+  if(!list.length){
+    document.getElementById('rlist').innerHTML='<div style="color:#2a4a2a;font-size:11px;text-align:center;padding:18px 0">Sin resultados</div>';
     return;
   }
-  document.getElementById('rlist').innerHTML = list.map(r => {
-    const cat = getCat(r.catId);
+  document.getElementById('rlist').innerHTML=list.map(r=>{
+    const cat=getCat(r.catId);
+    const sub=[r.ruta,r.km,r.loc].filter(Boolean).join(' - ');
     return `<div class="rcard ${selRec===r.id?'sel':''}" onclick="clickRec('${r.id}')">
       <div class="rname"><span class="rdot" style="background:${cat.color}"></span>${r.name}</div>
-      <div class="rsub">${[r.ruta,r.km,r.loc].filter(Boolean).join(' - ')}</div>
+      <div class="rsub">${sub}</div>
       <div class="rtags">
         <span class="rtag" style="background:${cat.color}25;color:${cat.color}">${cat.name}</span>
         <span class="rtag" style="background:${EB[r.estado]||'#1a1a1a'};color:${ET[r.estado]||'#3a5a3a'}">${r.estado}</span>
@@ -578,155 +615,129 @@ function renderList() {
       </div></div>`;
   }).join('');
 }
-function render() { renderCats(); renderAlpha(); renderList(); }
 
-// ========== LOCALIDAD ==========
-function renderLocs() {
-  const q = (document.getElementById('qloc').value || '').toLowerCase();
-  const locs = [...new Set(db.records.map(r => r.loc).filter(Boolean))].sort((a,b) => a.localeCompare(b,'es'));
-  const f = q ? locs.filter(l => l.toLowerCase().includes(q)) : locs;
-  document.getElementById('loc-list').innerHTML = f.map(loc => {
-    const cnt = db.records.filter(r => r.loc===loc).length;
-    const cols = [...new Set(db.records.filter(r => r.loc===loc).map(r => getCat(r.catId).color))];
-    const dots = cols.map(c => `<span style="width:6px;height:6px;border-radius:50%;background:${c};display:inline-block"></span>`).join('');
-    return `<button class="loc-btn" onclick="selectLoc('${loc.replace(/'/g,"\\'")}')">
+function render(){renderCats();renderAlpha();renderList();}
+
+// ===== LOCALIDAD =====
+function renderLocs(){
+  const q=(document.getElementById('qloc').value||'').toLowerCase();
+  const locs=[...new Set(db.records.map(r=>r.loc).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+  const f=q?locs.filter(l=>l.toLowerCase().includes(q)):locs;
+  document.getElementById('loc-list').innerHTML=f.map(loc=>{
+    const cnt=db.records.filter(r=>r.loc===loc).length;
+    const cols=[...new Set(db.records.filter(r=>r.loc===loc).map(r=>getCat(r.catId).color))];
+    const dots=cols.map(c=>`<span style="width:6px;height:6px;border-radius:50%;background:${c};display:inline-block"></span>`).join('');
+    const escaped=loc.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return `<button class="loc-btn" onclick="selectLoc('${escaped}')">
       <span style="display:flex;gap:3px;align-items:center">${dots}</span>
       <span style="flex:1">${loc}</span><span class="lcnt">${cnt}</span></button>`;
   }).join('');
 }
-function selectLoc(loc) {
-  const recs = db.records.filter(r => r.loc===loc && r.lat && r.lon);
-  if (recs.length) {
-    const lats=recs.map(r=>r.lat), lons=recs.map(r=>r.lon);
+
+function selectLoc(loc){
+  const recs=db.records.filter(r=>r.loc===loc&&r.lat&&r.lon);
+  if(recs.length){
+    const lats=recs.map(r=>r.lat),lons=recs.map(r=>r.lon);
     map.fitBounds([[Math.min(...lats),Math.min(...lons)],[Math.max(...lats),Math.max(...lons)]],{padding:[50,50],maxZoom:15});
   }
-  setTab('b');
-  document.getElementById('q').value = loc;
-  render();
-  toast(loc + ' — ' + db.records.filter(r=>r.loc===loc).length + ' registros');
+  setTab('b');document.getElementById('q').value=loc;render();
+  toast(`${loc} - ${db.records.filter(r=>r.loc===loc).length} registros`);
 }
 
-// ========== PANEL COORD ==========
+// ===== COORD PANEL — conversion en vivo =====
+let _tLL=null,_tGK=null;
 
-function showErrLL(msg) {
-  const el = document.getElementById('err-ll');
-  el.textContent = msg;
-  el.classList.add('show');
-  document.getElementById('r-ll').classList.remove('show');
-}
-function hideErrLL() { document.getElementById('err-ll').classList.remove('show'); }
-
-function showErrGK(msg) {
-  const el = document.getElementById('err-gk');
-  el.textContent = msg;
-  el.classList.add('show');
-  document.getElementById('r-gk').classList.remove('show');
-}
-function hideErrGK() { document.getElementById('err-gk').classList.remove('show'); }
-
-function showResLL(html) {
-  const el = document.getElementById('r-ll');
-  el.innerHTML = html;
-  el.classList.add('show');
-  hideErrLL();
-}
-function showResGK(html) {
-  const el = document.getElementById('r-gk');
-  el.innerHTML = html;
-  el.classList.add('show');
-  hideErrGK();
+function liveConvLL(){
+  clearTimeout(_tLL);
+  _tLL=setTimeout(()=>{
+    const lat=parseCoord(document.getElementById('c-lat').value);
+    const lon=parseCoord(document.getElementById('c-lon').value);
+    if(isNaN(lat)||isNaN(lon))return;
+    const faja=parseInt(document.getElementById('gk-faja').value)||5;
+    const gk=llToGK(faja,lat,lon);
+    if(gk){
+      document.getElementById('gk-x').value=Math.round(gk.x);
+      document.getElementById('gk-y').value=Math.round(gk.y);
+      const res=document.getElementById('r-ll');
+      res.innerHTML=`<b>X GK Faja ${faja}:</b> ${Math.round(gk.x)}<br><b>Y GK Faja ${faja}:</b> ${Math.round(gk.y)}`;
+      res.classList.add('show');
+      document.getElementById('err-ll').classList.remove('show');
+    }
+  },300);
 }
 
-function copyText(txt) {
-  navigator.clipboard.writeText(txt).then(() => toast('Copiado: ' + txt)).catch(() => toast('No se pudo copiar'));
+function liveConvGK(){
+  clearTimeout(_tGK);
+  _tGK=setTimeout(()=>{
+    const faja=parseInt(document.getElementById('gk-faja').value)||5;
+    const x=parseFloat(document.getElementById('gk-x').value);
+    const y=parseFloat(document.getElementById('gk-y').value);
+    if(isNaN(x)||isNaN(y))return;
+    const ll=gkToLL(faja,x,y);
+    if(ll&&!isNaN(ll.lat)){
+      document.getElementById('c-lat').value=ll.lat.toFixed(6);
+      document.getElementById('c-lon').value=ll.lon.toFixed(6);
+      const res=document.getElementById('r-gk');
+      res.innerHTML=`<b>Latitud:</b> ${ll.lat.toFixed(6)}<br><b>Longitud:</b> ${ll.lon.toFixed(6)}`;
+      res.classList.add('show');
+      document.getElementById('err-gk').classList.remove('show');
+    }
+  },300);
 }
 
-// LAT/LON → GK
-function goLL() {
-  const latRaw = document.getElementById('c-lat').value;
-  const lonRaw = document.getElementById('c-lon').value;
+function copyVal(val){navigator.clipboard.writeText(String(val)).then(()=>toast('Copiado'));}
 
-  if (!latRaw.trim() || !lonRaw.trim()) {
-    showErrLL('Ingresa latitud y longitud antes de convertir.');
-    return;
-  }
-
-  const lat = parseCoord(latRaw);
-  const lon = parseCoord(lonRaw);
-
-  if (isNaN(lat)) { showErrLL('Latitud invalida. Revisa el formato.'); return; }
-  if (isNaN(lon)) { showErrLL('Longitud invalida. Revisa el formato.'); return; }
-  if (lat < -90 || lat > 90) { showErrLL('Latitud fuera de rango (-90 a 90).'); return; }
-  if (lon < -180 || lon > 180) { showErrLL('Longitud fuera de rango (-180 a 180).'); return; }
-
-  // Calcular GK Faja 5
-  const gk = llToGK(5, lat, lon);
-  if (!gk) { showErrLL('No se pudo calcular GK. Verifica los valores.'); return; }
-
-  const xR = Math.round(gk.x);
-  const yR = Math.round(gk.y);
-
-  // Actualizar campos GK del bloque 2
-  document.getElementById('gk-x').value = xR;
-  document.getElementById('gk-y').value = yR;
-
-  // Ir al punto en el mapa
-  fly(lat, lon);
-  if (tmpMark) map.removeLayer(tmpMark);
-  tmpMark = L.circleMarker([lat, lon], {radius:9, color:'#6aaf6a', fillColor:'#6aaf6a', fillOpacity:.4, weight:2}).addTo(map);
-
-  showResLL(
-    '<b>Latitud:</b> ' + lat.toFixed(6) + ' <button class="copy-btn" onclick="copyText(\''+lat.toFixed(6)+'\')">copiar</button><br>' +
-    '<b>Longitud:</b> ' + lon.toFixed(6) + ' <button class="copy-btn" onclick="copyText(\''+lon.toFixed(6)+'\')">copiar</button><br>' +
-    '<br><b>GK Faja 5 — X (Este):</b> ' + xR + ' <button class="copy-btn" onclick="copyText(\''+xR+'\')">copiar</button><br>' +
-    '<b>GK Faja 5 — Y (Norte):</b> ' + yR + ' <button class="copy-btn" onclick="copyText(\''+yR+'\')">copiar</button>'
-  );
-  toast('Punto localizado — GK calculado');
+function goLL(){
+  const lat=parseCoord(document.getElementById('c-lat').value);
+  const lon=parseCoord(document.getElementById('c-lon').value);
+  const el=document.getElementById('err-ll');
+  if(isNaN(lat)||isNaN(lon)){el.textContent='Ingresar latitud y longitud validos.';el.classList.add('show');return;}
+  el.classList.remove('show');
+  const faja=parseInt(document.getElementById('gk-faja').value)||5;
+  const gk=llToGK(faja,lat,lon);
+  if(gk){document.getElementById('gk-x').value=Math.round(gk.x);document.getElementById('gk-y').value=Math.round(gk.y);}
+  fly(lat,lon);
+  if(tmpMark)map.removeLayer(tmpMark);
+  tmpMark=L.circleMarker([lat,lon],{radius:9,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.4,weight:2}).addTo(map);
+  const res=document.getElementById('r-ll');
+  const xR=gk?Math.round(gk.x):null;
+  const yR=gk?Math.round(gk.y):null;
+  res.innerHTML=
+    `<b>Lat:</b> ${lat.toFixed(6)} <button class="copy-btn" onclick="copyVal(${lat.toFixed(6)})">copiar</button><br>`+
+    `<b>Lon:</b> ${lon.toFixed(6)} <button class="copy-btn" onclick="copyVal(${lon.toFixed(6)})">copiar</button>`+
+    (gk?`<br><b>X GK F${faja}:</b> ${xR} <button class="copy-btn" onclick="copyVal(${xR})">copiar</button><br>`+
+        `<b>Y GK F${faja}:</b> ${yR} <button class="copy-btn" onclick="copyVal(${yR})">copiar</button>`:'');
+  res.classList.add('show');
+  toast('Punto localizado');
 }
 
-// GK → LAT/LON
-function goGK() {
-  const faja = parseInt(document.getElementById('gk-faja').value);
-  const xRaw = document.getElementById('gk-x').value.trim();
-  const yRaw = document.getElementById('gk-y').value.trim();
-
-  if (!xRaw || !yRaw) { showErrGK('Ingresa X e Y antes de convertir.'); return; }
-
-  const x = parseFloat(xRaw.replace(/\./g,'').replace(',','.'));
-  const y = parseFloat(yRaw.replace(/\./g,'').replace(',','.'));
-
-  if (isNaN(x)) { showErrGK('X (Este) invalido. Ingresa un numero.'); return; }
-  if (isNaN(y)) { showErrGK('Y (Norte) invalido. Ingresa un numero.'); return; }
-
-  const ll = gkToLL(faja, x, y);
-  if (!ll || isNaN(ll.lat) || isNaN(ll.lon)) {
-    showErrGK('No se pudo convertir. Verifica la faja y los valores.');
-    return;
-  }
-
-  // Completar campos lat/lon del bloque 1
-  document.getElementById('c-lat').value = ll.lat.toFixed(6);
-  document.getElementById('c-lon').value = ll.lon.toFixed(6);
-
-  // Ir al punto en el mapa
-  fly(ll.lat, ll.lon);
-  if (tmpMark) map.removeLayer(tmpMark);
-  tmpMark = L.circleMarker([ll.lat, ll.lon], {radius:9, color:'#c8a050', fillColor:'#c8a050', fillOpacity:.4, weight:2}).addTo(map);
-
-  showResGK(
-    '<b>GK Faja ' + faja + ' — X:</b> ' + Math.round(x) + '<br>' +
-    '<b>GK Faja ' + faja + ' — Y:</b> ' + Math.round(y) + '<br><br>' +
-    '<b>Latitud:</b> ' + ll.lat.toFixed(6) + ' <button class="copy-btn" onclick="copyText(\''+ll.lat.toFixed(6)+'\')">copiar</button><br>' +
-    '<b>Longitud:</b> ' + ll.lon.toFixed(6) + ' <button class="copy-btn" onclick="copyText(\''+ll.lon.toFixed(6)+'\')">copiar</button>'
-  );
-  toast('Convertido — punto localizado en el mapa');
+function goGK(){
+  const faja=parseInt(document.getElementById('gk-faja').value)||5;
+  const x=parseFloat(document.getElementById('gk-x').value);
+  const y=parseFloat(document.getElementById('gk-y').value);
+  const el=document.getElementById('err-gk');
+  if(isNaN(x)||isNaN(y)){el.textContent='Ingresar X e Y validos.';el.classList.add('show');return;}
+  el.classList.remove('show');
+  const ll=gkToLL(faja,x,y);
+  if(!ll){el.textContent='No se pudo convertir. Verificar faja y valores.';el.classList.add('show');return;}
+  document.getElementById('c-lat').value=ll.lat.toFixed(6);
+  document.getElementById('c-lon').value=ll.lon.toFixed(6);
+  fly(ll.lat,ll.lon);
+  if(tmpMark)map.removeLayer(tmpMark);
+  tmpMark=L.circleMarker([ll.lat,ll.lon],{radius:9,color:'#c8a050',fillColor:'#c8a050',fillOpacity:.4,weight:2}).addTo(map);
+  const res=document.getElementById('r-gk');
+  res.innerHTML=
+    `<b>Lat:</b> ${ll.lat.toFixed(6)} <button class="copy-btn" onclick="copyVal(${ll.lat.toFixed(6)})">copiar</button><br>`+
+    `<b>Lon:</b> ${ll.lon.toFixed(6)} <button class="copy-btn" onclick="copyVal(${ll.lon.toFixed(6)})">copiar</button>`;
+  res.classList.add('show');
+  toast('Convertido y localizado');
 }
 
-// ========== DETALLE ==========
-function showDet(id) {
-  const r = db.records.find(x => x.id===id); if (!r) return;
-  const cat = getCat(r.catId);
-  document.getElementById('det-inner').innerHTML = `
+// ===== DETALLE =====
+function showDet(id){
+  const r=db.records.find(x=>x.id===id);if(!r)return;
+  const cat=getCat(r.catId);
+  document.getElementById('det-inner').innerHTML=`
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
       <div style="width:9px;height:9px;border-radius:50%;background:${cat.color};flex-shrink:0"></div>
       <div class="det-title">${r.name}</div>
@@ -739,11 +750,11 @@ function showDet(id) {
       <div class="det-f"><label>Estado</label><span class="${EC[r.estado]||'est-s'}" style="font-weight:700">${r.estado||'--'}</span></div>
       <div class="det-f"><label>Profundidad</label><span>${r.prof||'--'}</span></div>
       <div class="det-f"><label>Diam. / Tension</label><span>${r.mat||'--'}</span></div>
-      <div class="det-f full"><label>Empresa / Responsable</label><span>${r.resp||'--'}</span></div>
+      <div class="det-f full"><label>Empresa</label><span>${r.resp||'--'}</span></div>
       ${r.lat?`<div class="det-f"><label>Latitud</label><span style="font-family:monospace;font-size:10px">${r.lat.toFixed(6)}</span></div>`:''}
       ${r.lon?`<div class="det-f"><label>Longitud</label><span style="font-family:monospace;font-size:10px">${r.lon.toFixed(6)}</span></div>`:''}
-      ${r.gkx?`<div class="det-f"><label>POSGAR 2007 GK F5 — X</label><span style="font-family:monospace;font-size:10px">${r.gkx}</span></div>`:''}
-      ${r.gky?`<div class="det-f"><label>POSGAR 2007 GK F5 — Y</label><span style="font-family:monospace;font-size:10px">${r.gky}</span></div>`:''}
+      ${r.gkx?`<div class="det-f"><label>GK Faja 5 X</label><span style="font-family:monospace;font-size:10px">${r.gkx}</span></div>`:''}
+      ${r.gky?`<div class="det-f"><label>GK Faja 5 Y</label><span style="font-family:monospace;font-size:10px">${r.gky}</span></div>`:''}
       ${r.obs?`<div class="det-f full"><label>Observaciones</label><div class="det-obs">${r.obs}</div></div>`:''}
     </div>
     <div class="det-acts">
@@ -752,202 +763,406 @@ function showDet(id) {
     </div>`;
   document.getElementById('det').classList.add('show');
 }
-function closeDet() { document.getElementById('det').classList.remove('show'); selRec=null; renderList(); }
-function clickRec(id) {
-  selRec = id; showDet(id);
-  const r = db.records.find(x => x.id===id);
-  if (r && r.lat && r.lon) fly(r.lat, r.lon);
-  renderList();
-}
-function delRec(id) {
-  if (!confirm('Eliminar este registro?')) return;
-  db.records = db.records.filter(r => r.id!==id);
-  save();
-  if (markers[id]) { map.removeLayer(markers[id]); delete markers[id]; }
-  closeDet(); render(); toast('Registro eliminado');
+
+function closeDet(){document.getElementById('det').classList.remove('show');selRec=null;renderList();}
+function clickRec(id){selRec=id;showDet(id);const r=db.records.find(x=>x.id===id);if(r&&r.lat&&r.lon)fly(r.lat,r.lon);renderList();}
+function delRec(id){
+  if(!confirm('Eliminar este registro?'))return;
+  db.records=db.records.filter(r=>r.id!==id);save();
+  if(markers[id]){map.removeLayer(markers[id]);delete markers[id];}
+  closeDet();render();toast('Registro eliminado');
 }
 
-// ========== CONVERSION EN FORMULARIO ==========
-let _formLLtimer = null;
-function formConvFromLL() {
-  clearTimeout(_formLLtimer);
-  _formLLtimer = setTimeout(() => {
-    const latRaw = document.getElementById('f-lat').value;
-    const lonRaw = document.getElementById('f-lon').value;
-    const lat = parseCoord(latRaw);
-    const lon = parseCoord(lonRaw);
-    if (!isNaN(lat) && !isNaN(lon)) {
-      const gk = llToGK(5, lat, lon);
-      if (gk) {
-        document.getElementById('f-gkx').value = Math.round(gk.x);
-        document.getElementById('f-gky').value = Math.round(gk.y);
-      }
-    } else {
-      // limpiar GK si lat/lon invalidos
-      if (isNaN(lat) || isNaN(lon)) {
-        document.getElementById('f-gkx').value = '';
-        document.getElementById('f-gky').value = '';
-      }
-    }
-  }, 400);
+// ===== CONVERSION EN FORMULARIO =====
+let _fLL=null,_fGK=null;
+function fConvLL(){
+  clearTimeout(_fLL);
+  _fLL=setTimeout(()=>{
+    const lat=parseCoord(document.getElementById('f-lat').value);
+    const lon=parseCoord(document.getElementById('f-lon').value);
+    if(isNaN(lat)||isNaN(lon))return;
+    const gk=llToGK(5,lat,lon);
+    if(gk){document.getElementById('f-gkx').value=Math.round(gk.x);document.getElementById('f-gky').value=Math.round(gk.y);}
+  },300);
 }
-let _formGKtimer = null;
-function formConvFromGK() {
-  clearTimeout(_formGKtimer);
-  _formGKtimer = setTimeout(() => {
-    const x = parseFloat(document.getElementById('f-gkx').value);
-    const y = parseFloat(document.getElementById('f-gky').value);
-    if (!isNaN(x) && !isNaN(y)) {
-      const ll = gkToLL(5, x, y);
-      if (ll) {
-        document.getElementById('f-lat').value = ll.lat.toFixed(6);
-        document.getElementById('f-lon').value = ll.lon.toFixed(6);
-      }
-    }
-  }, 400);
+function fConvGK(){
+  clearTimeout(_fGK);
+  _fGK=setTimeout(()=>{
+    const x=parseFloat(document.getElementById('f-gkx').value);
+    const y=parseFloat(document.getElementById('f-gky').value);
+    if(isNaN(x)||isNaN(y))return;
+    const ll=gkToLL(5,x,y);
+    if(ll){document.getElementById('f-lat').value=ll.lat.toFixed(6);document.getElementById('f-lon').value=ll.lon.toFixed(6);}
+  },300);
 }
 
-// ========== MODAL REGISTRO ==========
-function openRecordModal() {
-  editId = null;
-  document.getElementById('mtitle').textContent = 'Nuevo registro';
-  ['name','ruta','km','loc','prof','mat','resp','obs'].forEach(f => document.getElementById('f-'+f).value='');
-  document.getElementById('f-est').value = 'Sin datos';
-  document.getElementById('f-lat').value = '';
-  document.getElementById('f-lon').value = '';
-  document.getElementById('f-gkx').value = '';
-  document.getElementById('f-gky').value = '';
-  document.getElementById('f-cat').innerHTML = db.categories.map(c =>
-    `<option value="${c.id}" ${c.id===(selCat!=='all'?selCat:db.categories[0]?.id)?'selected':''}>${c.name}</option>`
+// ===== MODAL REGISTRO =====
+function openRecordModal(){
+  editId=null;document.getElementById('mtitle').textContent='Nuevo registro';
+  ['name','ruta','km','loc','prof','mat','resp','obs'].forEach(f=>document.getElementById('f-'+f).value='');
+  document.getElementById('f-est').value='Sin datos';
+  document.getElementById('f-lat').value='';document.getElementById('f-lon').value='';
+  document.getElementById('f-gkx').value='';document.getElementById('f-gky').value='';
+  document.getElementById('f-cat').innerHTML=db.categories.map(c=>
+    `<option value="${c.id}" ${c.id===(selCat!=='all'?selCat:db.categories[0].id)?'selected':''}>${c.name}</option>`
   ).join('');
-  if (tmpMark) { map.removeLayer(tmpMark); tmpMark=null; }
+  if(tmpMark){map.removeLayer(tmpMark);tmpMark=null;}
   document.getElementById('rm').classList.add('open');
   toast('Con el formulario abierto podes hacer clic en el mapa');
 }
-function openEditModal(id) {
-  const r = db.records.find(x => x.id===id); if (!r) return;
-  editId = id;
-  document.getElementById('mtitle').textContent = 'Editar registro';
-  document.getElementById('f-name').value = r.name;
-  document.getElementById('f-ruta').value = r.ruta||'';
-  document.getElementById('f-km').value = r.km||'';
-  document.getElementById('f-loc').value = r.loc||'';
-  document.getElementById('f-est').value = r.estado||'Sin datos';
-  document.getElementById('f-prof').value = r.prof||'';
-  document.getElementById('f-mat').value = r.mat||'';
-  document.getElementById('f-resp').value = r.resp||'';
-  document.getElementById('f-obs').value = r.obs||'';
-  document.getElementById('f-lat').value = r.lat||'';
-  document.getElementById('f-lon').value = r.lon||'';
-  if (r.lat && r.lon) {
-    const gk = llToGK(5, r.lat, r.lon);
-    if (gk) { document.getElementById('f-gkx').value=Math.round(gk.x); document.getElementById('f-gky').value=Math.round(gk.y); }
-  } else {
-    document.getElementById('f-gkx').value='';
-    document.getElementById('f-gky').value='';
-  }
-  document.getElementById('f-cat').innerHTML = db.categories.map(c =>
+
+function openEditModal(id){
+  const r=db.records.find(x=>x.id===id);if(!r)return;
+  editId=id;document.getElementById('mtitle').textContent='Editar registro';
+  document.getElementById('f-name').value=r.name;document.getElementById('f-ruta').value=r.ruta||'';
+  document.getElementById('f-km').value=r.km||'';document.getElementById('f-loc').value=r.loc||'';
+  document.getElementById('f-est').value=r.estado||'Sin datos';document.getElementById('f-prof').value=r.prof||'';
+  document.getElementById('f-mat').value=r.mat||'';document.getElementById('f-resp').value=r.resp||'';
+  document.getElementById('f-obs').value=r.obs||'';
+  document.getElementById('f-lat').value=r.lat||'';document.getElementById('f-lon').value=r.lon||'';
+  if(r.lat&&r.lon){const gk=llToGK(5,r.lat,r.lon);if(gk){document.getElementById('f-gkx').value=Math.round(gk.x);document.getElementById('f-gky').value=Math.round(gk.y);}}
+  else{document.getElementById('f-gkx').value='';document.getElementById('f-gky').value='';}
+  document.getElementById('f-cat').innerHTML=db.categories.map(c=>
     `<option value="${c.id}" ${r.catId===c.id?'selected':''}>${c.name}</option>`
   ).join('');
   document.getElementById('rm').classList.add('open');
 }
-function saveRecord() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { alert('El nombre es obligatorio.'); return; }
-  const latRaw = document.getElementById('f-lat').value;
-  const lonRaw = document.getElementById('f-lon').value;
-  const lat = parseCoord(latRaw);
-  const lon = parseCoord(lonRaw);
-  const hasCoord = !isNaN(lat) && !isNaN(lon);
-  const rec = {
-    id: editId||uid(), name,
-    catId: document.getElementById('f-cat').value,
-    ruta: document.getElementById('f-ruta').value.trim(),
-    km: document.getElementById('f-km').value.trim(),
-    loc: document.getElementById('f-loc').value.trim(),
-    estado: document.getElementById('f-est').value,
-    prof: document.getElementById('f-prof').value.trim(),
-    mat: document.getElementById('f-mat').value.trim(),
-    resp: document.getElementById('f-resp').value.trim(),
-    obs: document.getElementById('f-obs').value.trim(),
-    lat: hasCoord?lat:null, lon: hasCoord?lon:null, gkx:null, gky:null
-  };
-  if (hasCoord) {
-    const gk = llToGK(5, lat, lon);
-    if (gk) { rec.gkx=Math.round(gk.x); rec.gky=Math.round(gk.y); }
+
+function saveRecord(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){alert('El nombre es obligatorio.');return;}
+  const lat=parseCoord(document.getElementById('f-lat').value);
+  const lon=parseCoord(document.getElementById('f-lon').value);
+  const hasC=!isNaN(lat)&&!isNaN(lon);
+  const rec={id:editId||uid(),name,catId:document.getElementById('f-cat').value,
+    ruta:document.getElementById('f-ruta').value.trim(),km:document.getElementById('f-km').value.trim(),
+    loc:document.getElementById('f-loc').value.trim(),estado:document.getElementById('f-est').value,
+    prof:document.getElementById('f-prof').value.trim(),mat:document.getElementById('f-mat').value.trim(),
+    resp:document.getElementById('f-resp').value.trim(),obs:document.getElementById('f-obs').value.trim(),
+    lat:hasC?lat:null,lon:hasC?lon:null,gkx:null,gky:null};
+  if(hasC){const gk=llToGK(5,lat,lon);if(gk){rec.gkx=Math.round(gk.x);rec.gky=Math.round(gk.y);}}
+  if(editId)db.records=db.records.map(r=>r.id===editId?rec:r);else db.records.push(rec);
+  save();if(tmpMark){map.removeLayer(tmpMark);tmpMark=null;}closeModal('rm');
+  if(markers[rec.id])map.removeLayer(markers[rec.id]);
+  if(rec.lat&&rec.lon){
+    const m=L.marker([rec.lat,rec.lon],{icon:mkIcon(getCat(rec.catId).color)}).addTo(map);
+    m.on('click',()=>{selRec=rec.id;showDet(rec.id);renderList();});
+    markers[rec.id]=m;fly(rec.lat,rec.lon);
   }
-  if (editId) db.records = db.records.map(r => r.id===editId ? rec : r);
-  else db.records.push(rec);
-  save();
-  if (tmpMark) { map.removeLayer(tmpMark); tmpMark=null; }
-  closeModal('rm');
-  if (markers[rec.id]) map.removeLayer(markers[rec.id]);
-  if (rec.lat && rec.lon) {
-    const m = L.marker([rec.lat, rec.lon], {icon:mkIcon(getCat(rec.catId).color)}).addTo(map);
-    m.on('click', () => { selRec=rec.id; showDet(rec.id); renderList(); });
-    markers[rec.id] = m;
-    fly(rec.lat, rec.lon);
-  }
-  selRec = rec.id; render(); showDet(rec.id);
-  toast(editId ? 'Registro actualizado' : 'Registro guardado');
+  selRec=rec.id;render();showDet(rec.id);
+  toast(editId?'Registro actualizado':'Registro guardado');
 }
 
-// ========== CATEGORIA ==========
-function openCatModal() { selCol=PALETTE[0]; document.getElementById('cn').value=''; renderCP(); document.getElementById('cm').classList.add('open'); }
-function renderCP() {
-  document.getElementById('cpick').innerHTML = PALETTE.map(c =>
+// ===== CATEGORIA =====
+function openCatModal(){selCol=PAL[0];document.getElementById('cn').value='';renderCP();document.getElementById('cm').classList.add('open');}
+function renderCP(){
+  document.getElementById('cpick').innerHTML=PAL.map(c=>
     `<div onclick="selCol='${c}';renderCP()" style="width:24px;height:24px;border-radius:50%;background:${c};cursor:pointer;outline:3px solid ${c===selCol?'#fff':'transparent'};outline-offset:2px;transition:all .1s"></div>`
   ).join('');
 }
-function saveCat() {
-  const name = document.getElementById('cn').value.trim();
-  if (!name) { alert('Ingresa un nombre.'); return; }
-  db.categories.push({id:uid(), name, color:selCol});
-  save(); closeModal('cm'); renderLegend(); render(); toast('Categoria creada');
+function saveCat(){
+  const name=document.getElementById('cn').value.trim();if(!name){alert('Ingresar un nombre.');return;}
+  db.categories.push({id:uid(),name,color:selCol});save();closeModal('cm');renderLegend();render();toast('Categoria creada');
 }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.overlay').forEach(m => m.addEventListener('click', e => { if (e.target===m) m.classList.remove('open'); }));
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
 
-// ========== EXPORT / IMPORT / RESET ==========
-function exportDB() {
-  const b = new Blob([JSON.stringify(db, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(b);
-  a.download = 'infraestructura_chaco_' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  toast('Copia exportada');
+// ===== EXPORT JSON =====
+function exportDB(){
+  const b=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download='infraestructura_chaco_'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('JSON exportado');
 }
-function importDB(e) {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    try {
-      const p = JSON.parse(ev.target.result);
-      if (!p.categories || !p.records) throw 0;
-      if (!confirm('Importar base con ' + p.records.length + ' registros? Se reemplazara la actual.')) return;
-      db = p;
-      db.records = enrichRecs(db.records);
-      save(); selRec=null; selCat='all'; selAlpha='all';
-      closeDet(); refreshMarkers(); renderLegend(); render();
-      toast('Base importada: ' + db.records.length + ' registros');
-    } catch(e) { alert('Archivo invalido.'); }
+
+// ===== EXPORT EXCEL CON FILTRO CATEGORIA =====
+function openExportExcelModal(){
+  const sel=document.getElementById('exp-cat');
+  sel.innerHTML=`<option value="all">Todas las categorias (${db.records.length} registros)</option>`;
+  db.categories.forEach(c=>{
+    const cnt=db.records.filter(r=>r.catId===c.id).length;
+    sel.innerHTML+=`<option value="${c.id}">${c.name} (${cnt} registros)</option>`;
+  });
+  updateExpCount();
+  document.getElementById('em').classList.add('open');
+}
+function updateExpCount(){
+  const val=document.getElementById('exp-cat').value;
+  const cnt=val==='all'?db.records.length:db.records.filter(r=>r.catId===val).length;
+  document.getElementById('exp-count').textContent=`${cnt} registro${cnt!==1?'s':''} se exportaran al archivo Excel.`;
+}
+function doExportExcel(){
+  const catFilter=document.getElementById('exp-cat').value;
+  const records=catFilter==='all'?db.records:db.records.filter(r=>r.catId===catFilter);
+  if(!records.length){toast('No hay registros para exportar.');return;}
+  const catName=catFilter==='all'?'todos':(getCat(catFilter).name.replace(/[^a-zA-Z0-9]/g,'_'));
+  const h1=['Fecha','N de Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Km / Progresiva','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Empresa / Responsable','Coordenadas','','','','Observaciones'];
+  const h2=['','','','','','','','','','','','','LATITUD','LONGITUD','GAUSS-KRUGER FAJA 5 X','GAUSS-KRUGER FAJA 5 Y',''];
+  const rows=records.map(r=>{
+    const cat=getCat(r.catId);
+    return[r.fecha||'',r.tramite||'',r.autorizo||'',r.name||'',cat.name,r.ruta||'',r.km||'',r.loc||'',r.estado||'',r.prof||'',r.mat||'',r.resp||'',
+      r.lat!=null?parseFloat(r.lat.toFixed(6)):'',r.lon!=null?parseFloat(r.lon.toFixed(6)):'',r.gkx||'',r.gky||'',r.obs||''];
+  });
+  const ws=XLSX.utils.aoa_to_sheet([h1,h2,...rows]);
+  ws['!cols']=[{wch:12},{wch:14},{wch:14},{wch:32},{wch:22},{wch:20},{wch:14},{wch:16},{wch:12},{wch:18},{wch:22},{wch:22},{wch:14},{wch:14},{wch:22},{wch:22},{wch:30}];
+  ws['!merges']=[
+    {s:{r:0,c:12},e:{r:0,c:15}},
+    {s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},
+    {s:{r:0,c:3},e:{r:1,c:3}},{s:{r:0,c:4},e:{r:1,c:4}},{s:{r:0,c:5},e:{r:1,c:5}},
+    {s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},
+    {s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},{s:{r:0,c:16},e:{r:1,c:16}}
+  ];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Hoja1');
+  XLSX.writeFile(wb,`DVP_Infraestructura_${catName}_${new Date().toISOString().slice(0,10)}.xlsx`);
+  closeModal('em');
+  toast(`Excel exportado: ${records.length} registros`);
+}
+
+// ===== PLANTILLA EXCEL =====
+function downloadExcelTemplate(){
+  const h1=['Fecha','N de Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Km / Progresiva','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Empresa / Responsable','Coordenadas','','','','Observaciones'];
+  const h2=['','','','','','','','','','','','','LATITUD','LONGITUD','GAUSS-KRUGER FAJA 5 X','GAUSS-KRUGER FAJA 5 Y',''];
+  const ex=['01/01/2025','001','Si','Cruce Ruta 11 - Km 50','Cruce de ruta','Ruta Nacional 11','Km 50,0','Resistencia','Bueno','1,20 m','Hormigon','DPV Chaco',-27.451,-58.987,5487230,6956780,'Ejemplo - borrar esta fila'];
+  const guia=[
+    ['GUIA PARA COMPLETAR EL EXCEL'],[''],
+    ['CATEGORIAS DISPONIBLES:'],
+    ...db.categories.map(c=>['  - '+c.name]),
+    [''],
+    ['ESTADOS VALIDOS:'],
+    ['  - Bueno'],['  - Regular'],['  - Critico'],['  - Sin datos'],
+    [''],
+    ['COORDENADAS:'],
+    ['  Opcion 1: ingresar Latitud y Longitud en decimal (ej: -27.451 / -58.987)'],
+    ['  Opcion 2: ingresar X GK Faja 5 e Y GK Faja 5 (la app convierte automaticamente)'],
+    ['  La S (Sur) y O/W (Oeste) se detectan automaticamente si se usan letras']
+  ];
+  const ws=XLSX.utils.aoa_to_sheet([h1,h2,ex]);
+  ws['!cols']=[{wch:12},{wch:14},{wch:14},{wch:32},{wch:22},{wch:20},{wch:14},{wch:16},{wch:12},{wch:18},{wch:22},{wch:22},{wch:14},{wch:14},{wch:22},{wch:22},{wch:30}];
+  ws['!merges']=[{s:{r:0,c:12},e:{r:0,c:15}},{s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},{s:{r:0,c:3},e:{r:1,c:3}},{s:{r:0,c:4},e:{r:1,c:4}},{s:{r:0,c:5},e:{r:1,c:5}},{s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},{s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},{s:{r:0,c:16},e:{r:1,c:16}}];
+  const wsG=XLSX.utils.aoa_to_sheet(guia);
+  wsG['!cols']=[{wch:70}];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Registros');
+  XLSX.utils.book_append_sheet(wb,wsG,'Guia');
+  XLSX.writeFile(wb,'Plantilla_DVP_Infraestructura.xlsx');
+  toast('Plantilla Excel descargada');
+}
+
+// ===== IMPORT MODAL =====
+function openImportModal(){
+  setImpTab('json');
+  ['prev-json','prev-csv'].forEach(id=>{const el=document.getElementById(id);el.classList.remove('show');el.innerHTML='';});
+  document.getElementById('csv-map-wrap').style.display='none';
+  document.getElementById('btn-imp-csv').disabled=true;
+  _csvParsed=null;
+  document.getElementById('im').classList.add('open');
+}
+function setImpTab(t){
+  ['json','csv'].forEach(x=>{
+    document.getElementById(`itab-${x}`).classList.toggle('on',x===t);
+    document.getElementById(`ibody-${x}`).classList.toggle('on',x===t);
+  });
+}
+function dzOver(e,id){e.preventDefault();document.getElementById(id).classList.add('over');}
+function dzOut(id){document.getElementById(id).classList.remove('over');}
+function dzDrop(e,type){e.preventDefault();document.getElementById('dz-'+type).classList.remove('over');const f=e.dataTransfer.files[0];if(!f)return;type==='json'?processJSONFile(f):processImportFile(f);}
+function importJSON(e){const f=e.target.files[0];if(!f)return;processJSONFile(f);e.target.value='';}
+function importCSV(e){const f=e.target.files[0];if(!f)return;processImportFile(f);e.target.value='';}
+
+function processJSONFile(f){
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const p=JSON.parse(ev.target.result);
+      if(!p.categories||!p.records)throw new Error('Formato invalido');
+      const prev=document.getElementById('prev-json');
+      const ts=p.savedAt?new Date(p.savedAt).toLocaleString('es-AR'):'--';
+      prev.innerHTML=`<b style="color:#a0d0a0">Archivo valido</b><br>Categorias: ${p.categories.length}<br>Registros: ${p.records.length}<br>Guardado: ${ts}<br><br><button class="cbtn" style="margin:0;padding:7px" id="btn-confirm-json">Confirmar — Reemplazar base actual</button>`;
+      prev.classList.add('show');
+      document.getElementById('btn-confirm-json').onclick=()=>confirmImportJSON(p);
+    }catch(e){
+      const prev=document.getElementById('prev-json');
+      prev.innerHTML='<span style="color:#c07070">Archivo invalido o formato incorrecto.</span>';
+      prev.classList.add('show');
+    }
   };
   r.readAsText(f);
-  e.target.value = '';
 }
-function confirmReset() {
-  if (confirm('Limpiar toda la base de datos?') && confirm('Segunda confirmacion: borrar todo?')) {
-    db = JSON.parse(JSON.stringify(INIT));
-    db.records = enrichRecs(db.records);
-    save(); selRec=null; selCat='all'; selAlpha='all';
-    closeDet(); refreshMarkers(); renderLegend(); render();
-    toast('Base reiniciada');
+function confirmImportJSON(p){
+  if(!confirm('Reemplazar toda la base de datos?'))return;
+  db=p;db.records=enrichRecs(db.records);
+  save();selRec=null;selCat='all';selAlpha='all';
+  closeDet();refreshMarkers();renderLegend();render();closeModal('im');
+  toast(`Base importada: ${db.records.length} registros`);
+}
+
+// ===== IMPORT CSV/EXCEL =====
+let _csvParsed=null;
+const CSV_FIELDS={
+  nombre:['nombre','name','denominacion'],
+  catId:['categoria','category','tipo','cat'],
+  ruta:['ruta','calle','route','camino'],
+  km:['km','kilometro','progresiva','pk'],
+  loc:['localidad','ciudad','loc','lugar','municipio'],
+  estado:['estado','status','condicion'],
+  prof:['profundidad','altura','prof'],
+  mat:['diametro_tipo','diametro','tipo','material','tension','mat','diam'],
+  resp:['empresa','responsable','resp'],
+  lat:['latitud','lat','latitude'],
+  lon:['longitud','lon','longitude','lng'],
+  gkx:['gk_x','gkx','x_gk','x_este','este'],
+  gky:['gk_y','gky','y_gk','y_norte','norte'],
+  obs:['observaciones','obs','notas','comentarios']
+};
+
+function normH(h){return String(h||'').trim().toLowerCase().replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/\s+/g,'_');}
+
+function processImportFile(f){
+  const ext=f.name.split('.').pop().toLowerCase();
+  if(ext==='xlsx'||ext==='xls'){
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{
+        const wb=XLSX.read(ev.target.result,{type:'array'});
+        const ws=wb.Sheets[wb.SheetNames[0]];
+        const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        let headerRow=0;
+        for(let i=0;i<Math.min(4,rows.length);i++){
+          if(rows[i].some(c=>normH(c).includes('nombre'))){headerRow=i;break;}
+        }
+        const headers=rows[headerRow].map(normH);
+        const colMap={};
+        headers.forEach((h,i)=>{
+          for(const[field,aliases]of Object.entries(CSV_FIELDS)){
+            if(aliases.includes(h)){colMap[i]=field;break;}
+          }
+        });
+        const dataRows=rows.slice(headerRow+1).filter(r=>r.some(c=>c!==''&&c!=null));
+        const parsed={headers,colMap,rows:dataRows.map(row=>{
+          const obj={};
+          headers.forEach((h,i)=>{if(colMap[i])obj[colMap[i]]=String(row[i]||'').trim();});
+          return obj;
+        }),total:dataRows.length};
+        _csvParsed=parsed;showImportPreview(parsed);
+      }catch(e){
+        const p=document.getElementById('prev-csv');
+        p.innerHTML=`<span style="color:#c07070">Error al leer Excel: ${e.message}</span>`;
+        p.classList.add('show');
+      }
+    };
+    r.readAsArrayBuffer(f);
+  }else{
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{const result=parseCSVText(ev.target.result);_csvParsed=result;showImportPreview(result);}
+      catch(e){const p=document.getElementById('prev-csv');p.innerHTML=`<span style="color:#c07070">Error: ${e.message}</span>`;p.classList.add('show');}
+    };
+    r.readAsText(f,'UTF-8');
   }
 }
 
-save();
-render();
-initMap();
+function detectSep(line){const c={';':0,',':0,'\t':0};for(const ch of line)if(c[ch]!==undefined)c[ch]++;return Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0];}
+function splitCSV(line,sep){const res=[];let cur='',inQ=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}else if(c===sep&&!inQ){res.push(cur);cur='';}else cur+=c;}res.push(cur);return res;}
+
+function parseCSVText(text){
+  text=text.replace(/^\uFEFF/,'');
+  const lines=text.split(/\r?\n/).filter(l=>l.trim());
+  if(lines.length<2)throw new Error('El archivo debe tener encabezado y al menos un registro.');
+  const sep=detectSep(lines[0]);
+  const headers=splitCSV(lines[0],sep).map(normH);
+  const colMap={};
+  headers.forEach((h,i)=>{
+    for(const[field,aliases]of Object.entries(CSV_FIELDS)){
+      if(aliases.includes(h)){colMap[i]=field;break;}
+    }
+  });
+  const rows=[];
+  for(let i=1;i<lines.length;i++){
+    if(!lines[i].trim())continue;
+    const cells=splitCSV(lines[i],sep);
+    const obj={};
+    headers.forEach((h,idx)=>{if(colMap[idx])obj[colMap[idx]]=(cells[idx]||'').trim();});
+    rows.push(obj);
+  }
+  return{headers,colMap,rows,total:rows.length};
+}
+
+function showImportPreview(result){
+  const mapped=[...new Set(Object.values(result.colMap).filter(Boolean))];
+  const p=document.getElementById('prev-csv');
+  const preview=result.rows.slice(0,3).map(r=>`- ${r.nombre||'sin nombre'}${r.loc?' - '+r.loc:''}`).join('<br>');
+  p.innerHTML=`<b style="color:#a0d0a0">Archivo leido</b><br>Columnas: ${result.headers.length} | Registros: ${result.total}<br>Campos mapeados: <b style="color:#6aaf6a">${mapped.length}</b><br><br><b>Vista previa:</b><br>${preview}`;
+  p.classList.add('show');
+  buildMapUI(result);
+  document.getElementById('csv-map-wrap').style.display='block';
+  document.getElementById('btn-imp-csv').disabled=false;
+}
+
+function buildMapUI(result){
+  const fields=[
+    {k:'nombre',l:'Nombre *'},{k:'catId',l:'Categoria'},{k:'ruta',l:'Ruta'},{k:'km',l:'Km'},
+    {k:'loc',l:'Localidad'},{k:'estado',l:'Estado'},{k:'prof',l:'Profundidad'},{k:'mat',l:'Diametro/Tipo'},
+    {k:'resp',l:'Empresa'},{k:'lat',l:'Latitud'},{k:'lon',l:'Longitud'},{k:'gkx',l:'GK X'},{k:'gky',l:'GK Y'},{k:'obs',l:'Observaciones'}
+  ];
+  const ftoc={};Object.entries(result.colMap).forEach(([idx,f])=>{if(f)ftoc[f]=parseInt(idx);});
+  document.getElementById('csv-map-grid').innerHTML=fields.map(f=>`
+    <div class="csv-map-row">
+      <div class="csv-map-lbl">${f.l}</div>
+      <select class="fsel" style="margin:0" data-field="${f.k}" onchange="updMap(this)">
+        <option value="">- Ignorar -</option>
+        ${result.headers.map((h,i)=>`<option value="${i}" ${ftoc[f.k]===i?'selected':''}>${h}</option>`).join('')}
+      </select>
+    </div>`).join('');
+}
+
+function updMap(sel){
+  if(!_csvParsed)return;
+  const f=sel.dataset.field;
+  const ci=sel.value===''?null:parseInt(sel.value);
+  Object.keys(_csvParsed.colMap).forEach(i=>{if(_csvParsed.colMap[i]===f)_csvParsed.colMap[i]=null;});
+  if(ci!==null)_csvParsed.colMap[ci]=f;
+}
+
+function doImportCSV(){
+  if(!_csvParsed)return;
+  if(!Object.values(_csvParsed.colMap).includes('nombre')){alert('El campo Nombre es obligatorio.');return;}
+  const eMap={bueno:'Bueno',regular:'Regular',critico:'Critico','sin datos':'Sin datos','sin_datos':'Sin datos',malo:'Critico',''   :'Sin datos'};
+  let ok=0,skip=0;
+  _csvParsed.rows.forEach(row=>{
+    const g=f=>row[f]||'';
+    const name=g('nombre').trim();if(!name){skip++;return;}
+    let catId=db.categories[0].id;
+    const cr=g('catId').toLowerCase();
+    if(cr){const found=db.categories.find(c=>c.name.toLowerCase().includes(cr)||cr.includes(c.name.toLowerCase().slice(0,5)));if(found)catId=found.id;}
+    let lat=null,lon=null,gkx=null,gky=null;
+    const pLat=parseCoord(g('lat').replace(',','.'));
+    const pLon=parseCoord(g('lon').replace(',','.'));
+    if(!isNaN(pLat)&&!isNaN(pLon)){lat=pLat;lon=pLon;}
+    else{
+      const px=parseFloat(g('gkx').replace(',','.'));
+      const py=parseFloat(g('gky').replace(',','.'));
+      if(!isNaN(px)&&!isNaN(py)){const ll=gkToLL(5,px,py);if(ll){lat=ll.lat;lon=ll.lon;}}
+    }
+    if(lat!==null){const gk=llToGK(5,lat,lon);if(gk){gkx=Math.round(gk.x);gky=Math.round(gk.y);}}
+    db.records.push({id:uid(),name,catId,ruta:g('ruta'),km:g('km'),loc:g('loc'),
+      estado:eMap[g('estado').toLowerCase()]||'Sin datos',prof:g('prof'),mat:g('mat'),resp:g('resp'),obs:g('obs'),
+      lat,lon,gkx,gky});
+    ok++;
+  });
+  save();refreshMarkers();render();closeModal('im');_csvParsed=null;
+  toast(`Importados: ${ok} registros${skip?` (${skip} omitidos)`:''}`);
+}
+
+// ===== RESET =====
+function confirmReset(){
+  if(confirm('Limpiar toda la base de datos?')&&confirm('Segunda confirmacion: borrar todo?')){
+    db=JSON.parse(JSON.stringify(INIT));db.records=enrichRecs(db.records);
+    save();selRec=null;selCat='all';selAlpha='all';
+    closeDet();refreshMarkers();renderLegend();render();toast('Base reiniciada');
+  }
+}
+
+save();render();initMap();
 </script>
 </body>
 </html>
