@@ -124,7 +124,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 .dz-lbl b{color:#6aaf6a}
 .imp-note{font-size:10px;color:#3a6a3a;line-height:1.6;padding:7px 9px;background:#0a1a0a;border-radius:6px;border-left:3px solid #1e3a1e;margin-bottom:8px}
 .imp-note b{color:#6aaf6a}
-.prev-box{background:#0a1a0a;border:1px solid #1e3a1e;border-radius:6px;padding:9px;margin-top:7px;font-size:10px;color:#4a8a4a;line-height:1.8;max-height:160px;overflow-y:auto;display:none}
+.prev-box{background:#0a1a0a;border:1px solid #1e3a1e;border-radius:6px;padding:9px;margin-top:7px;font-size:10px;color:#4a8a4a;line-height:1.8;max-height:150px;overflow-y:auto;display:none}
 .prev-box.show{display:block}
 .csv-map-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:8px 0}
 .csv-map-row{display:flex;flex-direction:column;gap:2px}
@@ -144,9 +144,11 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 </head>
 <body>
 <div class="hdr">
+  <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACMAeIDASIAAhEBAxEB/8QAHQABAAIDAQEBAQAAAAAAAAAAAAECBgcIBQQDCf/EAFEQAAEDBAAEAwQFBQwGCAcAAAECAwQABQYRBxIhMRNBUQgUImEVMnGBkRdCUmKhFiMkN0NWcnWCkrPSNXSVlrLBMzQ2U1WisdRjc3ajtMLD/8QAGwEAAgMBAQEAAAAAAAAAAAAAAAIBAwUEBgf/xAA7EQABAwMCAgcGBAYBBQAAAAABAAIDBBEhBTESQQYTIlFhcZEUgaGxwfAVMtHhFiMzQlLxQ3KCkrLC/9oADAMBAAIRAxEAPwDqClKV8cXoEpSlCEpSlCFFRSlKhKUpQhKg1NQe9QhKUpUFSoNRUmopSpUUpUGkKFFQamoPelKYKD2qKk1FVFSFU96hVTVVVW5MFB7VU1JqpqopgoNVNWPeqmqXJwqmq1Y9qqe1UuTBVNVNWNUNUuThRUGpqtUuTBQe9VNWNVNUuTBVNRUmqmqinCioPepqKrKYKDVak1FVlSlVqTUUikJUHvU1WlUpSlKhCUNKg1ClKUpSoSlKUISlKUISlKUISlKUISlKUIWZ0pSvpqwUpSlCEoaUNCFWvmulwg2uA7PuUxiHEZTzOPPuBCED1JPQVg3GXivYeG9vQiQk3C9SR/A7a0rS3OoHMo6PKnZ9Nk9AD11pbN+HHE7NMBuvEfibdl2luIz4tusaWyPD2tKQVo3pA0d9drOupFbWmaHNWDrHdlnf3+X6rnlqGx4G6zjKvaQx9ueLRg1luOW3JZ5UBhpSGyfl8JWr7k6+dfP43tT5YlLtux204pFc+r7wWw4B+sFlah/dFbP4GzMXx5KcH/c3b8WvrSCQ2yNtXRKR1eZdV8TnqpCiVo8+mids166i0fT2xh8bQ4Hmc3+nwXDLUS3scLlv8j3tHzUeJM4swIy1HmKGXnRo/wBltP4DpVXeGftPWfb9u4h2m7KH8m659bXlpxrX7a6mpWiaKnIsYx6BU9a/vXKMzPuPuCsBzN+Grd2hNgFyZbzvSfMqLRWkfekCsx4dcdMBzJ1qG3cDarmvp7pPAbJV6JX9VR+WwT6Vv2ta8VOCPD/iG049dLSiFdCkhFxggNPA+RVr4XPsUD8tVl1fR2jnHZbwnw/TZXMq5G75XtnvUGucXpnE/wBnmYxDyZLuWYGVcjU9lJ54wJ6DZJKD6IUSk9kkVvrGMgs2T2Vm8WK4MToTw+FxpW9HQJSod0qG+oPUV4jUtJnoHdvLTsfvYrSinbKML06g1NQe1ZBVyioqarSFMENRQ1B7VWUwUVVVWqp71UVIVTVT3qx71U96qKcKtVNWqpqlyYKpqDUmqmqXJwqmqmrHtVTVLkwUHtVT2qTUGqHJlU9qqasaqe9VOThVPeoNTUHvVRTBQe1RUmoNVuTBUNKGlVlSoNRQ96UpTIarUmopUJSlKUqQhqKk1FQhKUpUISlKUISlKUISlKUISlKUISlKUIWZ0pSvpqwUpSlCErX/ABy4kwuG+JmaW0yrtLJZt0TfVxzX1lAdeRPTeu+wO5rO5smPChvTJbyGI7DanHXFnSUJSNlRPkABWguBVle4z8YrlxZyBjxMesr/ALrYozg6KWg8yFEfqg853+esfo1taJpnts13/kbv4+C56ibq243WV+zpwZlxZ35TeJfNcsvuGn2WZIChBBA0SOwd1oa7IHQdd1lHGK9jLDO4Z2MId8RKU36eeqIDR+INo8lvq0NJ7JB5leQPocR8zuEm6O4VhclCLsEj6TuYSHG7S2QCBo9FPrH1EeX1ldNA+bj9nt9htLVstjKm47ZUolaytbi1HanFqPVS1EklR6kmvRa5rbKFnUQfn/8AUfr3D3+fPSUhmPG/b5quQWW3323iHcGlkIWHGHm1lD0d0fVdaWOqFjyUP/SvpxTO7hjcuPj+fyUuxnlpYtuQ8oS2+T0S3KA6NPHyV0Qvy5T8NfRX5TY0abDehzI7UiM+gtutOpCkLSe4IPcV4/StYm05+MsO4/TuK06ilZOM7962lStL2G+XfhuUx5Jl3nC06Sk9XZdmQB96n2B960D9IDpt+1z4V0t0e422WxMhyWw4y+ysLQ4k9iCOhFfTKKuhrY+shNx8R5rBlhfE7hcvppSldaqXzXSBButuft1yiMTIchBbeYfQFocSe4IPQiuSs0x68ezfnbeTWH3qdw7uz4bmQ/EKjEWo70B22An4FHuByE9ievq83KLHbMlx6fYLzGTJt89lTL7Z80nzB8iO4PkQDVM8DJ4zHILgpmPLDcLFLNcoN5tMS622QiTClspeYdT2WhQ2D8vsr6zWgeBUy58N+Jt54KZC846wlxcuxyHOniNn4tAeikgq0OykuDzrfxr5TqlA6hqDEdtwe8LbhkEjeJRX4yn2IsZ2TJebZYZQXHHHFBKUJA2VEnoAB13X7GsZ4p/xY5V/Usz/AAV1nxs43tb3lXE2F1U8QME3/wBs8e/2k1/mq7edYS6QG8wx9RJ0ALi11P8Aer+d0VgyJTMdPKFOuJbBPYFRA/51vK4ey5mzEZbsW8WKY4kEhrmcbKvkCU6/HVeuqujlBTECactvtey4mVUj/wArbrrmJKizGQ9EksyGj2W0sKSfvFfncZsS3w3Zs+UzFisp5nXnlhCED1JPQCv5/QZ2a8L8vdaZdmWO7RVAPMKPwrT3AUnqlaD38x6V1/wtzS18XuHE1mUy2zLUyqFdYo6hCloI5k768igSR6aI663WRqnR91CGzB3FEbXI3F/X3FXw1Iku21islRnmEOOJbby+wKWtQSlIuDRJJ6AD4qyE1/N2/wBqlWO+T7NNTySoMhcdz+khRGx8jrY+2u++FWSJy3h5Zb+CC7JjJD4Hk8n4HB/eSql17QWadEyaJxc04+o+qmmqTK4tIsveny4kCG7MnSWYsZlPM488sIQgepJ6AV5VsyzF7rNRCtmR2ibKWCUsx5jbiyANnQB30Fan9svIhb8BhY808Uv3aUFOIHmy18St/wBst1jHsV4yhTl6y99rZRqBFUR27LdI/wDtj8a5Y9Fj/CnV8ziDyHfyHx+Cc1B64RNC3zNzTD4cp2JLymyR5DKyh1pyc2laFDoQQTsEelfgc8wj+eFg/wBotf5q4l4vgflWyvoP9Lyf8VVZxgnAC9ZbiNvyOLkFuiszmy4hpxhalJAUU6JB15Vqy9FtPgp2T1E5aHW5Dci6pbWyucWsbey6rg5TjNwc8KBkVolOfoMzW1q/AGvWNcMcUeFGTcPW2Jd0EWXAeX4aJcVRKQvRISoEApJAJ9Oneto+ypxLuci7pwW+SXZjTjSl215xXMtsoBUponuUlOyNnpy67EaztQ6KxtozWUUvWNGT5Dex8OYV0VaTJ1cjbFdKGoNSag14Zy0gqmqmpNVNUuThRUHvU1BqspwoNVNWNVNVFMFU96UNKQoVTSlKQplBqKk96ioQlKUpSpCGooaVBQlKUqEJSlKEJSlKEJSlKEJSlKEJSlKELM6UpX01YKUpShC0x7XuSSbRwxRYrdtU/IZSYLaE/WLfdeh8/hR/brI7a87guGWfhLg3gC/RoTartcCnnZt3P1ddUR0U+tRUUNny0pXwgb1bx0RkeXe0tiWKYq9DRcrXEMyMqZ1Zae+JwrUNHsltsgaPXVbVxzDOI9itvucSw4q4pxxT8mQ7e5CnZT6uq3nFe7/EtR6k/cNAAV7mijqqbTG+ysu9+b4xfnnwss95jfN/MNgF9+O2aDYbWi3wEuFIUVuvPL53pDh6qdcWeq1qPUqP/pXoV8P0LxT/APAcR/20/wD+3p9C8U//AAHEf9tP/wDt68y/o9qj3FzmXJ8R+q0RW04FgfgV91K8ewXC8PXW9Wi+2+DDnWp9ppfuclT7aw40lwEKUhJ3pWtar0bhMiW6C/PnyWYsRhBW686sJQhI8yTWPPTyQSmJ47Q5f6XSx7Xt4hsvoB0disdiR7zhNxdu2FsiRb33PEuGPlYS07+k7F7Bp49yn6i/PR+KtS5p7Stmgy1xMUszl45envchwstKP6qdcyh9vLXlZLxf4zY0hibfsHtlviSHQ2z4rK9LURsJCg4euhW9p2n6nSSNljs0nkSBfwtuuSeaCRpa7PlyXYeGZRZstsybpZZJcb5i28y4koejOD6zTqD1QseYP7Ro17VcVscXbhbclavl6xq5YFfylDbk9cdxyDOQOzMpspCuXvpxPMtHl02D09wt4jWjOYIQ2EQru2yl2RALoX8CugdaWOjrRPZafsISele9o6sztHG3hd3bj3EYPzHNY0sXAcG4WbUpSu1Urm/23bC/BtuOcUrRzIumPTm23FJ38TKlbTv5BYA+xxVbPx26xb7YLfeoSuaNOjtyGvXlWkEA/Mb1XqcZLE1kvCrJ7I8nfvNte5Pk4lJUg/cpKT91ae9ka7/SnBG2NE/Hb33oquvovnH/AJVivI9LaYOgZMNwbe4/uF30L+0WrbZ7VjXFP+LHKv6lmf4K6yU1jXFP+LHKv6lmf4K68JT/ANZnmPmtN35Sv562b/TMD/Wmv+MV/Ss1/NSzf6Zgf601/wAYr+laiANk6A7mvW9M/wDh/wC7/wCVx0H93u+q5r9t+yQ/o/H8jQhKZgfXCcUB1W2UlaQT+qQrX9I1g3sc3N6HxYcgJWsM3C3uoWgdipBC0k/YAob/AFvnX2+1zxCt2UXyBjdjlNy4NqUtyQ+2raHJB+HlB8wkA9R0JWfSvu9ivGZMnJ7plriCmHDjmE0oj67yylStf0Ugb/piupjXQdH3CoweE7+J7P0VZIdU9nvXke2HjJtHEhm/ND94vccLV8nmglCvxT4Z+0ms29inJC9aL1iby9qiuJmxwf0F/CsfYFJSf7ZrNPatxlN/4Ty5zbZVLszgmtFKdnkHwuD7OQlX9kVyzwdzVzAc4Zv4bW8x7u6w+yk68RKkkpH3LCD91V0gOr6GYRl7ce9uR6iwTP8A5FTxcish9qPJhkfFmayweaNaECA3r85aSS4ft51FP9kV1Vwdxo4lw2stkcaS3JbjhyUB/wB8v4l7Pnokj7AK5E4HWGTm/GC2pmq8ZKZJuU9auvMEK5zv+kspT/aruk1k9LJW01PBp8ezRc/IfUq+haXudKea/n/xf/jWyv8AreT/AIqq3Xwl454Xi3DmzY/c2buqZCZKHSzGSpBJWo9DzDfQitKcX/41sr/reT/iqrcXBjgjh+Y8ObbkN1kXdEySXQ4GJCUo+FxSRoFB8gPOvQauKE6ZF7dfg7O3fwn91y0/Wdc7q98/NY7x/wCMtvz2yxrBYrbJYgofTIeflhKXFqSCEpSlJIA6kkk77VX2ScXm3TiF+6Tw1Jt9obXtwjot5xBSlA9dJKlH00PUVt23+zpw5iSUvPN3aakfyT8zSD9vIEn9tbQslptljtjNstEFiDDZGm2WUBKU+v3n1ry9b0joKbT3UWntPaBFz47+JP34LtjpJXyiSU7L7DVTVjVTXzxy1QqmqntVjVT2qpysUVFTUVWUwVTUGpPeoNVFMq0pSqyhVpSlKUyg96ipqKgoSlKUpUhQe9KHvSoKEpSlQhKUpQhKUpQhKUpQhKUpQhKUpQhZnSlK+mrBSlKUIWjMRaS97dtzWvZMew8yN+RLTQ6f3j+2unq5ZgvG0e3fFU+oobu1nLbZJ6H95Oh+LJrqavqumG9HF/0j5LEn/qFKUpXcqlp8fxn51sgD3uF1P+pt1pNbo48cRblZjczHw7H+0ZlwpXPeJUlLp1+ZzA69BrXVRIzfjleXLFE4uT2VlDx9zjtKB0Qp2I03sfZzE1oj2Q7n7jxXMDn5W7hb3WuX9JSNLT/wqrxVRSOEtXWM/M3DfDAJPnbbuWuyQcMcR2O61xYbM+9nUDHn0EPqujcN1OvMOhKv+ddC+2TPQn9x9pQRtc5ySR6BPIgf8RrHnMeEX2zGYymgll6f9JNgDoQWS5v++DXwe1ncTK4wWuAD8MGHHTr9ZbhWf2ctdT5fbNQpnDYMLvUWVYb1cLx429F0Zm+WYtY51tseUvNtt3oraZEhrnjqKeUFKyeid8w0T0+YrTeXWJjhTxAta2JMyDiN1lExJUdR8exzPMtKP8mrfxIO0qTzAglINfj7bgB/coD2Pvf/APKvQ4mOLvfshWm5XJRdlIjwnQ4s7UVBfh736lJP41jabAaeKnma42lJaR43IBHiPvBXTO7jc9pH5cj6hdDYNn8oXKPiucojwr278MOcyOWHdf8A5RJPI7ru0TvzSVDtsauceEz0XOuCdkGQRkTkOxvAfDm9qWysoCwR1CvhBChog9Qay/HMzumDON2zNJj1yx0kIi5A71diknSW5gA+r2Af7fp6PxH0Oma42WQ0tTiQG1+Rtj3Hw9O5cNRRlresj2PwW2ZzaXoT7K/qrbUk/YRquUvYicIwjIIfxcrN2JSd9OraR/8ArXUWQTW4uNXC4pdSWmYbj4WD00EFW9+lc0exNEca4VTZzmx75dXFp2O4S22nf4g/hT9JyBp7r94+aSi/qLeprH+I8aRM4eZJEiMuPyH7TKbaabTzKWtTKgEgeZJIGqyA1iuf57jmDJgHIH5DZnuKbjJZjqdUtSQCRpIPqK+bU7JHStEbbnu8srXcQGm64aTw44hpUFJwjJAQdgi2vAg/3a9ReHcYbkDHfsWYvpUOqZCHwk/bz6Fdj2biZht4sF3vdvuinY9nQV3BtUdaHmAAT8TagFfmnXTyPpXxXXi5hdvgWSY7JnOIvjKn4CWYTji3EpIB+EDYPXtXsP4g1BzuH2bIxsd7X+WVw+zRWvxrnnAfZsy+6y2nspcZsVvCgXEJcS7IWn0SE7Sk/Mnp6GurMVsFqxiwRLHZYqY0KKjkbQO59VKPmonZJ8yax+3cUsLuOPXi9xrk6Y9mTzXBpcZxDzA8ttqAV169deRqmMcT8ayO5RYNsj3sqlgqZedtT7bJHKVb8Qp5dEDod1g6pUapqAPWsIa3kAQBi+fcumFsMX5TkrMJkdmXEeiSW0usPIU24hQ2FJI0QfkQa4KyDhXnVsvs+3R8Uvk1iNIW01IYgOrbeQFEJWkgaII0a63d40cO27gqIb24W0yfdTMTEdMUOenjcvJ38968+3WvRzDiViOK3YWm6z31T/B8dUeLFcfWhv8ASUEJPKOnnU6TU6jpbyxkJPHmxB5c/jn3KZ2RTC5dstY+yLglxx+Feb/frXKt9wkuJiMNSmFNuJaSApStKAOlKIH9it8nvWJL4lYf9HWC4NXQvxsgkiLb3G2VkLd5uXlUNbTo9DvVfJkvFjCMfu8u13C4yC/B5ffDHhuvNxubWgtaUlKeh9f29KzNQZX6lVOldEeI8gDi2PnjzV0RiiZwhy5a4p4Hm03iVksyHiN9kRn7pIcadagOKQtJcJCgQNEEV0v7OttuNo4Q2eBdYMmDLbU/zsSGy2tO3lkbSeo2CDXuX7iBidluFjh3C6oQb6Abe6lJU04Dy6POOgB506J6da9O3362z7/dbHGdWqdagyZaCggJ8VJUjR7HYB7V0atq1ZW0TIJIeFrbG+dh2fmbeaWCCOOQuDrk/wC16JqD3rCso4pYhjmQvWG5yZomsNJeeSzCddCEEbCiUJPTVfvd+I+I23EIWWOXMv2ic8liO/HaU4VrPN8PKBsH4FAgjoRqvPHTKwhhETrO2wc3yLe5dfXR57QwssNVNY5imbWjJpzsO3xbwy4034ijMtr0dJGwOilpAJ69u/4V9FqyqzXPI7tj0Z9YuNp5DLacbKNBY2lQJ+sNeY9RXLLQ1MZc1zCC0XONh3p2ysNiDuvZPaqntWL2jiBjF3k2SPBlvOLviZCreSwpIdSwSFq6joOh1vvUyM8xhjO2sJcnkXp1AUlnwlcvVJWAVa0DyjevspH6bVhxYYzcAk4OwNifIHBTCaMi91k1VryY+S2l/L5WKtPLN0ixUy3W/DISG1HQPN2J2R0r55WX2ONlTuMvSHE3JqEZykeEopDI7nm1rfTtVAoqhzuEMN7cW3Lv8vFP1rBm/gvdNQawKx8YMDvEyHFj3R9lc1fhxlSIjjSHVE6CQsp5d76d+9ezlmc41i93tlqvVw93lXNfJHTyFQ+sE7UR0SNqA2fn6Gpk0muZKInQu4jcgWNyBv6IE8RbxBwssiNKxbMs+xzE7nFtt3elCVLbLjLbEVbxUkHRPwg19+I5TYsst7k6wz0y2mnC06ORSFtrH5qkqAUk/aK536fVMgFQ6M8B/usbeqYSsLuC+V7FKwzIOJuKWPIZNhmvTlToqUKfQxBddCApIUCSkHppQqs7ilhcWzWy7i5OyYtzdWzFMeM44pa06CklIHMDsjoRvrVjdHr3hrmwuIdtg5xfHuz5INRELguGFmh71FYxjGfYtkTs1mBcFNvwW/FlMymVx1tN/pkLA+EeZHQdN9xXw2HinhN7usS2wbo7401SkxFvRHWm3ynuELUkJJ+/5d6U6RXjiHUu7OTg45/LPkj2iLHaGVmtKxu35xjk7GLnkbEtz3C1LebmqWypK2lNDawUkb3rX41+MbiBjL82fDRKfD9vtqbnJQqOscjBQlYPbqeVQ6d+tV/hdbdw6p3ZwcHG2/qPUJhPHjtDKyk0rEWuJGIPYkzlLVyK7Y7JEULS0oqS6TrlUnW0nz6+RB8xTKOI2J45d3LTcZz6prTPjvNRorj5ZQRsFfIk8vTr18tHsRUt0iue/q2wu4s4seVr+lx6hBqIgLlwssupWNt5xjTrmPpYuHjjIef6OW22opc5BtWzr4ddtHXXpS45vjdvzKHiMueEXeYgKaa5CU9ebQKuwJ5ToH5eoqsaZWE26p17E7HZpsT7jg+Knro/8h/tZJSvITkdqVl68UDy/pREP30t+GeXwuYJ3zdt7I6V69c0sEkVusaRcXF+YOx8k7XB2xSlKVUpSlKUISlKUISlKUIWZ0pSvpqwUpSlCFz97UOsUz/h9xPS2VN2y4JjS9ebfNzgf3fG/EV1RGfZkxmpMdxLrLqAttaTsKSRsEfIitU8Y8QRnPDm747pv3l5rniLX2Q+j4kHfkCRon0Jry/Y8zpzJuGwxq7KLd+xlXuEllzo54SejSiD6AFB+aPnX0Ho3VCWl6s7tx7uX6e5ZdYyz7963dSlK9EuNct+0fAduFm4soZBUph+3SSB+i3HZUr9gJ+6uWeGV3VYeImP3cEgR7g1z/NClcqv/Ko13HcIca45/wAQrfNaDsaU7FZeQfzkKhNgj8DXD3EvELjguYS7FLDnK2ouQnyOj7JPwLB9fI+hBrztJPHJVVNI7cm/mC0ArvewtjjkH3ldhXjGQ7x1sOTpaJSxZpbDi9dOcLQEffp1f4Vy7x4uP0nx2vLoVtDE5mKn7GwhJ/aDXYeC3hF+w2yXzYImQWnln9YpHN+0GuDLnNXcsxk3Fw7XKuanif6Tu/8AnWP0aa907y/eNvD8SfouquIDRbmbrtXinw7xzOHrZNyaZIYh2nxVFCHUtIcC+XfOs9QPh8iPPrWi/aU4k2O72qHgmHuMu2mEtCpD7A0yooGm2m/VKe5PYkDW9V7fttOOBWLNBxYbWJRUgKPKogt62OxrSfDTD5+cZfDsEFKkocVzyntfCwyPrrP3dB6kgVbodCwU0dZUSXa25A5NybnxKWqlPGY2DJ+K639myG9C4K4+h9JSp5Dr6Qf0VuqKT940fvrYa0IdbU04hLiFgpUhQ2FA9CCPMV+cGLHgwmIURpLUaO0lppA7JQkaA/AV5Ea23XN8quWOxri7abFa0M/SMqKoiVJdcBX7u2v+SSEcpUsfF8YA13rzMNPLqta4RYLiT5C67nvbTxDi5YWpuMGZScCwjIMWxOa5PsE5pdvkx+q27I+7s+G292AUjn/g/Uo+sOUdDtngTj72McI8etMlstyUxfGfQU6KVuKLhSfmObX3VqriPAtGe8dLDwoxWI1FxPEOaRc22E6bU8CC4CfzlfVb5js8y19e9dGeVbnSOUwQRUZeXEZJO/cPqs+lAc4yAWUVpj2jot0/dNw8vMCx3a7MWm8GVLRb4in3EoSW1dk+Z5Treq3PXmXy+2axttOXm6Q4CXlFLZkOhHOQNkDffpXmqKZ0E4e1vEc48wR9V2SNDm2JstDzLHkeUXjiPnaMZutniTseXbIUCTHKJc1zkH74psbPTlAHmdjXY15kfEsnkSODbLcK+WtcOC+3LlsRDzwVHtz86SlBP6w7broOXlONRbSzdpF+tjVvfX4bUlUlHhrV1+EK3onoenyNfvbL5Zbpb3LhbrtBlxGt+I8y+lSEaGzzEHQ0OvXyrS/F6hjcRWAwN8dnhtnf3qrqGE7/AHe657gYtfW8C4sxrvZ7zcMtkKUyLi5HWoXKOP8AovB0NHoDtKe3w/ID1eE7lx+jouNyfymsyZNoVA1c7YEW+G54WuZK+UEBJTpOz5itywMrxifFkyoWQWyQxFHNIcblIKWh6qO+g+Z6V6MuVGihsyX2mQ4rkRzqA5laKtD1OgT9gNVz6vOWujfFYk38iGgYFtsXspbA3BBXPWHSr5jvCdnhtP4VXa9XdmQtlTUiGDbXwXysOl7tygEdfUDr5j1kM3fh/wAbckySbjd9vVtvUFkRXrTE948JSAkFpQ6FOuXQ8ta38txx73ZpD8Nli6wnXZzJfiIQ+kl9saJWgb+JPUdRX6PXG3tJlqdnRm0wxuUVupAYHKFfGSfh+Eg9fKueTVXlz7w4ffiFzm5GR3ZH07k7YBYdrbZaBv1lvk2Pw5nMYB9ABOVidJgQGCsR2udGnHuVOkKITs+Q+3YEtNX3DfylY/JxDIbw7kMuQ/bpcCGXmXkvoICVr/NKebrv0Py3u2FlONzrfJuES/W1+JF/6w8iQkpa/pHfT76+2VOhRpMWNIlsNPy1FEdtbgCnlBJUQkHuQAT08hUO1mZv8qSHHd2r4dx7745+CkU7TkO+7WWgGOFc2VEwHD8lhPvx2bHcWpsppBWiG64pC2wF9gpJIA66PKdbFZB7Pdry+3ZNmQzCNI97R7lFbmKaUluYhlDiEuIUeitp5CSPXr13W3rlNh26E7OnymYsVlPM488sJQgepJ6CvitGQWK8rW3abxAnLQnmUhh9K1JHbZAOwPnXPU63V1VNIxzLtO5scHi4j5XwCPAJ2U7GPBBz+1lqG6zrni3tC37IV4nkl2gy7QzGYXbbep5KnByHRV0SB8JB69Kw2+YRlUDgqz4lluCJs/Lk3Y26AyXnoLJQsAAJB0RoH0G0g9a6DTmWJruAtyMjtaphe8AMiSgr8TfLy633301XrRZcWYhxUSQ0+lp1TSy2sK5VpOlJOuxB6EVLdcqKQMPU2sGgk3yGAgeSDTMkv2u/4rAOE11ckS50F0Z88SgOh7I4CWUJ0dcraglOyebej6VifG60ZRa87ayLDrO9Oev1oeskwstKV4ClEeG8ogdNb7nppFblutxt9qhql3ObHhx0nRdfcCE78hs+fyr8I18s0qFHmRrrCejyXQyw6h5JS44d/ADvqroenfpWdBqU0VUayOK7SLEZscd4A7gfcrXQtczqy7K1lOxh6w8SuGke3QJb1qslsmx3pDbKlob/AHgJTzEDQKiOg8z2rXtzxniPLsa+ISMfjJuovf022yQ8biEJIbRHLXJrkCADre9fbqumFSI/vYieM37wW/EDXMObk3rm131vpuvyhzYc3x/c5bEj3d1TL3hOBXhuJ+shWuyhsbB61bD0kqYLP6sEgAEm+RxOJ/8AIu+CHUbHYv8Adh8rLTT93nWPjhcMqfxPKJdvuFhjtNmFbFuqQslKilXYAjRBG9g1eTDut042OZCzZLqzAl4kpKFvxFo5HFbIaV00HOvVO91tW15DYrrLciWy8QJkhoFS22JCVqAB0ToHtsjr86hjILFIuyrSxeIDs9JIVGRISXAR3HLvex12PKqzq00brins4MDTv+UWsbctt1PUNIy/F78t1zvbIGR3/grZOGDGF32NchJBfuFwhKYjRE+MpznC1dSeU60B5kDy36ubYdmOaTMxuDNoYVGSy3bYCrkXG5RTGIWXWQEaPiL3okgH7K6FNQaB0umikL4ogDcncnLnBzvWwHhne6n8Pa4Wc7w9BYLn6ZcshOX8PMzuOK5LJMS0utXBpi3LW8l7lW2dp0NbJ5hvXQ1l/CO0Xh3Nstza4WqTZYl6caRFgyQEvENp0XFpB0kk+R69T9p2eaVwVfSEzQOiZEG3HDe5PZ4i+wG2537lZHScLg4uvz99rLSqsayed7QeTzIE+62CE9AY5bgzDQtt8pQ0PDCnElOwdnp1+Gvgzrhy7Y/3BWbGkXd9tm+KkTLg234rrS1qb28ohJSnWumxr4eu63waiiPpRVRPjLQOFjQ21hmzS0Em1zvexuFJoWOBvuTf43WhouF36fdeIlououkm+zIXu9svchJSw/FPKoM7ACArmACtep1rR388uNf8txXB8Jj4nfLNMtUqM5OnSYvhsxksIKSpC+yiruNeeq6ANRVw6WTXDjGCW2LdwAQ3gvba1s8OwPml9gbtfz9b/ZWhsnxXIEcUbpi8C0y14tlUyJPnyEtqLTQbJW+kr7JKyjqN76j1r7rxY7urinxHls2maYsvF1MRXUx1cjzngtgIQdaUrYI0OvSt10qn+KZ7NuwYbwnxN29o+NmNCYULc553+ePiVzNlmAZHZ8ex9/HrVLegXdm3rvFvRHKlx5jSUnxeXW0BQ5grp0O99xrM7d9LYHxJzWdPxi+XuJfVtyIci3xfHCtBW2ldfh1za6+Sa3MairJul01Qzq54w4EEHJBNy0jIzccIF+Y3UN09rDdpt9/utLLs92XkHC6YMQTZW2JU5+XEgtFTMILQOXnKRpJPp067FYxkWL57erPec1YsTKJbt4TdYSHg6m5NtsHkabDfLrXKN8u9ne+p1XSFKIOmE8Ba5kTbjGSTguLiMm+SRkk7Idp7XYLj9iy0vMu8+28ZmMxexPJpECbjLTPLEtq3VtOqcC+RY6aI5SCO4Oq3BbZQm26NNDD8cSGkuhp9HI43zAHlWn81Q3ojyNfRSsXUtSZXNjHV8JYA3cnA2XRDCYic3vlKUpWUr0pSlCEpSlCEpSlCFmdKUr6asFKUpQhK534wWy7cI+J0bjPiMYu26SsM5BCQOiwtQ5lH0C9J6+SwD15jXRFfjOixp0J6HMjtSIz6C2604kKStJGiCD3BFd+nV76GcSN25jvCrljEjbFezheTWbMMZhZFYJaZUCY3ztrHQpPmlQ8lA7BHkRXsVx+9Dy/2bspkX7GmH73w9nOhU2CVkri9hvf5qh2C+xGgrro10zw4z3F+INhReMYuTcpoj99ZV8LzCv0XEd0n9h8iRX0ymqo6mMSRm4KxnxlhsVgw/jPzr/W4X/4bdeVxJwOw59Y/o29MKDjW1RZbXR2Oo+aT5g9NpPQ/trOsk4V47fcimX564ZDClzfD94EC7PR21lCAhJ5UEDfKAN18H5GMc/nBmn+8Un/NXmazo9Uy1jqqKQNJNxvcLQiro2xCNzbrTdma4hcO8OcxJWNKya3sRXmrdc7SoeKgqCikPMKO+ild0k9PWuYYeH5gzPYQrE78XW3EqKBb3dnRB/Rr+gX5GMc/nBmn+8Un/NU/kbx7Wv3RZtr/AOopP+atCi0+qpS93YJduci57/jysqZZ45LDNh5Ln7iLiuZcaLlaFOYzJw+3W/xeeRdHUrdcC+T6rSOu/h8yB171tXhtgdiwGx/RtlZUXHdKlSnershYHdXoO+kjoP21lf5GMc/nBmn+8Un/ADU/Ixjn84M0/wB4pP8AmrOn0CslhEAka2Mchfzze5KvZWxNdxlpJ71+TzrUdlyRIWG2WkFbiz2SkDZJ+4VrK/cSXOGvBpj3Eqk51m0h24woiBzOMCSrTThT13ythpCU/nKGvI68rj9K4cYTFfxq33bLsmyaWgsptSMgkutoKumnwlW9HZ+AfErt0B3Xp8EuFN1Yvh4icRXffMmeA91ikgogo0Aka7BSR8KUjogep6hKWlj6PsfNM4Oc7AA+/VEspqyGtFgFkPs9cO14HiK3ropT2Q3dQlXN1Z5lJURsNc3ny7OzvqoqPbVbLNTUV4yqqH1MrpZDkrsY0MAAUVgmfm5jOsRNoRCXL/hvKmWtSWyPCTvqkEg/dWd1+a221OJcUhJWjfKojqnffRpKebqJOO18EeoI+qZzeIWWqLvj98s94skpuXa3L3eMlcmuJLC0xGlC3PN8qUhXMfhRsq6Eq6kDtXmXpqYs5bLyJUZcyPPtYvEWLFUGVWpt3xA4kHanAQp3nJ30bWjWh13S422tSFLbQpTZ5kEjZSdEbHodEj76gNNB5TwbQHVJCVL5RzFI2QN+g2fxNdjNWc2xc25x4bOB7sCwt8UhgB2K11kLlgzHMLLbrTKiXNpcKW3dVxHkrSIDzJR4a1JPTmcLRSN7+BRHY15GPSp17t8mJPfW65iNsk2+YtYO3p3KpsO9f/go5/sk/KtrQoMKChaIUOPFStZWsMthAUo9ydDqfnVgwwkulLLaS8eZ0hIHOdAbPr0AHXyFUnUWsZ1bW4AsCTnc39QSPRT1RJuStHYfZl3qLhzEaSIc+PhrUmBK5OYx5CXG+VWvNJ2UqT+clSh51WXcXrz9M3aVCXChx8mtq79EkDYYaaZbDgX5KQlwIXzDoUgK7brd7UaOyGwyw034aPDRyIA5U/ojXYdB0oGWkqcUlpALp24QkbWda6+vQAfdTHWe0SWeWdruueXlbuOeZUinxutT8Xrnit1xjJX7U4xPuTNjKH5sVwONNsqdSUNrUk8pUSFKSDsgBR6A9a8QxeL5dbnIsVgfuEmwoZRb5aHmkpZloWiQ6nS1AkKSllB0D+ePWtos223R4i4bECK1GcJK2UMpShRPfaQNHdfuG0I5uRCU8xKjoa2T3Nc0Wqsp+HgZfhvbiPfw91u61trHN05gL73O/ctc8arhEu3Ae8XSE54sWXAbfZXr6yFKQoH8DUZPcbffcnxNjFrnb5l2h3BL8pyM4l0swvDWHgtSSeVKyUJAPdRSdfDsbAVDiGF7kYrHuvLyeD4Y5OX05e2q/OBb4FvaLUCFGiNqO1JYaSgE+ugK4466OKPhDTcFxGcdoAWOM2t71YYi43v3fBa24Z3dDKG40jMcfbZ+kJjabWpCUyQpUl0JTzl3fNsg/U67186+rhberNFRerbJu9vYnOZJcAiM5JQl1RMhQACCdkny6dazQ2Gx+9+9/Q1u948TxPF91Rz8+9829b3vruirJZjN99NogGVz+J43uyOfm3vm5tb386KvUIKgyEtI4s4tvcnuzvucqY4nNAzssZzJ6NAzzGbpeHW2rU01KabedOm2Zawjw1KUegJQHUgnXUkb2oCsbzWRabm7Ak4s6y2+7lcNL05KPFjvPhpQ5kgKAXpPKkkEdRrexW1JLDMlhbEllt5pY0ttxIUlQ9CD3r80RIrbLTCIzKWmSC0gNgJb125R5a+VUU+psgDDwniaLb4IuTkWzk7bc0z4S6+cFa5uM26Y7mU25Xm4Rbk6zj61R0sRDH5ll9IS3orXsqWUpHbvWJ3S2X20WW92GHaZtvfvtl+BKnm3FzJrI3IKfDUdOOtKPpsoPSt5Ox2HVBbjLa1DWipIJ6EEfgQD9oo6004ttbjaFqbVzIKkglJ0Rseh0SPvNXRdIOqA/lA7X5A8OW2AsAAcnBuNrbqDScX932d1gdyuuNXqBbYOKyYci8JivKsxjEH3BXu60BbiQdobGwghQ+sUjWx0x+RLtcnhJYcftj0dWQtqgtMQ0KHvMeY2tsulSeqkKRpwrJ7Dm2evXazEOHGedejxWGXHjzOrbbCVOH1UR3P21CYkREtcxEZlMlaQlTwbAWoehV3Irkj1aGHh4WuIaQ4XdfIvg4/Lnl4/5YsMDnbkZxt95++S/U1FTUV5xy7AqmoqTUUhUqDUVNRSFSEPaq1aoNKpUUpSoKAlRU0NQpUUpSlQlKUoQlKUoQlKUoQlKUoQlKUoQszpSlfTVgpSlKEJSlKEL83mm3mVsvNocacSUrQsApUD0IIPcVovMeBMq1Xs5ZwhvjuLXltJ/giFkMO+oB68oP6KgpO/IVveorpo66ejfxROt8ikfG14s5aKtPtF5tg7rFq4xYHMbIPJ9KQEgJc+fLvw1H15Vj7K2njfH/hHfUtiPmcGI64N+FPCoyk/IlYCd/YTXvSWGJTC2JLLbzSxpSHEhSVD5g96wHJOCnDG/Orel4pEYeX3chqVHP4IIT+yvV03SthFp2WPh+/7rifRf4lbVi5bispsORsmsr6D+c3OaUPxCq+S7Z/g1paU5csxsEVKep8S4NA/hzbrQ7/sucMnVEoXfGdnekS0HXy+JBr97f7M3C6I8lbka6ywNfA9MIB+3kCTXaek9EBz9FV7HIspzD2oOFNjjq+j7pJv8rqEM2+OrRPzWsJTr5gmteXDOOPHF8Ij4tZzgmOP7C5zqyHlo9Q4QFEenhpH9KtsYvw6wbGAk2TF7ZFcT2dLIcd/vr2r9tZVWXV9KyRanZbxP6D9VfHQgZcVrThLwaxbh/yzkJVdr6rmLlykp+MFXfkTshG/Xqo7OzWyak1FeSqKiWoeZJXXK7mtDRYKKUpXOUyrUGpPeoNIUwUVFTUVUVIUHvVVVY1BqtyZUPaqmrGqntVTkwVTVVVY1B7VS5OqVU9qtUGqXJgqGqmrGoNUuCcKlQe9WPeqmqXKQqmqmrmqmqinCoairGq1UUwVag96se9QarKdVNVq9UNVFSlVPerVBpVIUVBqaUpUqtKUqEJSlKVSopUmoqChKUpUISlKUISlKUISlKUISlKUIWZ0pSvpqwUpSlCEpSlCFBqKk96ilQlKUoQlDShqChRSlKhShqtWqtKVKg96UNKUoUGoPapNQe1IVIVag96mhqsplU1FSe1RVZUqh71BqyqqaqKYKtVNWPeoPeqnJ1Q1U1Y1B7VS4JlQ1U1c1U1S5OFQ1BqxqtUuCYKpqpq1RVJTBUNVPermqmqinCqairGq1WUwUVUirGoNVlMq1FTSqyhVpQ0qCmUGoqx7VWlQlKUqCgJUVNDUKVFKUpUJSlKEJSlKEJSlKEJSlKEL/9k=" alt="DVP" style="height:36px;border-radius:6px;flex-shrink:0">
+  <div style="width:1px;height:30px;background:#1e3a1e;flex-shrink:0"></div>
   <div>
-    <div class="hdr-title">Sistema de Registro de Cruces Vial</div>
-    <div class="hdr-sub">Direccion de Tierras - Vialidad Provincial — Provincia del Chaco &nbsp</div>
+    <div class="hdr-title">Sistema de Registro de Infraestructura Vial</div>
+    <div class="hdr-sub">Direccion de Vialidad Provincial — Provincia del Chaco &nbsp;|&nbsp; POSGAR 2007 / WGS84</div>
   </div>
   <div class="hdr-right">
     <span id="save-st"></span>
@@ -184,7 +186,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
     <div class="pbody" id="body-c" style="display:none">
       <div class="csec">
         <div class="clabel">Lat / Lon &rarr; Gauss-Kruger</div>
-        <div class="cnote" style="margin-bottom:8px">Acepta: decimal (-27.451), con letra (27.451 S), grados/min/seg (27&deg;20'7.9"S). Mientras escribis, el X,Y GK se completa automaticamente.</div>
+        <div class="cnote" style="margin-bottom:8px">Acepta: decimal (-27.451), con letra (27.451 S), grados/min/seg (27&deg;20'7.9"S), o pega todo de Google Earth.</div>
         <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">LATITUD</div>
         <input class="cinput" id="c-lat" placeholder="-27.4510  o  27&deg;20'7.90&quot;S" oninput="liveConvLL()">
         <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">LONGITUD</div>
@@ -195,7 +197,6 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
       </div>
       <div class="csec">
         <div class="clabel">Gauss-Kruger &rarr; Lat / Lon</div>
-        <div class="cnote" style="margin-bottom:8px">Mientras escribis el X e Y, la Lat/Lon se completa automaticamente.</div>
         <select class="fsel" id="gk-faja">
           <option value="5">Faja 5 — Chaco (predeterminada)</option>
           <option value="4">Faja 4 — Pampeana Este</option>
@@ -218,78 +219,29 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 
     <div class="pbody" id="body-i" style="display:none">
       <div style="font-size:12px;font-weight:700;color:#6aaf6a;margin-bottom:10px">INSTRUCTIVO DE USO</div>
-
       <div class="inst-h">A — Instalar la app</div>
-      <div class="inst-s">
-        1. Guarda el archivo <b style="color:#c0d0c0">infraestructura_vial.html</b> en tu PC<br>
-        2. Doble clic para abrirlo en Chrome, Edge o Firefox<br>
-        3. Si ya tenes datos guardados: clic en <b style="color:#c0d0c0">Importar &rarr; JSON</b><br>
-        &nbsp;&nbsp;Necesitas internet para ver el mapa satelital
-      </div>
-
+      <div class="inst-s">1. Guarda el archivo <b style="color:#c0d0c0">infraestructura_vial.html</b> en tu PC<br>2. Doble clic &rarr; se abre en Chrome, Edge o Firefox<br>3. Si hay datos previos: clic en <b style="color:#c0d0c0">Importar &rarr; JSON</b> y carga el archivo<br>&nbsp;&nbsp;Necesitas internet para ver el mapa satelital</div>
       <div class="inst-h">B — Cargar un nuevo registro</div>
-      <div class="inst-s">
-        1. Clic en <b style="color:#c0d0c0">+ Nuevo registro</b> (esquina superior derecha del mapa)<br>
-        2. Completar: Nombre (*obligatorio), Categoria, Ruta, Km, Localidad, Estado, Empresa<br>
-        3. Coordenadas — elegir una opcion:<br>
-        &nbsp;&nbsp;· Escribir Lat/Lon decimal o GMS &rarr; el X,Y GK se calcula solo<br>
-        &nbsp;&nbsp;· Escribir X,Y GK &rarr; la Lat/Lon se calcula sola<br>
-        &nbsp;&nbsp;· Con el formulario abierto, hacer clic en el mapa para capturar la ubicacion<br>
-        4. Clic en <b style="color:#c0d0c0">Guardar registro</b>
-      </div>
-
+      <div class="inst-s">1. Clic en <b style="color:#c0d0c0">+ Nuevo registro</b> (mapa, esquina superior derecha)<br>2. Completar: Nombre, Categoria, Ruta, Km, Localidad, Estado, Empresa<br>3. Coordenadas (elegir una opcion):<br>&nbsp;&nbsp;· Ingresar Lat/Lon &rarr; X,Y GK se calcula solo<br>&nbsp;&nbsp;· Ingresar X,Y GK &rarr; Lat/Lon se calcula sola<br>&nbsp;&nbsp;· Clic en el mapa con el formulario abierto<br>4. Clic en <b style="color:#c0d0c0">Guardar registro</b></div>
       <div class="inst-h">C — Buscar registros</div>
-      <div class="inst-s">
-        <b style="color:#c0d0c0">Por nombre:</b> pestana BUSCAR, escribi en la barra o usa las letras del abecedario<br>
-        <b style="color:#c0d0c0">Por localidad:</b> pestana LOCALIDAD, clic en el pueblo deseado<br>
-        <b style="color:#c0d0c0">Por categoria:</b> en BUSCAR, filtrar por categoria en la lista lateral<br>
-        <b style="color:#c0d0c0">Por coordenadas:</b> pestana COORD, ingresar X,Y o Lat/Lon
-      </div>
-
-      <div class="inst-h">D — Conversor de coordenadas (pestana COORD)</div>
-      <div class="inst-s">
-        <b style="color:#c0d0c0">Lat/Lon &rarr; GK:</b> escribi lat/lon (cualquier formato) y mientras escribis el X,Y GK Faja 5 se completa automaticamente. Luego "Ir al punto" mueve el mapa y muestra todos los valores.<br><br>
-        <b style="color:#c0d0c0">GK &rarr; Lat/Lon:</b> escribi X e Y y la Lat/Lon se completa sola. "Ir al punto" mueve el mapa.<br><br>
-        <b style="color:#c0d0c0">Google Earth:</b> pega el formato GMS (ej: 27&deg;20'7.9"S) directamente en el campo Latitud — el sistema lo convierte automaticamente.
-      </div>
-
+      <div class="inst-s"><b style="color:#c0d0c0">Por nombre/abecedario:</b> pestana BUSCAR, barra o letras<br><b style="color:#c0d0c0">Por localidad:</b> pestana LOCALIDAD, clic en el pueblo<br><b style="color:#c0d0c0">Por coordenadas:</b> pestana COORD, ingresar X,Y o Lat/Lon</div>
+      <div class="inst-h">D — Conversor de coordenadas</div>
+      <div class="inst-s"><b style="color:#c0d0c0">Lat/Lon &rarr; GK:</b> escribi lat/lon y mientras escribis el X,Y GK se completa automaticamente. Luego "Ir al punto" mueve el mapa.<br><br><b style="color:#c0d0c0">GK &rarr; Lat/Lon:</b> escribi X e Y y la Lat/Lon se completa sola.<br><br><b style="color:#c0d0c0">Google Earth:</b> pega todo (ej: 27&deg;20'7.9"S, 61&deg;16'29.4"O) en el campo Latitud y el sistema lo convierte solo.</div>
       <div class="inst-h">E — Exportar datos</div>
-      <div class="inst-s">
-        <b style="color:#c0d0c0">Exportar JSON:</b> copia de seguridad completa para Drive o pendrive. Usar para pasar datos entre PCs.<br><br>
-        <b style="color:#c0d0c0">Exportar Excel:</b> genera un archivo .xlsx con el formato oficial DVP. Aparece un selector para elegir que exportar:<br>
-        &nbsp;&nbsp;· "Todas las categorias" &rarr; exporta todos los registros<br>
-        &nbsp;&nbsp;· Elegir una categoria (ej: Gasoductos) &rarr; solo esos registros<br>
-        El archivo incluye: fecha, tramite, coordenadas Lat/Lon y GK Faja 5, estado, empresa y mas.
-      </div>
-
+      <div class="inst-s"><b style="color:#c0d0c0">Exportar JSON:</b> copia de seguridad completa para Drive o pendrive.<br><b style="color:#c0d0c0">Exportar Excel:</b> genera .xlsx con el formato oficial DVP. Podes elegir exportar todas las categorias o solo una (ej: solo Gasoductos).</div>
       <div class="inst-h">F — Importar datos</div>
-      <div class="inst-s">
-        <b style="color:#c0d0c0">JSON:</b> restaura una copia completa. Reemplaza TODOS los datos actuales.<br><br>
-        <b style="color:#c0d0c0">CSV / Excel:</b> agrega registros sin borrar los existentes. El sistema detecta las columnas automaticamente. Para saber el formato correcto, descarga la <b style="color:#c0d0c0">plantilla Excel de ejemplo</b> desde el modal de Importar.<br><br>
-        La plantilla tiene dos hojas: "Registros" (para completar) y "Guia" (con categorias y estados validos).
-      </div>
-
-      <div class="inst-h">G — Compartir la base de datos</div>
-      <div class="inst-s">
-        1. Al terminar de cargar datos, clic en <b style="color:#c0d0c0">Exportar JSON</b><br>
-        2. Subir el .json generado a la carpeta compartida de Google Drive de la oficina<br>
-        3. Los demas agentes abren el .html &rarr; Importar &rarr; JSON &rarr; eligen el archivo de Drive<br>
-        <b style="color:#c0d0c0">Para llevar a otra reparticion:</b> copiar el .html + el ultimo .json en un pendrive
-      </div>
-
-      <div class="inst-h">H — Estados de infraestructura</div>
+      <div class="inst-s"><b style="color:#c0d0c0">JSON:</b> restaura copia completa. Reemplaza todos los datos actuales.<br><b style="color:#c0d0c0">CSV/Excel:</b> agrega registros sin borrar nada. Descarga la plantilla Excel como guia.</div>
+      <div class="inst-h">G — Compartir</div>
+      <div class="inst-s">1. Exportar JSON al terminar de cargar datos<br>2. Subir el .json a Google Drive de la oficina<br>3. Los demas agentes importan ese .json y tienen la base actualizada<br><b style="color:#c0d0c0">Para otra reparticion:</b> copiar .html + ultimo .json en un pendrive</div>
+      <div class="inst-h">H — Estados</div>
       <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
         <div style="padding:6px 9px;border-radius:5px;background:#0a2a0a;border-left:3px solid #6aaf6a;font-size:10px"><b style="color:#6aaf6a">BUENO</b> — Funciona normalmente. Sin danos ni riesgo.</div>
         <div style="padding:6px 9px;border-radius:5px;background:#2a1a00;border-left:3px solid #c8a050;font-size:10px"><b style="color:#c8a050">REGULAR</b> — Deterioro visible. Requiere mantenimiento proximo.</div>
-        <div style="padding:6px 9px;border-radius:5px;background:#2a0a0a;border-left:3px solid #c07070;font-size:10px"><b style="color:#c07070">CRITICO</b> — Dano importante. Requiere intervencion urgente.</div>
+        <div style="padding:6px 9px;border-radius:5px;background:#2a0a0a;border-left:3px solid #c07070;font-size:10px"><b style="color:#c07070">CRITICO</b> — Dano importante. Intervencion urgente.</div>
         <div style="padding:6px 9px;border-radius:5px;background:#1a1a1a;border-left:3px solid #3a5a3a;font-size:10px"><b style="color:#3a5a3a">SIN DATOS</b> — Estado no verificado. Actualizar al inspeccionar.</div>
       </div>
-      <div style="padding:6px 9px;border-radius:5px;background:#1a1a08;border:1px solid #3a3a1a;font-size:10px;color:#8a8a4a;line-height:1.5">
-        La categoria "Otros" sirve para infraestructura que no entra en las 8 categorias predefinidas (pluviales, alcantarillas, etc). Si hay muchos del mismo tipo nuevo, crear una categoria personalizada con <b>+ Nueva categoria</b> en la lista de categorias.
-      </div>
-      <div style="font-size:10px;color:#2a4a2a;text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid #1a2a1a;line-height:1.6">
-        Infraestructura Vial — Provincia del Chaco<br>Base de datos interna DVP
-      </div>
+      <div style="padding:6px 9px;border-radius:5px;background:#1a1a08;border:1px solid #3a3a1a;font-size:10px;color:#8a8a4a;line-height:1.5">Categoria "Otros": para infraestructura que no entra en las 8 categorias. Si hay muchos del mismo tipo nuevo, crear una categoria con + Nueva categoria.</div>
+      <div style="font-size:10px;color:#2a4a2a;text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid #1a2a1a;line-height:1.6">Infraestructura Vial — Provincia del Chaco<br>Base de datos interna DVP</div>
     </div>
   </div>
 
@@ -298,7 +250,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
     <button class="fab" onclick="openRecordModal()">+ Nuevo registro</button>
     <div class="legend" id="legend"></div>
     <div class="det" id="det">
-      <button class="det-close" onclick="closeDet()">&#10005;</button>
+      <button class="det-close" onclick="closeDet()">x</button>
       <div id="det-inner"></div>
     </div>
   </div>
@@ -326,7 +278,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
     <div class="fg">
       <label>Coordenadas</label>
       <div class="coord-box">
-        <div class="coord-lbl">LATITUD / LONGITUD (decimal o GMS de Google Earth)</div>
+        <div class="coord-lbl">LATITUD / LONGITUD</div>
         <div class="coord-row">
           <input class="cinput" id="f-lat" placeholder="Lat: -27.4510" oninput="fConvLL()">
           <input class="cinput" id="f-lon" placeholder="Lon: -58.9870" oninput="fConvLL()">
@@ -373,15 +325,15 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
       <div class="imp-note">El JSON debe ser una copia exportada desde esta misma app. <b>Reemplaza toda la base actual.</b></div>
       <div class="drop-zone" id="dz-json" onclick="document.getElementById('f-imp-json').click()" ondragover="dzOver(event,'dz-json')" ondragleave="dzOut('dz-json')" ondrop="dzDrop(event,'json')">
         <div class="dz-icon">&#128193;</div>
-        <div class="dz-lbl">Arrasta el .json aqui<br>o <b>hace clic para seleccionarlo</b></div>
+        <div class="dz-lbl">Arrastra el .json aqui<br>o <b>hace clic para seleccionarlo</b></div>
       </div>
       <div class="prev-box" id="prev-json"></div>
     </div>
     <div class="imp-body" id="ibody-csv">
-      <div class="imp-note">Acepta CSV o Excel (.xlsx). Las columnas se detectan automaticamente. Los registros se <b>agregan</b> a la base existente sin borrar nada.</div>
+      <div class="imp-note">Acepta CSV o Excel (.xlsx). Las columnas se detectan automaticamente. Los registros se <b>agregan</b> a la base existente.</div>
       <div class="drop-zone" id="dz-csv" onclick="document.getElementById('f-imp-csv').click()" ondragover="dzOver(event,'dz-csv')" ondragleave="dzOut('dz-csv')" ondrop="dzDrop(event,'csv')">
         <div class="dz-icon">&#128202;</div>
-        <div class="dz-lbl">Arrasta el .csv o .xlsx aqui<br>o <b>hace clic para seleccionarlo</b></div>
+        <div class="dz-lbl">Arrastra el archivo .csv o .xlsx aqui<br>o <b>hace clic para seleccionarlo</b></div>
       </div>
       <div class="prev-box" id="prev-csv"></div>
       <div id="csv-map-wrap" style="display:none">
@@ -430,27 +382,25 @@ const GKP={
 function gkToLL(faja,x,y){try{const r=proj4(GKP[faja],'EPSG:4326',[x,y]);return(!r||isNaN(r[0]))?null:{lat:r[1],lon:r[0]};}catch(e){return null;}}
 function llToGK(faja,lat,lon){try{const r=proj4('EPSG:4326',GKP[faja],[lon,lat]);return(!r||isNaN(r[0]))?null:{x:r[0],y:r[1]};}catch(e){return null;}}
 
-// ===== PARSECOORD =====
+// ===== PARSECOORD: acepta todos los formatos =====
 function parseCoord(raw){
   if(!raw||!raw.trim())return NaN;
   raw=raw.trim();
   if(/^-?\d+(\.\d+)?$/.test(raw))return parseFloat(raw);
   const up=raw.toUpperCase();
   const isNeg=/[SOW]/.test(up);
-  const parts=[];
-  const re=/\d+(\.\d+)?/g;
-  let m;
+  const parts=[];const re=/\d+(\.\d+)?/g;let m;
   while((m=re.exec(raw))!==null)parts.push(parseFloat(m[0]));
   if(!parts.length)return NaN;
   const dec=parts[0]+(parts[1]||0)/60+(parts[2]||0)/3600;
   return isNeg?-dec:dec;
 }
 
-// ===== PALETA =====
+// ===== PALETA COLORES =====
 const PAL=['#1565c0','#1a8a5a','#c0392b','#b35900','#7b4fcf','#00838f','#ad1457','#2e7d32','#6d4c41','#00695c','#4527a0','#c62828'];
 let selCol=PAL[0];
 
-// ===== DATOS INICIALES =====
+// ===== DATOS =====
 const INIT={
   categories:[
     {id:'c1',name:'Cruce de ruta',color:'#1565c0'},
@@ -508,12 +458,11 @@ function save(){
 // ===== MAPA =====
 function initMap(){
   map=L.map('map',{center:[-26.5,-60.5],zoom:8});
-  const googleHyb=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{attribution:'Google Hybrid',maxZoom:21,minZoom:1});
-  const googleSat=L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{attribution:'Google Satellite',maxZoom:21,minZoom:1});
-  const esri=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri',maxZoom:19,minZoom:4});
+  const esri=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri World Imagery',maxZoom:19,minZoom:4});
+  const esriRef=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri Reference',maxZoom:19,opacity:0.7});
   const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap',maxZoom:19});
-  googleHyb.addTo(map);
-  L.control.layers({'Google Hibrido (recomendado)':googleHyb,'Google Satelite':googleSat,'Esri Satelite':esri,'OpenStreetMap (calles)':osm},{},{position:'topleft',collapsed:true}).addTo(map);
+  esri.addTo(map);esriRef.addTo(map);
+  L.control.layers({'Satelite (Esri)':esri,'Calles (OSM)':osm},{},{ position:'topleft',collapsed:true}).addTo(map);
   map.on('click',function(e){
     if(document.getElementById('rm').classList.contains('open')){
       document.getElementById('f-lat').value=e.latlng.lat.toFixed(6);
@@ -529,10 +478,9 @@ function initMap(){
 }
 
 function mkIcon(color){
-  const s=`<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30"><path d="M11 0C4.9 0 0 4.9 0 11c0 8.25 11 19 11 19s11-10.75 11-19C22 4.9 17.1 0 11 0z" fill="${color}" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/><circle cx="11" cy="11" r="4.5" fill="#fff" opacity=".85"/></svg>`;
+  const s='<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30"><path d="M11 0C4.9 0 0 4.9 0 11c0 8.25 11 19 11 19s11-10.75 11-19C22 4.9 17.1 0 11 0z" fill="'+color+'" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/><circle cx="11" cy="11" r="4.5" fill="#fff" opacity=".85"/></svg>';
   return L.divIcon({html:s,className:'',iconSize:[22,30],iconAnchor:[11,30],popupAnchor:[0,-30]});
 }
-
 function refreshMarkers(){
   Object.values(markers).forEach(m=>map.removeLayer(m));markers={};
   db.records.forEach(r=>{
@@ -543,26 +491,20 @@ function refreshMarkers(){
     markers[r.id]=m;
   });
 }
-
 function fly(lat,lon,z){map.flyTo([lat,lon],z||15,{duration:1.2});}
-function renderLegend(){
-  document.getElementById('legend').innerHTML=db.categories.map(c=>`<div class="li"><div class="ldot" style="background:${c.color}"></div><span>${c.name}</span></div>`).join('');
-}
+function renderLegend(){document.getElementById('legend').innerHTML=db.categories.map(c=>'<div class="li"><div class="ldot" style="background:'+c.color+'"></div><span>'+c.name+'</span></div>').join('');}
 
 // ===== TABS =====
 function setTab(t){
   ['b','l','c','i'].forEach(x=>{
-    document.getElementById(`tab-${x}`).classList.toggle('on',x===t);
-    document.getElementById(`body-${x}`).style.display=x===t?'':'none';
+    document.getElementById('tab-'+x).classList.toggle('on',x===t);
+    document.getElementById('body-'+x).style.display=x===t?'':'none';
   });
   if(t==='l')renderLocs();
 }
 
 // ===== BUSCAR =====
-function getLetters(){
-  const base=selCat==='all'?db.records:db.records.filter(r=>r.catId===selCat);
-  return[...new Set(base.map(r=>r.name[0].toUpperCase()))].sort();
-}
+function getLetters(){const base=selCat==='all'?db.records:db.records.filter(r=>r.catId===selCat);return[...new Set(base.map(r=>r.name[0].toUpperCase()))].sort();}
 function getFiltered(){
   const q=document.getElementById('q').value.toLowerCase();
   return db.records.filter(r=>{
@@ -572,50 +514,36 @@ function getFiltered(){
     return true;
   }).sort((a,b)=>a.name.localeCompare(b.name,'es'));
 }
-
 function renderAlpha(){
   const letters=getLetters();
-  const all=`<button class="ab all ${selAlpha==='all'?'on':''}" onclick="selAlpha='all';render()">Todos</button>`;
-  const bs='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l=>{
-    const has=letters.includes(l);
-    const active=selAlpha===l;
-    return `<button class="ab ${!has?'off':''} ${active?'on':''}" ${has?`onclick="selAlpha='${l}';render()"`:''} >${l}</button>`;
-  }).join('');
-  document.getElementById('abar').innerHTML=all+bs;
+  const t='<button class="ab all '+(selAlpha==='all'?'on':'')+'" onclick="selAlpha='all';render()">Todos</button>';
+  const bs='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l=>'<button class="ab '+((!letters.includes(l))?'off':'')+(selAlpha===l?' on':'')+'" onclick="'+(letters.includes(l)?'selAlpha=''+l+'';render()':'')+'">'+ l+'</button>').join('');
+  document.getElementById('abar').innerHTML=t+bs;
 }
-
 function renderCats(){
-  const all=`<button class="ccat ${selCat==='all'?'on':''}" onclick="selCat='all';selAlpha='all';render()">
-    <span class="cdot" style="background:#4a8a4a"></span>Todas las categorias<span class="ccnt">${db.records.length}</span></button>`;
+  const all='<button class="ccat '+(selCat==='all'?'on':'')+'" onclick="selCat='all';selAlpha='all';render()"><span class="cdot" style="background:#4a8a4a"></span>Todas las categorias<span class="ccnt">'+db.records.length+'</span></button>';
   const cats=db.categories.map(c=>{
     const cnt=db.records.filter(r=>r.catId===c.id).length;
-    return `<button class="ccat ${selCat===c.id?'on':''}" onclick="selCat='${c.id}';selAlpha='all';render()">
-      <span class="cdot" style="background:${c.color}"></span>${c.name}<span class="ccnt">${cnt}</span></button>`;
+    return '<button class="ccat '+(selCat===c.id?'on':'')+'" onclick="selCat=''+c.id+'';selAlpha='all';render()"><span class="cdot" style="background:'+c.color+'"></span>'+c.name+'<span class="ccnt">'+cnt+'</span></button>';
   }).join('');
-  document.getElementById('clist').innerHTML=all+cats+`<button class="add-cat" onclick="openCatModal()">+ Nueva categoria</button>`;
+  document.getElementById('clist').innerHTML=all+cats+'<button class="add-cat" onclick="openCatModal()">+ Nueva categoria</button>';
 }
-
 function renderList(){
   const list=getFiltered();
-  document.getElementById('rcount').textContent=`${list.length} registro${list.length!==1?'s':''}`;
-  if(!list.length){
-    document.getElementById('rlist').innerHTML='<div style="color:#2a4a2a;font-size:11px;text-align:center;padding:18px 0">Sin resultados</div>';
-    return;
-  }
+  document.getElementById('rcount').textContent=list.length+' registro'+(list.length!==1?'s':'');
+  if(!list.length){document.getElementById('rlist').innerHTML='<div style="color:#2a4a2a;font-size:11px;text-align:center;padding:18px 0">Sin resultados</div>';return;}
   document.getElementById('rlist').innerHTML=list.map(r=>{
     const cat=getCat(r.catId);
-    const sub=[r.ruta,r.km,r.loc].filter(Boolean).join(' - ');
-    return `<div class="rcard ${selRec===r.id?'sel':''}" onclick="clickRec('${r.id}')">
-      <div class="rname"><span class="rdot" style="background:${cat.color}"></span>${r.name}</div>
-      <div class="rsub">${sub}</div>
-      <div class="rtags">
-        <span class="rtag" style="background:${cat.color}25;color:${cat.color}">${cat.name}</span>
-        <span class="rtag" style="background:${EB[r.estado]||'#1a1a1a'};color:${ET[r.estado]||'#3a5a3a'}">${r.estado}</span>
-        ${r.lat?'<span class="rtag" style="background:#0a1a0a;color:#2a6a2a">GPS</span>':''}
-      </div></div>`;
+    return '<div class="rcard '+(selRec===r.id?'sel':'')+'" onclick="clickRec(''+r.id+'')">'+
+      '<div class="rname"><span class="rdot" style="background:'+cat.color+'"></span>'+r.name+'</div>'+
+      '<div class="rsub">'+(r.ruta&&r.km&&r.loc?r.ruta+' - '+r.km+' - '+r.loc:r.ruta||r.loc||'')+'</div>'+
+      '<div class="rtags">'+
+        '<span class="rtag" style="background:'+cat.color+'25;color:'+cat.color+'">'+cat.name+'</span>'+
+        '<span class="rtag" style="background:'+(EB[r.estado]||'#1a1a1a')+';color:'+(ET[r.estado]||'#3a5a3a')+'">'+r.estado+'</span>'+
+        (r.lat?'<span class="rtag" style="background:#0a1a0a;color:#2a6a2a">GPS</span>':'')+
+      '</div></div>';
   }).join('');
 }
-
 function render(){renderCats();renderAlpha();renderList();}
 
 // ===== LOCALIDAD =====
@@ -626,14 +554,10 @@ function renderLocs(){
   document.getElementById('loc-list').innerHTML=f.map(loc=>{
     const cnt=db.records.filter(r=>r.loc===loc).length;
     const cols=[...new Set(db.records.filter(r=>r.loc===loc).map(r=>getCat(r.catId).color))];
-    const dots=cols.map(c=>`<span style="width:6px;height:6px;border-radius:50%;background:${c};display:inline-block"></span>`).join('');
-    const escaped=loc.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    return `<button class="loc-btn" onclick="selectLoc('${escaped}')">
-      <span style="display:flex;gap:3px;align-items:center">${dots}</span>
-      <span style="flex:1">${loc}</span><span class="lcnt">${cnt}</span></button>`;
+    const dots=cols.map(c=>'<span style="width:6px;height:6px;border-radius:50%;background:'+c+';display:inline-block"></span>').join('');
+    return '<button class="loc-btn" onclick="selectLoc(''+loc.replace(/'/g,"\\'")+'')'+'"><span style="display:flex;gap:3px;align-items:center">'+dots+'</span><span style="flex:1">'+loc+'</span><span class="lcnt">'+cnt+'</span></button>';
   }).join('');
 }
-
 function selectLoc(loc){
   const recs=db.records.filter(r=>r.loc===loc&&r.lat&&r.lon);
   if(recs.length){
@@ -641,15 +565,13 @@ function selectLoc(loc){
     map.fitBounds([[Math.min(...lats),Math.min(...lons)],[Math.max(...lats),Math.max(...lons)]],{padding:[50,50],maxZoom:15});
   }
   setTab('b');document.getElementById('q').value=loc;render();
-  toast(`${loc} - ${db.records.filter(r=>r.loc===loc).length} registros`);
+  toast(loc+' - '+db.records.filter(r=>r.loc===loc).length+' registros');
 }
 
-// ===== COORD PANEL — conversion en vivo =====
+// ===== COORD PANEL =====
 let _tLL=null,_tGK=null;
-
 function liveConvLL(){
-  clearTimeout(_tLL);
-  _tLL=setTimeout(()=>{
+  clearTimeout(_tLL);_tLL=setTimeout(()=>{
     const lat=parseCoord(document.getElementById('c-lat').value);
     const lon=parseCoord(document.getElementById('c-lon').value);
     if(isNaN(lat)||isNaN(lon))return;
@@ -658,17 +580,14 @@ function liveConvLL(){
     if(gk){
       document.getElementById('gk-x').value=Math.round(gk.x);
       document.getElementById('gk-y').value=Math.round(gk.y);
-      const res=document.getElementById('r-ll');
-      res.innerHTML=`<b>X GK Faja ${faja}:</b> ${Math.round(gk.x)}<br><b>Y GK Faja ${faja}:</b> ${Math.round(gk.y)}`;
-      res.classList.add('show');
+      document.getElementById('r-ll').innerHTML='<b>X GK Faja '+faja+':</b> '+Math.round(gk.x)+'<br><b>Y GK Faja '+faja+':</b> '+Math.round(gk.y);
+      document.getElementById('r-ll').classList.add('show');
       document.getElementById('err-ll').classList.remove('show');
     }
   },300);
 }
-
 function liveConvGK(){
-  clearTimeout(_tGK);
-  _tGK=setTimeout(()=>{
+  clearTimeout(_tGK);_tGK=setTimeout(()=>{
     const faja=parseInt(document.getElementById('gk-faja').value)||5;
     const x=parseFloat(document.getElementById('gk-x').value);
     const y=parseFloat(document.getElementById('gk-y').value);
@@ -677,16 +596,12 @@ function liveConvGK(){
     if(ll&&!isNaN(ll.lat)){
       document.getElementById('c-lat').value=ll.lat.toFixed(6);
       document.getElementById('c-lon').value=ll.lon.toFixed(6);
-      const res=document.getElementById('r-gk');
-      res.innerHTML=`<b>Latitud:</b> ${ll.lat.toFixed(6)}<br><b>Longitud:</b> ${ll.lon.toFixed(6)}`;
-      res.classList.add('show');
+      document.getElementById('r-gk').innerHTML='<b>Latitud:</b> '+ll.lat.toFixed(6)+'<br><b>Longitud:</b> '+ll.lon.toFixed(6);
+      document.getElementById('r-gk').classList.add('show');
       document.getElementById('err-gk').classList.remove('show');
     }
   },300);
 }
-
-function copyVal(val){navigator.clipboard.writeText(String(val)).then(()=>toast('Copiado'));}
-
 function goLL(){
   const lat=parseCoord(document.getElementById('c-lat').value);
   const lon=parseCoord(document.getElementById('c-lon').value);
@@ -700,17 +615,12 @@ function goLL(){
   if(tmpMark)map.removeLayer(tmpMark);
   tmpMark=L.circleMarker([lat,lon],{radius:9,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.4,weight:2}).addTo(map);
   const res=document.getElementById('r-ll');
-  const xR=gk?Math.round(gk.x):null;
-  const yR=gk?Math.round(gk.y):null;
-  res.innerHTML=
-    `<b>Lat:</b> ${lat.toFixed(6)} <button class="copy-btn" onclick="copyVal(${lat.toFixed(6)})">copiar</button><br>`+
-    `<b>Lon:</b> ${lon.toFixed(6)} <button class="copy-btn" onclick="copyVal(${lon.toFixed(6)})">copiar</button>`+
-    (gk?`<br><b>X GK F${faja}:</b> ${xR} <button class="copy-btn" onclick="copyVal(${xR})">copiar</button><br>`+
-        `<b>Y GK F${faja}:</b> ${yR} <button class="copy-btn" onclick="copyVal(${yR})">copiar</button>`:'');
-  res.classList.add('show');
-  toast('Punto localizado');
+  res.innerHTML='<b>Lat:</b> '+lat.toFixed(6)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+lat.toFixed(6)+'').then(()=>toast('Copiado'))">copiar</button><br>'+
+    '<b>Lon:</b> '+lon.toFixed(6)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+lon.toFixed(6)+'').then(()=>toast('Copiado'))">copiar</button>'+
+    (gk?'<br><b>X GK F'+faja+':</b> '+Math.round(gk.x)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+Math.round(gk.x)+'').then(()=>toast('Copiado'))">copiar</button><br>'+
+    '<b>Y GK F'+faja+':</b> '+Math.round(gk.y)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+Math.round(gk.y)+'').then(()=>toast('Copiado'))">copiar</button>':'');
+  res.classList.add('show');toast('Punto localizado');
 }
-
 function goGK(){
   const faja=parseInt(document.getElementById('gk-faja').value)||5;
   const x=parseFloat(document.getElementById('gk-x').value);
@@ -726,44 +636,35 @@ function goGK(){
   if(tmpMark)map.removeLayer(tmpMark);
   tmpMark=L.circleMarker([ll.lat,ll.lon],{radius:9,color:'#c8a050',fillColor:'#c8a050',fillOpacity:.4,weight:2}).addTo(map);
   const res=document.getElementById('r-gk');
-  res.innerHTML=
-    `<b>Lat:</b> ${ll.lat.toFixed(6)} <button class="copy-btn" onclick="copyVal(${ll.lat.toFixed(6)})">copiar</button><br>`+
-    `<b>Lon:</b> ${ll.lon.toFixed(6)} <button class="copy-btn" onclick="copyVal(${ll.lon.toFixed(6)})">copiar</button>`;
-  res.classList.add('show');
-  toast('Convertido y localizado');
+  res.innerHTML='<b>Lat:</b> '+ll.lat.toFixed(6)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+ll.lat.toFixed(6)+'').then(()=>toast('Copiado'))">copiar</button><br>'+
+    '<b>Lon:</b> '+ll.lon.toFixed(6)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+ll.lon.toFixed(6)+'').then(()=>toast('Copiado'))">copiar</button>';
+  res.classList.add('show');toast('Convertido y localizado');
 }
 
 // ===== DETALLE =====
 function showDet(id){
   const r=db.records.find(x=>x.id===id);if(!r)return;
   const cat=getCat(r.catId);
-  document.getElementById('det-inner').innerHTML=`
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
-      <div style="width:9px;height:9px;border-radius:50%;background:${cat.color};flex-shrink:0"></div>
-      <div class="det-title">${r.name}</div>
-    </div>
-    <div class="det-cat">${cat.name}</div>
-    <div class="det-grid">
-      <div class="det-f"><label>Ruta / Calle</label><span>${r.ruta||'--'}</span></div>
-      <div class="det-f"><label>Kilometro</label><span>${r.km||'--'}</span></div>
-      <div class="det-f"><label>Localidad</label><span>${r.loc||'--'}</span></div>
-      <div class="det-f"><label>Estado</label><span class="${EC[r.estado]||'est-s'}" style="font-weight:700">${r.estado||'--'}</span></div>
-      <div class="det-f"><label>Profundidad</label><span>${r.prof||'--'}</span></div>
-      <div class="det-f"><label>Diam. / Tension</label><span>${r.mat||'--'}</span></div>
-      <div class="det-f full"><label>Empresa</label><span>${r.resp||'--'}</span></div>
-      ${r.lat?`<div class="det-f"><label>Latitud</label><span style="font-family:monospace;font-size:10px">${r.lat.toFixed(6)}</span></div>`:''}
-      ${r.lon?`<div class="det-f"><label>Longitud</label><span style="font-family:monospace;font-size:10px">${r.lon.toFixed(6)}</span></div>`:''}
-      ${r.gkx?`<div class="det-f"><label>GK Faja 5 X</label><span style="font-family:monospace;font-size:10px">${r.gkx}</span></div>`:''}
-      ${r.gky?`<div class="det-f"><label>GK Faja 5 Y</label><span style="font-family:monospace;font-size:10px">${r.gky}</span></div>`:''}
-      ${r.obs?`<div class="det-f full"><label>Observaciones</label><div class="det-obs">${r.obs}</div></div>`:''}
-    </div>
-    <div class="det-acts">
-      <button class="det-edit" onclick="openEditModal('${r.id}')">Editar</button>
-      <button class="det-del" onclick="delRec('${r.id}')">Eliminar</button>
-    </div>`;
+  document.getElementById('det-inner').innerHTML=
+    '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><div style="width:9px;height:9px;border-radius:50%;background:'+cat.color+';flex-shrink:0"></div><div class="det-title">'+r.name+'</div></div>'+
+    '<div class="det-cat">'+cat.name+'</div>'+
+    '<div class="det-grid">'+
+      '<div class="det-f"><label>Ruta / Calle</label><span>'+(r.ruta||'--')+'</span></div>'+
+      '<div class="det-f"><label>Kilometro</label><span>'+(r.km||'--')+'</span></div>'+
+      '<div class="det-f"><label>Localidad</label><span>'+(r.loc||'--')+'</span></div>'+
+      '<div class="det-f"><label>Estado</label><span class="'+(EC[r.estado]||'est-s')+'" style="font-weight:700">'+(r.estado||'--')+'</span></div>'+
+      '<div class="det-f"><label>Profundidad</label><span>'+(r.prof||'--')+'</span></div>'+
+      '<div class="det-f"><label>Diam. / Tension</label><span>'+(r.mat||'--')+'</span></div>'+
+      '<div class="det-f full"><label>Empresa</label><span>'+(r.resp||'--')+'</span></div>'+
+      (r.lat?'<div class="det-f"><label>Latitud</label><span style="font-family:monospace;font-size:10px">'+r.lat.toFixed(6)+'</span></div>':'')+
+      (r.lon?'<div class="det-f"><label>Longitud</label><span style="font-family:monospace;font-size:10px">'+r.lon.toFixed(6)+'</span></div>':'')+
+      (r.gkx?'<div class="det-f"><label>GK Faja 5 X</label><span style="font-family:monospace;font-size:10px">'+r.gkx+'</span></div>':'')+
+      (r.gky?'<div class="det-f"><label>GK Faja 5 Y</label><span style="font-family:monospace;font-size:10px">'+r.gky+'</span></div>':'')+
+      (r.obs?'<div class="det-f full"><label>Observaciones</label><div class="det-obs">'+r.obs+'</div></div>':'')+
+    '</div>'+
+    '<div class="det-acts"><button class="det-edit" onclick="openEditModal(''+r.id+'')">Editar</button><button class="det-del" onclick="delRec(''+r.id+'')">Eliminar</button></div>';
   document.getElementById('det').classList.add('show');
 }
-
 function closeDet(){document.getElementById('det').classList.remove('show');selRec=null;renderList();}
 function clickRec(id){selRec=id;showDet(id);const r=db.records.find(x=>x.id===id);if(r&&r.lat&&r.lon)fly(r.lat,r.lon);renderList();}
 function delRec(id){
@@ -776,8 +677,7 @@ function delRec(id){
 // ===== CONVERSION EN FORMULARIO =====
 let _fLL=null,_fGK=null;
 function fConvLL(){
-  clearTimeout(_fLL);
-  _fLL=setTimeout(()=>{
+  clearTimeout(_fLL);_fLL=setTimeout(()=>{
     const lat=parseCoord(document.getElementById('f-lat').value);
     const lon=parseCoord(document.getElementById('f-lon').value);
     if(isNaN(lat)||isNaN(lon))return;
@@ -786,8 +686,7 @@ function fConvLL(){
   },300);
 }
 function fConvGK(){
-  clearTimeout(_fGK);
-  _fGK=setTimeout(()=>{
+  clearTimeout(_fGK);_fGK=setTimeout(()=>{
     const x=parseFloat(document.getElementById('f-gkx').value);
     const y=parseFloat(document.getElementById('f-gky').value);
     if(isNaN(x)||isNaN(y))return;
@@ -803,14 +702,11 @@ function openRecordModal(){
   document.getElementById('f-est').value='Sin datos';
   document.getElementById('f-lat').value='';document.getElementById('f-lon').value='';
   document.getElementById('f-gkx').value='';document.getElementById('f-gky').value='';
-  document.getElementById('f-cat').innerHTML=db.categories.map(c=>
-    `<option value="${c.id}" ${c.id===(selCat!=='all'?selCat:db.categories[0].id)?'selected':''}>${c.name}</option>`
-  ).join('');
+  document.getElementById('f-cat').innerHTML=db.categories.map(c=>'<option value="'+c.id+'" '+(c.id===(selCat!=='all'?selCat:db.categories[0].id)?'selected':'')+'>'+c.name+'</option>').join('');
   if(tmpMark){map.removeLayer(tmpMark);tmpMark=null;}
   document.getElementById('rm').classList.add('open');
   toast('Con el formulario abierto podes hacer clic en el mapa');
 }
-
 function openEditModal(id){
   const r=db.records.find(x=>x.id===id);if(!r)return;
   editId=id;document.getElementById('mtitle').textContent='Editar registro';
@@ -822,12 +718,9 @@ function openEditModal(id){
   document.getElementById('f-lat').value=r.lat||'';document.getElementById('f-lon').value=r.lon||'';
   if(r.lat&&r.lon){const gk=llToGK(5,r.lat,r.lon);if(gk){document.getElementById('f-gkx').value=Math.round(gk.x);document.getElementById('f-gky').value=Math.round(gk.y);}}
   else{document.getElementById('f-gkx').value='';document.getElementById('f-gky').value='';}
-  document.getElementById('f-cat').innerHTML=db.categories.map(c=>
-    `<option value="${c.id}" ${r.catId===c.id?'selected':''}>${c.name}</option>`
-  ).join('');
+  document.getElementById('f-cat').innerHTML=db.categories.map(c=>'<option value="'+c.id+'" '+(r.catId===c.id?'selected':'')+'>'+c.name+'</option>').join('');
   document.getElementById('rm').classList.add('open');
 }
-
 function saveRecord(){
   const name=document.getElementById('f-name').value.trim();
   if(!name){alert('El nombre es obligatorio.');return;}
@@ -849,17 +742,12 @@ function saveRecord(){
     m.on('click',()=>{selRec=rec.id;showDet(rec.id);renderList();});
     markers[rec.id]=m;fly(rec.lat,rec.lon);
   }
-  selRec=rec.id;render();showDet(rec.id);
-  toast(editId?'Registro actualizado':'Registro guardado');
+  selRec=rec.id;render();showDet(rec.id);toast(editId?'Registro actualizado':'Registro guardado');
 }
 
 // ===== CATEGORIA =====
 function openCatModal(){selCol=PAL[0];document.getElementById('cn').value='';renderCP();document.getElementById('cm').classList.add('open');}
-function renderCP(){
-  document.getElementById('cpick').innerHTML=PAL.map(c=>
-    `<div onclick="selCol='${c}';renderCP()" style="width:24px;height:24px;border-radius:50%;background:${c};cursor:pointer;outline:3px solid ${c===selCol?'#fff':'transparent'};outline-offset:2px;transition:all .1s"></div>`
-  ).join('');
-}
+function renderCP(){document.getElementById('cpick').innerHTML=PAL.map(c=>'<div onclick="selCol=''+c+'';renderCP()" style="width:24px;height:24px;border-radius:50%;background:'+c+';cursor:pointer;outline:3px solid '+(c===selCol?'#fff':'transparent')+';outline-offset:2px;transition:all .1s"></div>').join('');}
 function saveCat(){
   const name=document.getElementById('cn').value.trim();if(!name){alert('Ingresar un nombre.');return;}
   db.categories.push({id:uid(),name,color:selCol});save();closeModal('cm');renderLegend();render();toast('Categoria creada');
@@ -874,21 +762,20 @@ function exportDB(){
   a.download='infraestructura_chaco_'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('JSON exportado');
 }
 
-// ===== EXPORT EXCEL CON FILTRO CATEGORIA =====
+// ===== EXPORT EXCEL con filtro categoria =====
 function openExportExcelModal(){
   const sel=document.getElementById('exp-cat');
-  sel.innerHTML=`<option value="all">Todas las categorias (${db.records.length} registros)</option>`;
+  sel.innerHTML='<option value="all">Todas las categorias ('+db.records.length+' registros)</option>';
   db.categories.forEach(c=>{
     const cnt=db.records.filter(r=>r.catId===c.id).length;
-    sel.innerHTML+=`<option value="${c.id}">${c.name} (${cnt} registros)</option>`;
+    sel.innerHTML+='<option value="'+c.id+'">'+c.name+' ('+cnt+' registros)</option>';
   });
-  updateExpCount();
-  document.getElementById('em').classList.add('open');
+  updateExpCount();document.getElementById('em').classList.add('open');
 }
 function updateExpCount(){
   const val=document.getElementById('exp-cat').value;
   const cnt=val==='all'?db.records.length:db.records.filter(r=>r.catId===val).length;
-  document.getElementById('exp-count').textContent=`${cnt} registro${cnt!==1?'s':''} se exportaran al archivo Excel.`;
+  document.getElementById('exp-count').textContent=cnt+' registro'+(cnt!==1?'s':'')+' se exportaran al archivo Excel.';
 }
 function doExportExcel(){
   const catFilter=document.getElementById('exp-cat').value;
@@ -896,56 +783,38 @@ function doExportExcel(){
   if(!records.length){toast('No hay registros para exportar.');return;}
   const catName=catFilter==='all'?'todos':(getCat(catFilter).name.replace(/[^a-zA-Z0-9]/g,'_'));
   const h1=['Fecha','N de Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Km / Progresiva','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Empresa / Responsable','Coordenadas','','','','Observaciones'];
-  const h2=['','','','','','','','','','','','','LATITUD','LONGITUD','GAUSS-KRUGER FAJA 5 X','GAUSS-KRUGER FAJA 5 Y',''];
+  const h2=['','','','','','','','','','','','','LATITUD','LONGITUD','GAUSS-KRUGER FAJA 5','',''];
   const rows=records.map(r=>{
     const cat=getCat(r.catId);
     return[r.fecha||'',r.tramite||'',r.autorizo||'',r.name||'',cat.name,r.ruta||'',r.km||'',r.loc||'',r.estado||'',r.prof||'',r.mat||'',r.resp||'',
       r.lat!=null?parseFloat(r.lat.toFixed(6)):'',r.lon!=null?parseFloat(r.lon.toFixed(6)):'',r.gkx||'',r.gky||'',r.obs||''];
   });
   const ws=XLSX.utils.aoa_to_sheet([h1,h2,...rows]);
-  ws['!cols']=[{wch:12},{wch:14},{wch:14},{wch:32},{wch:22},{wch:20},{wch:14},{wch:16},{wch:12},{wch:18},{wch:22},{wch:22},{wch:14},{wch:14},{wch:22},{wch:22},{wch:30}];
+  ws['!cols']=[{wch:12},{wch:14},{wch:14},{wch:32},{wch:22},{wch:20},{wch:14},{wch:16},{wch:12},{wch:18},{wch:22},{wch:22},{wch:14},{wch:14},{wch:20},{wch:20},{wch:30}];
   ws['!merges']=[
-    {s:{r:0,c:12},e:{r:0,c:15}},
+    {s:{r:0,c:12},e:{r:0,c:15}},{s:{r:1,c:14},e:{r:1,c:15}},
     {s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},
     {s:{r:0,c:3},e:{r:1,c:3}},{s:{r:0,c:4},e:{r:1,c:4}},{s:{r:0,c:5},e:{r:1,c:5}},
     {s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},
     {s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},{s:{r:0,c:16},e:{r:1,c:16}}
   ];
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Hoja1');
-  XLSX.writeFile(wb,`DVP_Infraestructura_${catName}_${new Date().toISOString().slice(0,10)}.xlsx`);
-  closeModal('em');
-  toast(`Excel exportado: ${records.length} registros`);
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Hoja1');
+  XLSX.writeFile(wb,'DVP_Infraestructura_'+catName+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  closeModal('em');toast('Excel exportado: '+records.length+' registros');
 }
 
-// ===== PLANTILLA EXCEL =====
+// ===== TEMPLATE EXCEL =====
 function downloadExcelTemplate(){
   const h1=['Fecha','N de Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Km / Progresiva','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Empresa / Responsable','Coordenadas','','','','Observaciones'];
-  const h2=['','','','','','','','','','','','','LATITUD','LONGITUD','GAUSS-KRUGER FAJA 5 X','GAUSS-KRUGER FAJA 5 Y',''];
+  const h2=['','','','','','','','','','','','','LATITUD','LONGITUD','GAUSS-KRUGER FAJA 5','',''];
   const ex=['01/01/2025','001','Si','Cruce Ruta 11 - Km 50','Cruce de ruta','Ruta Nacional 11','Km 50,0','Resistencia','Bueno','1,20 m','Hormigon','DPV Chaco',-27.451,-58.987,5487230,6956780,'Ejemplo - borrar esta fila'];
-  const guia=[
-    ['GUIA PARA COMPLETAR EL EXCEL'],[''],
-    ['CATEGORIAS DISPONIBLES:'],
-    ...db.categories.map(c=>['  - '+c.name]),
-    [''],
-    ['ESTADOS VALIDOS:'],
-    ['  - Bueno'],['  - Regular'],['  - Critico'],['  - Sin datos'],
-    [''],
-    ['COORDENADAS:'],
-    ['  Opcion 1: ingresar Latitud y Longitud en decimal (ej: -27.451 / -58.987)'],
-    ['  Opcion 2: ingresar X GK Faja 5 e Y GK Faja 5 (la app convierte automaticamente)'],
-    ['  La S (Sur) y O/W (Oeste) se detectan automaticamente si se usan letras']
-  ];
+  const cats=[[''],['CATEGORIAS DISPONIBLES:'],...db.categories.map(c=>['  - '+c.name]),[''],['ESTADOS VALIDOS: Bueno / Regular / Critico / Sin datos'],[''],['COORDENADAS: ingresar Lat/Lon decimal O GaussKruger X,Y Faja 5 (la app convierte automaticamente)']];
   const ws=XLSX.utils.aoa_to_sheet([h1,h2,ex]);
-  ws['!cols']=[{wch:12},{wch:14},{wch:14},{wch:32},{wch:22},{wch:20},{wch:14},{wch:16},{wch:12},{wch:18},{wch:22},{wch:22},{wch:14},{wch:14},{wch:22},{wch:22},{wch:30}];
-  ws['!merges']=[{s:{r:0,c:12},e:{r:0,c:15}},{s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},{s:{r:0,c:3},e:{r:1,c:3}},{s:{r:0,c:4},e:{r:1,c:4}},{s:{r:0,c:5},e:{r:1,c:5}},{s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},{s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},{s:{r:0,c:16},e:{r:1,c:16}}];
-  const wsG=XLSX.utils.aoa_to_sheet(guia);
-  wsG['!cols']=[{wch:70}];
-  const wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Registros');
-  XLSX.utils.book_append_sheet(wb,wsG,'Guia');
-  XLSX.writeFile(wb,'Plantilla_DVP_Infraestructura.xlsx');
-  toast('Plantilla Excel descargada');
+  ws['!cols']=[{wch:12},{wch:14},{wch:14},{wch:32},{wch:22},{wch:20},{wch:14},{wch:16},{wch:12},{wch:18},{wch:22},{wch:22},{wch:14},{wch:14},{wch:20},{wch:20},{wch:30}];
+  ws['!merges']=[{s:{r:0,c:12},e:{r:0,c:15}},{s:{r:1,c:14},e:{r:1,c:15}},{s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},{s:{r:0,c:3},e:{r:1,c:3}},{s:{r:0,c:4},e:{r:1,c:4}},{s:{r:0,c:5},e:{r:1,c:5}},{s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},{s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},{s:{r:0,c:16},e:{r:1,c:16}}];
+  const wsG=XLSX.utils.aoa_to_sheet(cats);wsG['!cols']=[{wch:60}];
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Registros');XLSX.utils.book_append_sheet(wb,wsG,'Guia');
+  XLSX.writeFile(wb,'Plantilla_DVP_Infraestructura.xlsx');toast('Plantilla Excel descargada');
 }
 
 // ===== IMPORT MODAL =====
@@ -953,14 +822,13 @@ function openImportModal(){
   setImpTab('json');
   ['prev-json','prev-csv'].forEach(id=>{const el=document.getElementById(id);el.classList.remove('show');el.innerHTML='';});
   document.getElementById('csv-map-wrap').style.display='none';
-  document.getElementById('btn-imp-csv').disabled=true;
-  _csvParsed=null;
+  document.getElementById('btn-imp-csv').disabled=true;_csvParsed=null;
   document.getElementById('im').classList.add('open');
 }
 function setImpTab(t){
   ['json','csv'].forEach(x=>{
-    document.getElementById(`itab-${x}`).classList.toggle('on',x===t);
-    document.getElementById(`ibody-${x}`).classList.toggle('on',x===t);
+    document.getElementById('itab-'+x).classList.toggle('on',x===t);
+    document.getElementById('ibody-'+x).classList.toggle('on',x===t);
   });
 }
 function dzOver(e,id){e.preventDefault();document.getElementById(id).classList.add('over');}
@@ -976,46 +844,40 @@ function processJSONFile(f){
       const p=JSON.parse(ev.target.result);
       if(!p.categories||!p.records)throw new Error('Formato invalido');
       const prev=document.getElementById('prev-json');
-      const ts=p.savedAt?new Date(p.savedAt).toLocaleString('es-AR'):'--';
-      prev.innerHTML=`<b style="color:#a0d0a0">Archivo valido</b><br>Categorias: ${p.categories.length}<br>Registros: ${p.records.length}<br>Guardado: ${ts}<br><br><button class="cbtn" style="margin:0;padding:7px" id="btn-confirm-json">Confirmar — Reemplazar base actual</button>`;
+      prev.innerHTML='<b style="color:#a0d0a0">Archivo valido</b><br>Categorias: '+p.categories.length+'<br>Registros: '+p.records.length+'<br>Guardado: '+(p.savedAt?new Date(p.savedAt).toLocaleString('es-AR'):'--')+'<br><br><button class="cbtn" style="margin:0;padding:7px" onclick="confirmImportJSON('+JSON.stringify(JSON.stringify(p))+')">Confirmar - Reemplazar base actual</button>';
       prev.classList.add('show');
-      document.getElementById('btn-confirm-json').onclick=()=>confirmImportJSON(p);
-    }catch(e){
-      const prev=document.getElementById('prev-json');
-      prev.innerHTML='<span style="color:#c07070">Archivo invalido o formato incorrecto.</span>';
-      prev.classList.add('show');
-    }
+    }catch(e){const prev=document.getElementById('prev-json');prev.innerHTML='<span style="color:#c07070">Archivo invalido.</span>';prev.classList.add('show');}
   };
   r.readAsText(f);
 }
-function confirmImportJSON(p){
+function confirmImportJSON(jsonStr){
   if(!confirm('Reemplazar toda la base de datos?'))return;
-  db=p;db.records=enrichRecs(db.records);
-  save();selRec=null;selCat='all';selAlpha='all';
-  closeDet();refreshMarkers();renderLegend();render();closeModal('im');
-  toast(`Base importada: ${db.records.length} registros`);
+  try{
+    const p=JSON.parse(jsonStr);db=p;db.records=enrichRecs(db.records);
+    save();selRec=null;selCat='all';selAlpha='all';
+    closeDet();refreshMarkers();renderLegend();render();closeModal('im');
+    toast('Base importada: '+db.records.length+' registros');
+  }catch(e){alert('Error al importar.');}
 }
 
 // ===== IMPORT CSV/EXCEL =====
 let _csvParsed=null;
 const CSV_FIELDS={
-  nombre:['nombre','name','denominacion'],
+  nombre:['nombre','name','denominacion','nombre___denominacion','nombre_denominacion','denominacion_nombre'],
   catId:['categoria','category','tipo','cat'],
-  ruta:['ruta','calle','route','camino'],
-  km:['km','kilometro','progresiva','pk'],
+  ruta:['ruta','calle','route','camino','ruta___calle','ruta_calle'],
+  km:['km','kilometro','progresiva','pk','km___progresiva','km_progresiva'],
   loc:['localidad','ciudad','loc','lugar','municipio'],
   estado:['estado','status','condicion'],
-  prof:['profundidad','altura','prof'],
-  mat:['diametro_tipo','diametro','tipo','material','tension','mat','diam'],
-  resp:['empresa','responsable','resp'],
+  prof:['profundidad','altura','prof','profundidad___altura','profundidad_altura'],
+  mat:['diametro_tipo','diametro','tipo','material','tension','mat','diam','diametro___tension___tipo','diametro_tension_tipo'],
+  resp:['empresa','responsable','resp','empresa___responsable','empresa_responsable'],
   lat:['latitud','lat','latitude'],
   lon:['longitud','lon','longitude','lng'],
-  gkx:['gk_x','gkx','x_gk','x_este','este'],
-  gky:['gk_y','gky','y_gk','y_norte','norte'],
+  gkx:['gk_x','gkx','x_gk','x_este','este','gauss_kruger_faja_5_x','gauss_kruger_faja_5'],
+  gky:['gk_y','gky','y_gk','y_norte','norte','gauss_kruger_faja_5_y'],
   obs:['observaciones','obs','notas','comentarios']
 };
-
-function normH(h){return String(h||'').trim().toLowerCase().replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/\s+/g,'_');}
 
 function processImportFile(f){
   const ext=f.name.split('.').pop().toLowerCase();
@@ -1026,131 +888,90 @@ function processImportFile(f){
         const wb=XLSX.read(ev.target.result,{type:'array'});
         const ws=wb.Sheets[wb.SheetNames[0]];
         const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        // Buscar la fila de encabezado (puede ser fila 1 o 2 del Excel DVP)
         let headerRow=0;
-        for(let i=0;i<Math.min(4,rows.length);i++){
-          if(rows[i].some(c=>normH(c).includes('nombre'))){headerRow=i;break;}
+        for(let i=0;i<Math.min(3,rows.length);i++){
+          if(rows[i].some(c=>c&&String(c).toLowerCase().includes('nombre'))){headerRow=i;break;}
         }
-        const headers=rows[headerRow].map(normH);
-        const colMap={};
-        headers.forEach((h,i)=>{
-          for(const[field,aliases]of Object.entries(CSV_FIELDS)){
-            if(aliases.includes(h)){colMap[i]=field;break;}
-          }
+        // Normalizar header: quitar especiales, colapsar espacios en _
+        const normHdr=h=>String(h||'').trim().toLowerCase()
+          .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i')
+          .replace(/[óòö]/g,'o').replace(/[úùü]/g,'u')
+          .replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,'_').replace(/^_+|_+$/g,'');
+        // Manejar doble fila de encabezado del Excel DVP (Coordenadas / LATITUD,LONGITUD,GK X,GK Y)
+        const row1=rows[headerRow]||[];
+        const row2=rows[headerRow+1]||[];
+        const headers=row1.map((h,i)=>{
+          const n1=normHdr(h);const n2=normHdr(row2[i]||'');
+          // Si la celda de fila1 esta vacia o dice 'coordenadas', usar fila2
+          return(!n1||n1==='coordenadas')?n2:n1;
         });
-        const dataRows=rows.slice(headerRow+1).filter(r=>r.some(c=>c!==''&&c!=null));
-        const parsed={headers,colMap,rows:dataRows.map(row=>{
-          const obj={};
-          headers.forEach((h,i)=>{if(colMap[i])obj[colMap[i]]=String(row[i]||'').trim();});
-          return obj;
-        }),total:dataRows.length};
+        const colMap={};
+        headers.forEach((h,i)=>{for(const[field,aliases]of Object.entries(CSV_FIELDS)){if(aliases.includes(h)){colMap[i]=field;break;}}});
+        // Datos empiezan despues de las filas de encabezado (saltear tambien fila2 si hay doble encabezado)
+        const dataStart=headerRow+(row2.some(c=>c&&String(c).toLowerCase().match(/latitud|longitud|gauss/))?2:1);
+        const dataRows=rows.slice(dataStart).filter(r=>r.some(c=>c!==''&&c!=null));
+        const parsed={headers,colMap,rows:dataRows.map(row=>{const obj={};headers.forEach((h,i)=>{if(colMap[i])obj[colMap[i]]=String(row[i]||'').trim();});return obj;}),total:dataRows.length};
         _csvParsed=parsed;showImportPreview(parsed);
-      }catch(e){
-        const p=document.getElementById('prev-csv');
-        p.innerHTML=`<span style="color:#c07070">Error al leer Excel: ${e.message}</span>`;
-        p.classList.add('show');
-      }
+      }catch(e){const p=document.getElementById('prev-csv');p.innerHTML='<span style="color:#c07070">Error al leer Excel: '+e.message+'</span>';p.classList.add('show');}
     };
     r.readAsArrayBuffer(f);
   }else{
     const r=new FileReader();
-    r.onload=ev=>{
-      try{const result=parseCSVText(ev.target.result);_csvParsed=result;showImportPreview(result);}
-      catch(e){const p=document.getElementById('prev-csv');p.innerHTML=`<span style="color:#c07070">Error: ${e.message}</span>`;p.classList.add('show');}
-    };
+    r.onload=ev=>{try{const result=parseCSVText(ev.target.result);_csvParsed=result;showImportPreview(result);}catch(e){const p=document.getElementById('prev-csv');p.innerHTML='<span style="color:#c07070">Error: '+e.message+'</span>';p.classList.add('show');}};
     r.readAsText(f,'UTF-8');
   }
 }
-
-function detectSep(line){const c={';':0,',':0,'\t':0};for(const ch of line)if(c[ch]!==undefined)c[ch]++;return Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0];}
+function detectSep(line){const c={';':0,',':0,'	':0};for(const ch of line)if(c[ch]!==undefined)c[ch]++;return Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0];}
 function splitCSV(line,sep){const res=[];let cur='',inQ=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}else if(c===sep&&!inQ){res.push(cur);cur='';}else cur+=c;}res.push(cur);return res;}
-
 function parseCSVText(text){
   text=text.replace(/^\uFEFF/,'');
   const lines=text.split(/\r?\n/).filter(l=>l.trim());
   if(lines.length<2)throw new Error('El archivo debe tener encabezado y al menos un registro.');
   const sep=detectSep(lines[0]);
-  const headers=splitCSV(lines[0],sep).map(normH);
-  const colMap={};
-  headers.forEach((h,i)=>{
-    for(const[field,aliases]of Object.entries(CSV_FIELDS)){
-      if(aliases.includes(h)){colMap[i]=field;break;}
-    }
-  });
-  const rows=[];
-  for(let i=1;i<lines.length;i++){
-    if(!lines[i].trim())continue;
-    const cells=splitCSV(lines[i],sep);
-    const obj={};
-    headers.forEach((h,idx)=>{if(colMap[idx])obj[colMap[idx]]=(cells[idx]||'').trim();});
-    rows.push(obj);
-  }
+  const headers=splitCSV(lines[0],sep).map(h=>h.trim().toLowerCase().replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,'_').replace(/^_+|_+$/g,''));
+  const colMap={};headers.forEach((h,i)=>{let f=null;for(const[field,aliases]of Object.entries(CSV_FIELDS)){if(aliases.includes(h)){f=field;break;}}colMap[i]=f;});
+  const rows=[];for(let i=1;i<lines.length;i++){if(!lines[i].trim())continue;const cells=splitCSV(lines[i],sep);const obj={};headers.forEach((h,idx)=>{if(colMap[idx])obj[colMap[idx]]=(cells[idx]||'').trim();});rows.push(obj);}
   return{headers,colMap,rows,total:rows.length};
 }
-
 function showImportPreview(result){
   const mapped=[...new Set(Object.values(result.colMap).filter(Boolean))];
   const p=document.getElementById('prev-csv');
-  const preview=result.rows.slice(0,3).map(r=>`- ${r.nombre||'sin nombre'}${r.loc?' - '+r.loc:''}`).join('<br>');
-  p.innerHTML=`<b style="color:#a0d0a0">Archivo leido</b><br>Columnas: ${result.headers.length} | Registros: ${result.total}<br>Campos mapeados: <b style="color:#6aaf6a">${mapped.length}</b><br><br><b>Vista previa:</b><br>${preview}`;
+  p.innerHTML='<b style="color:#a0d0a0">Archivo leido</b><br>Columnas: '+result.headers.length+' | Registros: '+result.total+'<br>Campos mapeados: <b style="color:#6aaf6a">'+mapped.length+'</b><br><br><b>Vista previa:</b><br>'+result.rows.slice(0,3).map(r=>'- '+(r.nombre||'sin nombre')+(r.loc?' - '+r.loc:'')).join('<br>');
   p.classList.add('show');
-  buildMapUI(result);
-  document.getElementById('csv-map-wrap').style.display='block';
-  document.getElementById('btn-imp-csv').disabled=false;
+  buildMapUI(result);document.getElementById('csv-map-wrap').style.display='block';document.getElementById('btn-imp-csv').disabled=false;
 }
-
 function buildMapUI(result){
-  const fields=[
-    {k:'nombre',l:'Nombre *'},{k:'catId',l:'Categoria'},{k:'ruta',l:'Ruta'},{k:'km',l:'Km'},
-    {k:'loc',l:'Localidad'},{k:'estado',l:'Estado'},{k:'prof',l:'Profundidad'},{k:'mat',l:'Diametro/Tipo'},
-    {k:'resp',l:'Empresa'},{k:'lat',l:'Latitud'},{k:'lon',l:'Longitud'},{k:'gkx',l:'GK X'},{k:'gky',l:'GK Y'},{k:'obs',l:'Observaciones'}
-  ];
+  const fields=[{k:'nombre',l:'Nombre *'},{k:'catId',l:'Categoria'},{k:'ruta',l:'Ruta'},{k:'km',l:'Km'},{k:'loc',l:'Localidad'},{k:'estado',l:'Estado'},{k:'prof',l:'Profundidad'},{k:'mat',l:'Diametro/Tipo'},{k:'resp',l:'Empresa'},{k:'lat',l:'Latitud'},{k:'lon',l:'Longitud'},{k:'gkx',l:'GK X'},{k:'gky',l:'GK Y'},{k:'obs',l:'Observaciones'}];
   const ftoc={};Object.entries(result.colMap).forEach(([idx,f])=>{if(f)ftoc[f]=parseInt(idx);});
-  document.getElementById('csv-map-grid').innerHTML=fields.map(f=>`
-    <div class="csv-map-row">
-      <div class="csv-map-lbl">${f.l}</div>
-      <select class="fsel" style="margin:0" data-field="${f.k}" onchange="updMap(this)">
-        <option value="">- Ignorar -</option>
-        ${result.headers.map((h,i)=>`<option value="${i}" ${ftoc[f.k]===i?'selected':''}>${h}</option>`).join('')}
-      </select>
-    </div>`).join('');
+  document.getElementById('csv-map-grid').innerHTML=fields.map(f=>'<div class="csv-map-row"><div class="csv-map-lbl">'+f.l+'</div><select class="fsel" style="margin:0" data-field="'+f.k+'" onchange="updMap(this)"><option value="">- Ignorar -</option>'+result.headers.map((h,i)=>'<option value="'+i+'" '+(ftoc[f.k]===i?'selected':'')+'>'+h+'</option>').join('')+'</select></div>').join('');
 }
-
-function updMap(sel){
-  if(!_csvParsed)return;
-  const f=sel.dataset.field;
-  const ci=sel.value===''?null:parseInt(sel.value);
-  Object.keys(_csvParsed.colMap).forEach(i=>{if(_csvParsed.colMap[i]===f)_csvParsed.colMap[i]=null;});
-  if(ci!==null)_csvParsed.colMap[ci]=f;
-}
-
+function updMap(sel){if(!_csvParsed)return;const f=sel.dataset.field;const ci=sel.value===''?null:parseInt(sel.value);Object.keys(_csvParsed.colMap).forEach(i=>{if(_csvParsed.colMap[i]===f)_csvParsed.colMap[i]=null;});if(ci!==null)_csvParsed.colMap[ci]=f;}
 function doImportCSV(){
   if(!_csvParsed)return;
   if(!Object.values(_csvParsed.colMap).includes('nombre')){alert('El campo Nombre es obligatorio.');return;}
-  const eMap={bueno:'Bueno',regular:'Regular',critico:'Critico','sin datos':'Sin datos','sin_datos':'Sin datos',malo:'Critico',''   :'Sin datos'};
+  const eMap={'bueno':'Bueno','regular':'Regular','critico':'Critico','malo':'Critico','sin datos':'Sin datos','sin_datos':'Sin datos',''    :'Sin datos'};
   let ok=0,skip=0;
   _csvParsed.rows.forEach(row=>{
-    const g=f=>row[f]||'';
-    const name=g('nombre').trim();if(!name){skip++;return;}
-    let catId=db.categories[0].id;
-    const cr=g('catId').toLowerCase();
-    if(cr){const found=db.categories.find(c=>c.name.toLowerCase().includes(cr)||cr.includes(c.name.toLowerCase().slice(0,5)));if(found)catId=found.id;}
-    let lat=null,lon=null,gkx=null,gky=null;
-    const pLat=parseCoord(g('lat').replace(',','.'));
-    const pLon=parseCoord(g('lon').replace(',','.'));
-    if(!isNaN(pLat)&&!isNaN(pLon)){lat=pLat;lon=pLon;}
-    else{
-      const px=parseFloat(g('gkx').replace(',','.'));
-      const py=parseFloat(g('gky').replace(',','.'));
-      if(!isNaN(px)&&!isNaN(py)){const ll=gkToLL(5,px,py);if(ll){lat=ll.lat;lon=ll.lon;}}
+    const g=f=>row[f]||'';const name=g('nombre').trim();if(!name){skip++;return;}
+    let catId=db.categories[0].id;const cr=g('catId').toLowerCase();
+    if(cr){
+      // Buscar categoria: primero exacto, luego parcial
+      const normCr=cr.replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').toLowerCase().trim();
+      let found=db.categories.find(c=>{
+        const normCat=c.name.replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').toLowerCase().trim();
+        return normCat===normCr||normCat.includes(normCr)||normCr.includes(normCat);
+      });
+      if(found)catId=found.id;
     }
+    let lat=null,lon=null,gkx=null,gky=null;
+    const pLat=parseCoord(g('lat').replace(',','.'));const pLon=parseCoord(g('lon').replace(',','.'));
+    if(!isNaN(pLat)&&!isNaN(pLon)){lat=pLat;lon=pLon;}
+    else{const px=parseFloat(g('gkx').replace(',','.'));const py=parseFloat(g('gky').replace(',','.'));if(!isNaN(px)&&!isNaN(py)){const ll=gkToLL(5,px,py);if(ll){lat=ll.lat;lon=ll.lon;}}}
     if(lat!==null){const gk=llToGK(5,lat,lon);if(gk){gkx=Math.round(gk.x);gky=Math.round(gk.y);}}
-    db.records.push({id:uid(),name,catId,ruta:g('ruta'),km:g('km'),loc:g('loc'),
-      estado:eMap[g('estado').toLowerCase()]||'Sin datos',prof:g('prof'),mat:g('mat'),resp:g('resp'),obs:g('obs'),
-      lat,lon,gkx,gky});
-    ok++;
+    db.records.push({id:uid(),name,catId,ruta:g('ruta'),km:g('km'),loc:g('loc'),estado:eMap[g('estado').toLowerCase()]||'Sin datos',prof:g('prof'),mat:g('mat'),resp:g('resp'),obs:g('obs'),lat,lon,gkx,gky});ok++;
   });
-  save();refreshMarkers();render();closeModal('im');_csvParsed=null;
-  toast(`Importados: ${ok} registros${skip?` (${skip} omitidos)`:''}`);
+  save();refreshMarkers();render();closeModal('im');_csvParsed=null;toast('Importados: '+ok+' registros'+(skip?' ('+skip+' omitidos)':''));
 }
 
 // ===== RESET =====
