@@ -458,11 +458,33 @@ function save(){
 // ===== MAPA =====
 function initMap(){
   map=L.map('map',{center:[-26.5,-60.5],zoom:8});
-  const esri=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri World Imagery',maxZoom:19,minZoom:4});
-  const esriRef=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri Reference',maxZoom:19,opacity:0.7});
-  const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap',maxZoom:19});
-  esri.addTo(map);esriRef.addTo(map);
-  L.control.layers({'Satelite (Esri)':esri,'Calles (OSM)':osm},{},{ position:'topleft',collapsed:true}).addTo(map);
+
+  // Google Hibrido (satelite + nombres de rutas y localidades)
+  const googleHyb=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+    {attribution:'Google Hybrid',maxZoom:21,minZoom:1});
+  // Google Satelite puro (maxima resolucion, sin texto)
+  const googleSat=L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+    {attribution:'Google Satellite',maxZoom:21,minZoom:1});
+  // Esri Satelite (alternativa si Google no carga)
+  const esriSat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    {attribution:'Esri World Imagery',maxZoom:19,minZoom:4});
+  // OpenStreetMap (calles, siempre disponible)
+  const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {attribution:'OpenStreetMap contributors',maxZoom:19,minZoom:1});
+
+  // Capa por defecto: Google Hibrido
+  googleHyb.addTo(map);
+
+  L.control.layers(
+    {
+      'Google Hibrido (recomendado)': googleHyb,
+      'Google Satelite':              googleSat,
+      'Esri Satelite':                esriSat,
+      'OpenStreetMap (calles)':       osm
+    },
+    {},
+    {position:'topleft', collapsed:true}
+  ).addTo(map);
   map.on('click',function(e){
     if(document.getElementById('rm').classList.contains('open')){
       document.getElementById('f-lat').value=e.latlng.lat.toFixed(6);
