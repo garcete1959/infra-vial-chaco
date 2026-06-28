@@ -516,15 +516,18 @@ function getFiltered(){
 }
 function renderAlpha(){
   const letters=getLetters();
-  const t='<button class="ab all '+(selAlpha==='all'?'on':'')+'" onclick="selAlpha='all';render()">Todos</button>';
-  const bs='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l=>'<button class="ab '+((!letters.includes(l))?'off':'')+(selAlpha===l?' on':'')+'" onclick="'+(letters.includes(l)?'selAlpha=''+l+'';render()':'')+'">'+ l+'</button>').join('');
+  const t=`<button class="ab all ${selAlpha==='all'?'on':''}" onclick="selAlpha='all';render()">Todos</button>`;
+  const bs='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(l=>{
+    const has=letters.includes(l);const active=selAlpha===l;
+    return `<button class="ab ${!has?'off':''} ${active?'on':''}" ${has?`onclick="selAlpha='${l}';render()"`:''} >${l}</button>`;
+  }).join('');
   document.getElementById('abar').innerHTML=t+bs;
 }
 function renderCats(){
-  const all='<button class="ccat '+(selCat==='all'?'on':'')+'" onclick="selCat='all';selAlpha='all';render()"><span class="cdot" style="background:#4a8a4a"></span>Todas las categorias<span class="ccnt">'+db.records.length+'</span></button>';
+  const all=`<button class="ccat ${selCat==='all'?'on':''}" onclick="selCat='all';selAlpha='all';render()"><span class="cdot" style="background:#4a8a4a"></span>Todas las categorias<span class="ccnt">${db.records.length}</span></button>`;
   const cats=db.categories.map(c=>{
     const cnt=db.records.filter(r=>r.catId===c.id).length;
-    return '<button class="ccat '+(selCat===c.id?'on':'')+'" onclick="selCat=''+c.id+'';selAlpha='all';render()"><span class="cdot" style="background:'+c.color+'"></span>'+c.name+'<span class="ccnt">'+cnt+'</span></button>';
+    return `<button class="ccat ${selCat===c.id?'on':''}" onclick="selCat='${c.id}';selAlpha='all';render()"><span class="cdot" style="background:${c.color}"></span>${c.name}<span class="ccnt">${cnt}</span></button>`;
   }).join('');
   document.getElementById('clist').innerHTML=all+cats+'<button class="add-cat" onclick="openCatModal()">+ Nueva categoria</button>';
 }
@@ -534,14 +537,15 @@ function renderList(){
   if(!list.length){document.getElementById('rlist').innerHTML='<div style="color:#2a4a2a;font-size:11px;text-align:center;padding:18px 0">Sin resultados</div>';return;}
   document.getElementById('rlist').innerHTML=list.map(r=>{
     const cat=getCat(r.catId);
-    return '<div class="rcard '+(selRec===r.id?'sel':'')+'" onclick="clickRec(''+r.id+'')">'+
-      '<div class="rname"><span class="rdot" style="background:'+cat.color+'"></span>'+r.name+'</div>'+
-      '<div class="rsub">'+(r.ruta&&r.km&&r.loc?r.ruta+' - '+r.km+' - '+r.loc:r.ruta||r.loc||'')+'</div>'+
-      '<div class="rtags">'+
-        '<span class="rtag" style="background:'+cat.color+'25;color:'+cat.color+'">'+cat.name+'</span>'+
-        '<span class="rtag" style="background:'+(EB[r.estado]||'#1a1a1a')+';color:'+(ET[r.estado]||'#3a5a3a')+'">'+r.estado+'</span>'+
-        (r.lat?'<span class="rtag" style="background:#0a1a0a;color:#2a6a2a">GPS</span>':'')+
-      '</div></div>';
+    const sub=[r.ruta,r.km,r.loc].filter(Boolean).join(' - ');
+    return `<div class="rcard ${selRec===r.id?'sel':''}" onclick="clickRec('${r.id}')">
+      <div class="rname"><span class="rdot" style="background:${cat.color}"></span>${r.name}</div>
+      <div class="rsub">${sub}</div>
+      <div class="rtags">
+        <span class="rtag" style="background:${cat.color}25;color:${cat.color}">${cat.name}</span>
+        <span class="rtag" style="background:${EB[r.estado]||'#1a1a1a'};color:${ET[r.estado]||'#3a5a3a'}">${r.estado}</span>
+        ${r.lat?'<span class="rtag" style="background:#0a1a0a;color:#2a6a2a">GPS</span>':''}
+      </div></div>`;
   }).join('');
 }
 function render(){renderCats();renderAlpha();renderList();}
@@ -555,7 +559,10 @@ function renderLocs(){
     const cnt=db.records.filter(r=>r.loc===loc).length;
     const cols=[...new Set(db.records.filter(r=>r.loc===loc).map(r=>getCat(r.catId).color))];
     const dots=cols.map(c=>'<span style="width:6px;height:6px;border-radius:50%;background:'+c+';display:inline-block"></span>').join('');
-    return '<button class="loc-btn" onclick="selectLoc(''+loc.replace(/'/g,"\\'")+'')'+'"><span style="display:flex;gap:3px;align-items:center">'+dots+'</span><span style="flex:1">'+loc+'</span><span class="lcnt">'+cnt+'</span></button>';
+    const escaped=loc.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return `<button class="loc-btn" onclick="selectLoc('${escaped}')">
+      <span style="display:flex;gap:3px;align-items:center">${dots}</span>
+      <span style="flex:1">${loc}</span><span class="lcnt">${cnt}</span></button>`;
   }).join('');
 }
 function selectLoc(loc){
@@ -615,11 +622,13 @@ function goLL(){
   if(tmpMark)map.removeLayer(tmpMark);
   tmpMark=L.circleMarker([lat,lon],{radius:9,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.4,weight:2}).addTo(map);
   const res=document.getElementById('r-ll');
-  res.innerHTML='<b>Lat:</b> '+lat.toFixed(6)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+lat.toFixed(6)+'').then(()=>toast('Copiado'))">copiar</button><br>'+
-    '<b>Lon:</b> '+lon.toFixed(6)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+lon.toFixed(6)+'').then(()=>toast('Copiado'))">copiar</button>'+
-    (gk?'<br><b>X GK F'+faja+':</b> '+Math.round(gk.x)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+Math.round(gk.x)+'').then(()=>toast('Copiado'))">copiar</button><br>'+
-    '<b>Y GK F'+faja+':</b> '+Math.round(gk.y)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+Math.round(gk.y)+'').then(()=>toast('Copiado'))">copiar</button>':'');
-  res.classList.add('show');toast('Punto localizado');
+  const xR=gk?Math.round(gk.x):null;
+  const yR=gk?Math.round(gk.y):null;
+  res.innerHTML=
+    `<b>Lat:</b> ${lat.toFixed(6)} <button class="copy-btn" onclick="copyVal(${lat.toFixed(6)})">copiar</button><br>`+
+    `<b>Lon:</b> ${lon.toFixed(6)} <button class="copy-btn" onclick="copyVal(${lon.toFixed(6)})">copiar</button>`+
+    (gk?`<br><b>X GK F${faja}:</b> ${xR} <button class="copy-btn" onclick="copyVal(${xR})">copiar</button><br>`+
+        `<b>Y GK F${faja}:</b> ${yR} <button class="copy-btn" onclick="copyVal(${yR})">copiar</button>`:'');
 }
 function goGK(){
   const faja=parseInt(document.getElementById('gk-faja').value)||5;
@@ -636,9 +645,9 @@ function goGK(){
   if(tmpMark)map.removeLayer(tmpMark);
   tmpMark=L.circleMarker([ll.lat,ll.lon],{radius:9,color:'#c8a050',fillColor:'#c8a050',fillOpacity:.4,weight:2}).addTo(map);
   const res=document.getElementById('r-gk');
-  res.innerHTML='<b>Lat:</b> '+ll.lat.toFixed(6)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+ll.lat.toFixed(6)+'').then(()=>toast('Copiado'))">copiar</button><br>'+
-    '<b>Lon:</b> '+ll.lon.toFixed(6)+' <button class="copy-btn" onclick="navigator.clipboard.writeText(''+ll.lon.toFixed(6)+'').then(()=>toast('Copiado'))">copiar</button>';
-  res.classList.add('show');toast('Convertido y localizado');
+  res.innerHTML=
+    `<b>Lat:</b> ${ll.lat.toFixed(6)} <button class="copy-btn" onclick="copyVal(${ll.lat.toFixed(6)})">copiar</button><br>`+
+    `<b>Lon:</b> ${ll.lon.toFixed(6)} <button class="copy-btn" onclick="copyVal(${ll.lon.toFixed(6)})">copiar</button>`;
 }
 
 // ===== DETALLE =====
@@ -662,7 +671,10 @@ function showDet(id){
       (r.gky?'<div class="det-f"><label>GK Faja 5 Y</label><span style="font-family:monospace;font-size:10px">'+r.gky+'</span></div>':'')+
       (r.obs?'<div class="det-f full"><label>Observaciones</label><div class="det-obs">'+r.obs+'</div></div>':'')+
     '</div>'+
-    '<div class="det-acts"><button class="det-edit" onclick="openEditModal(''+r.id+'')">Editar</button><button class="det-del" onclick="delRec(''+r.id+'')">Eliminar</button></div>';
+    `<div class="det-acts">
+      <button class="det-edit" onclick="openEditModal('${r.id}')">Editar</button>
+      <button class="det-del" onclick="delRec('${r.id}')">Eliminar</button>
+    </div>`;
   document.getElementById('det').classList.add('show');
 }
 function closeDet(){document.getElementById('det').classList.remove('show');selRec=null;renderList();}
@@ -747,7 +759,11 @@ function saveRecord(){
 
 // ===== CATEGORIA =====
 function openCatModal(){selCol=PAL[0];document.getElementById('cn').value='';renderCP();document.getElementById('cm').classList.add('open');}
-function renderCP(){document.getElementById('cpick').innerHTML=PAL.map(c=>'<div onclick="selCol=''+c+'';renderCP()" style="width:24px;height:24px;border-radius:50%;background:'+c+';cursor:pointer;outline:3px solid '+(c===selCol?'#fff':'transparent')+';outline-offset:2px;transition:all .1s"></div>').join('');}
+function renderCP(){
+  document.getElementById('cpick').innerHTML=PAL.map(c=>
+    `<div onclick="selCol='${c}';renderCP()" style="width:24px;height:24px;border-radius:50%;background:${c};cursor:pointer;outline:3px solid ${c===selCol?'#fff':'transparent'};outline-offset:2px;transition:all .1s"></div>`
+  ).join('');
+}
 function saveCat(){
   const name=document.getElementById('cn').value.trim();if(!name){alert('Ingresar un nombre.');return;}
   db.categories.push({id:uid(),name,color:selCol});save();closeModal('cm');renderLegend();render();toast('Categoria creada');
