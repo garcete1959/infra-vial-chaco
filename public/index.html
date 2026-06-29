@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DVP Chaco — Infraestructura Vial</title>
+<title>DVP Chaco — Sistema de Cruces Vial</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/proj4@2.9.0/dist/proj4.js"></script>
@@ -73,7 +73,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 .copy-btn:hover{background:#1a3a1a;color:#6aaf6a}
 .inst-s{padding:7px 10px;border-radius:6px;border-left:3px solid #2a5a2a;background:#111811;margin-bottom:5px;font-size:10px;color:#6a8a6a;line-height:1.7}
 .inst-h{font-size:10px;font-weight:700;color:#4a8a4a;text-transform:uppercase;letter-spacing:.06em;margin:8px 0 5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px}
-.det{position:absolute;bottom:14px;right:14px;width:270px;background:#0d170d;border:1px solid #2a5a2a;border-radius:10px;padding:12px;z-index:1000;display:none;max-height:70vh;overflow-y:auto}
+.det{position:absolute;bottom:14px;right:14px;width:310px;background:#0d170d;border:1px solid #2a5a2a;border-radius:10px;padding:12px 12px 6px 12px;z-index:1000;display:none;max-height:82vh;overflow-y:auto;overflow-x:hidden}
 .det.show{display:block}
 .det::-webkit-scrollbar{width:3px}
 .det::-webkit-scrollbar-thumb{background:#1e3a1e}
@@ -147,8 +147,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
   <img src="data:image/png;base64,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" alt="DVP" style="height:36px;border-radius:6px;flex-shrink:0">
   <div style="width:1px;height:30px;background:#1e3a1e;flex-shrink:0"></div>
   <div>
-    <div class="hdr-title">Sistema de Registro de Infraestructura Vial</div>
-    <div class="hdr-sub">Direccion de Vialidad Provincial — Provincia del Chaco &nbsp;|&nbsp; POSGAR 2007 / WGS84</div>
+    <div class="hdr-title">Sistema de Cruces Vial</div>
+    <div class="hdr-sub">Direccion de Tierras, Vialidad Provincial</div>
   </div>
   <div class="hdr-right">
     <span id="save-st"></span>
@@ -260,6 +260,10 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 <div class="overlay" id="rm">
   <div class="modal" style="max-width:560px">
     <h2 id="mtitle">Nuevo registro</h2>
+    <div class="frow">
+      <div class="fg"><label>Fecha</label><input type="text" id="f-fecha" placeholder="Ej: 15/06/2025"></div>
+      <div class="fg"><label>N° de Tramite</label><input type="text" id="f-tramite" placeholder="Ej: 001/2025"></div>
+    </div>
     <div class="fg"><label>Nombre / Denominacion *</label><input type="text" id="f-name" placeholder="Ej: Cruce Ruta 11 - Km 234"></div>
     <div class="fg"><label>Categoria *</label><select id="f-cat"></select></div>
     <div class="frow">
@@ -718,19 +722,40 @@ function goGK(){
 function showDet(id){
   const r=db.records.find(x=>x.id===id);if(!r)return;
   const cat=getCat(r.catId);
-  const fv=v=>v!=null?v:'--';
+  const fv=v=>(v!=null&&v!=='')?v:'--';
+
+  // Bloque de coordenadas con 4 sub-campos en grilla 2x2
   const coordBlock=(label,lat,lon,gkx,gky)=>{
-    if(!lat&&!gkx)return'';
-    return `<div class="det-f full" style="margin-top:4px">
-      <label>${label}</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:3px">
-        ${lat?`<div><span style="font-size:9px;color:#3a6a3a">LAT</span><br><span style="font-family:monospace;font-size:10px">${lat.toFixed(6)}</span></div>`:''}
-        ${lon?`<div><span style="font-size:9px;color:#3a6a3a">LON</span><br><span style="font-family:monospace;font-size:10px">${lon.toFixed(6)}</span></div>`:''}
-        ${gkx?`<div><span style="font-size:9px;color:#3a6a3a">GK X</span><br><span style="font-family:monospace;font-size:10px">${gkx}</span></div>`:''}
-        ${gky?`<div><span style="font-size:9px;color:#3a6a3a">GK Y</span><br><span style="font-family:monospace;font-size:10px">${gky}</span></div>`:''}
+    if(!lat&&!lon&&!gkx&&!gky)return'';
+    const latV=lat!=null?lat.toFixed(6):null;
+    const lonV=lon!=null?lon.toFixed(6):null;
+    return `<div class="det-f full" style="margin-top:6px;padding:8px 10px">
+      <label style="color:#6aaf6a;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:5px">${label}</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+        ${latV?`<div style="background:#0a1a0a;border-radius:4px;padding:4px 6px"><div style="font-size:8px;color:#3a6a3a;font-weight:700;margin-bottom:1px">LATITUD</div><div style="font-family:monospace;font-size:10px;color:#a0d0a0">${latV}</div></div>`:''}
+        ${lonV?`<div style="background:#0a1a0a;border-radius:4px;padding:4px 6px"><div style="font-size:8px;color:#3a6a3a;font-weight:700;margin-bottom:1px">LONGITUD</div><div style="font-family:monospace;font-size:10px;color:#a0d0a0">${lonV}</div></div>`:''}
+        ${gkx?`<div style="background:#0a1a0a;border-radius:4px;padding:4px 6px"><div style="font-size:8px;color:#3a6a3a;font-weight:700;margin-bottom:1px">GK X FAJA 5</div><div style="font-family:monospace;font-size:10px;color:#a0d0a0">${gkx}</div></div>`:''}
+        ${gky?`<div style="background:#0a1a0a;border-radius:4px;padding:4px 6px"><div style="font-size:8px;color:#3a6a3a;font-weight:700;margin-bottom:1px">GK Y FAJA 5</div><div style="font-family:monospace;font-size:10px;color:#a0d0a0">${gky}</div></div>`:''}
       </div>
     </div>`;
   };
+
+  // Lógica de coordenadas:
+  // Si hay inicio Y fin -> mostrar inicio y fin (y omitir punto central)
+  // Si solo hay punto central -> mostrarlo como "Coordenadas del cruce"
+  const hasIni=r.lat1||r.gkx1;
+  const hasFin=r.lat2||r.gkx2;
+  const hasCen=r.lat||r.gkx;
+  let coordSection='';
+  if(hasIni||hasFin){
+    coordSection=coordBlock('Inicio del tramo',r.lat1,r.lon1,r.gkx1,r.gky1)+
+                 coordBlock('Fin del tramo',r.lat2,r.lon2,r.gkx2,r.gky2);
+    // Si también hay punto central, mostrarlo al final como dato adicional
+    if(hasCen)coordSection+=coordBlock('Punto de referencia central',r.lat,r.lon,r.gkx,r.gky);
+  }else if(hasCen){
+    coordSection=coordBlock('Coordenadas del cruce',r.lat,r.lon,r.gkx,r.gky);
+  }
+
   document.getElementById('det-inner').innerHTML=`
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
       <div style="width:9px;height:9px;border-radius:50%;background:${cat.color};flex-shrink:0"></div>
@@ -738,19 +763,19 @@ function showDet(id){
     </div>
     <div class="det-cat">${cat.name}</div>
     <div class="det-grid">
+      ${r.fecha?`<div class="det-f"><label>Fecha</label><span>${r.fecha}</span></div>`:''}
+      ${r.tramite?`<div class="det-f"><label>N° Tramite</label><span>${r.tramite}</span></div>`:''}
       <div class="det-f"><label>Ruta / Calle</label><span>${fv(r.ruta)}</span></div>
       <div class="det-f"><label>Kilometro</label><span>${fv(r.km)}</span></div>
       <div class="det-f"><label>Localidad</label><span>${fv(r.loc)}</span></div>
       <div class="det-f"><label>Estado</label><span class="${EC[r.estado]||'est-s'}" style="font-weight:700">${fv(r.estado)}</span></div>
       <div class="det-f"><label>Profundidad</label><span>${fv(r.prof)}</span></div>
       <div class="det-f"><label>Diam. / Tension</label><span>${fv(r.mat)}</span></div>
-      ${r.longcruce?`<div class="det-f"><label>Longitud cruce</label><span>${r.longcruce}</span></div>`:''}
-      <div class="det-f full"><label>Empresa</label><span>${fv(r.resp)}</span></div>
-      ${coordBlock('Coordenadas — Punto central',r.lat,r.lon,r.gkx,r.gky)}
-      ${coordBlock('Coordenadas — Inicio del cruce',r.lat1,r.lon1,r.gkx1,r.gky1)}
-      ${coordBlock('Coordenadas — Fin del cruce',r.lat2,r.lon2,r.gkx2,r.gky2)}
+      ${r.longcruce?`<div class="det-f full"><label>Longitud del cruce</label><span>${r.longcruce}</span></div>`:''}
+      <div class="det-f full"><label>Empresa / Responsable</label><span>${fv(r.resp)}</span></div>
       ${r.obs?`<div class="det-f full"><label>Observaciones</label><div class="det-obs">${r.obs}</div></div>`:''}
     </div>
+    ${coordSection}
     <div class="det-acts">
       <button class="det-edit" onclick="openEditModal('${r.id}')">Editar</button>
       <button class="det-del" onclick="delRec('${r.id}')">Eliminar</button>
@@ -792,7 +817,7 @@ function fConvGK2(){clearTimeout(_fGK2);_fGK2=setTimeout(()=>_syncGK('f-gkx2','f
 // ===== MODAL REGISTRO =====
 function openRecordModal(){
   editId=null;document.getElementById('mtitle').textContent='Nuevo registro';
-  ['name','ruta','km','loc','prof','mat','longcruce','resp','obs'].forEach(f=>document.getElementById('f-'+f).value='');
+  ['fecha','tramite','name','ruta','km','loc','prof','mat','longcruce','resp','obs'].forEach(f=>document.getElementById('f-'+f).value='');
   document.getElementById('f-est').value='Sin datos';
   // Limpiar todos los campos de coordenadas
   ['f-lat','f-lon','f-gkx','f-gky','f-lat1','f-lon1','f-gkx1','f-gky1','f-lat2','f-lon2','f-gkx2','f-gky2'].forEach(id=>document.getElementById(id).value='');
@@ -818,6 +843,8 @@ function _setGK(latId,lonId,gkxId,gkyId,x,y){
 function openEditModal(id){
   const r=db.records.find(x=>x.id===id);if(!r)return;
   editId=id;document.getElementById('mtitle').textContent='Editar registro';
+  document.getElementById('f-fecha').value=r.fecha||'';
+  document.getElementById('f-tramite').value=r.tramite||'';
   document.getElementById('f-name').value=r.name;
   document.getElementById('f-ruta').value=r.ruta||'';
   document.getElementById('f-km').value=r.km||'';
@@ -869,6 +896,8 @@ function saveRecord(){
   const fin=_readCoords('f-lat2','f-lon2','f-gkx2','f-gky2');
   const rec={
     id:editId||uid(),name,
+    fecha:document.getElementById('f-fecha').value.trim(),
+    tramite:document.getElementById('f-tramite').value.trim(),
     catId:document.getElementById('f-cat').value,
     ruta:document.getElementById('f-ruta').value.trim(),
     km:document.getElementById('f-km').value.trim(),
@@ -924,7 +953,7 @@ function openExportExcelModal(){
   sel.innerHTML='<option value="all">Todas las categorias ('+db.records.length+' registros)</option>';
   db.categories.forEach(c=>{
     const cnt=db.records.filter(r=>r.catId===c.id).length;
-    sel.innerHTML+='<option value="'+c.id+'">'+c.name+' ('+cnt+' registros)</option>';
+    sel.innerHTML+=`<option value="${c.id}">${c.name} (${cnt} registros)</option>`;
   });
   updateExpCount();document.getElementById('em').classList.add('open');
 }
@@ -933,46 +962,145 @@ function updateExpCount(){
   const cnt=val==='all'?db.records.length:db.records.filter(r=>r.catId===val).length;
   document.getElementById('exp-count').textContent=cnt+' registro'+(cnt!==1?'s':'')+' se exportaran al archivo Excel.';
 }
+
+// Estructura del Excel DVP con coordenadas central + inicio + fin
+// Fila 1: grupos de columnas (merged donde corresponde)
+// Fila 2: sub-columnas de cada grupo
+function buildExcelRows(records){
+  //               0        1              2              3                      4           5             6                 7           8        9                    10                       11                    12               13          14              15              16              17             18               19             20              21              22
+  const h1=['Fecha','N Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Km / Progresiva','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Long. Cruce (m)','Empresa / Responsable','Coordenadas (Punto Central)','','','','Coordenadas Inicio Cruce','','','','Coordenadas Fin Cruce','','','','Observaciones'];
+  const h2=['',    '',          '',             '',                     '',         '',            '',               '',         '',      '',                   '',                         '',                '',                    'LATITUD','LONGITUD','GK X Faja 5','GK Y Faja 5',  'LATITUD',      'LONGITUD',    'GK X Faja 5','GK Y Faja 5',  'LATITUD',      'LONGITUD',    'GK X Faja 5','GK Y Faja 5',''];
+
+  const rows=records.map(r=>{
+    const cat=getCat(r.catId);
+    return[
+      r.fecha||'', r.tramite||'', r.autorizo||'',
+      r.name||'', cat.name, r.ruta||'', r.km||'', r.loc||'', r.estado||'',
+      r.prof||'', r.mat||'', r.longcruce||'', r.resp||'',
+      // Central
+      r.lat!=null?parseFloat(r.lat.toFixed(6)):'',
+      r.lon!=null?parseFloat(r.lon.toFixed(6)):'',
+      r.gkx||'', r.gky||'',
+      // Inicio
+      r.lat1!=null?parseFloat(r.lat1.toFixed(6)):'',
+      r.lon1!=null?parseFloat(r.lon1.toFixed(6)):'',
+      r.gkx1||'', r.gky1||'',
+      // Fin
+      r.lat2!=null?parseFloat(r.lat2.toFixed(6)):'',
+      r.lon2!=null?parseFloat(r.lon2.toFixed(6)):'',
+      r.gkx2||'', r.gky2||'',
+      r.obs||''
+    ];
+  });
+  return{h1,h2,rows};
+}
+
+function applyExcelStyle(ws,nDataRows){
+  // Anchos de columna
+  ws['!cols']=[
+    {wch:12},{wch:12},{wch:13},          // fecha, tramite, autorizo
+    {wch:30},{wch:20},                   // nombre, categoria
+    {wch:20},{wch:14},{wch:16},          // ruta, km, localidad
+    {wch:12},{wch:16},{wch:22},          // estado, profundidad, diametro
+    {wch:14},{wch:20},                   // long cruce, empresa
+    {wch:13},{wch:13},{wch:16},{wch:16}, // central lat,lon,gkx,gky
+    {wch:13},{wch:13},{wch:16},{wch:16}, // inicio lat,lon,gkx,gky
+    {wch:13},{wch:13},{wch:16},{wch:16}, // fin lat,lon,gkx,gky
+    {wch:30}                             // observaciones
+  ];
+  // Merges: fila 1 agrupa columnas de coordenadas
+  ws['!merges']=[
+    // Columnas simples: merge fila1+fila2 para que queden en una sola fila
+    {s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},
+    {s:{r:0,c:3},e:{r:1,c:3}},{s:{r:0,c:4},e:{r:1,c:4}},{s:{r:0,c:5},e:{r:1,c:5}},
+    {s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},
+    {s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},
+    {s:{r:0,c:12},e:{r:1,c:12}},{s:{r:0,c:26},e:{r:1,c:26}},
+    // Grupos de coordenadas (4 columnas cada uno)
+    {s:{r:0,c:13},e:{r:0,c:16}}, // Central
+    {s:{r:0,c:17},e:{r:0,c:20}}, // Inicio
+    {s:{r:0,c:21},e:{r:0,c:24}}, // Fin
+  ];
+}
+
 function doExportExcel(){
   const catFilter=document.getElementById('exp-cat').value;
   const records=catFilter==='all'?db.records:db.records.filter(r=>r.catId===catFilter);
   if(!records.length){toast('No hay registros para exportar.');return;}
   const catName=catFilter==='all'?'todos':(getCat(catFilter).name.replace(/[^a-zA-Z0-9]/g,'_'));
-  const h1=['Fecha','N de Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Km / Progresiva','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Empresa / Responsable','Coordenadas','','','','Observaciones'];
-  const h2=['','','','','','','','','','','','','LATITUD','LONGITUD','GAUSS-KRUGER FAJA 5','',''];
-  const rows=records.map(r=>{
-    const cat=getCat(r.catId);
-    return[r.fecha||'',r.tramite||'',r.autorizo||'',r.name||'',cat.name,r.ruta||'',r.km||'',r.loc||'',r.estado||'',r.prof||'',r.mat||'',r.resp||'',
-      r.lat!=null?parseFloat(r.lat.toFixed(6)):'',r.lon!=null?parseFloat(r.lon.toFixed(6)):'',r.gkx||'',r.gky||'',r.obs||''];
-  });
+  const{h1,h2,rows}=buildExcelRows(records);
   const ws=XLSX.utils.aoa_to_sheet([h1,h2,...rows]);
-  ws['!cols']=[{wch:12},{wch:14},{wch:14},{wch:32},{wch:22},{wch:20},{wch:14},{wch:16},{wch:12},{wch:18},{wch:22},{wch:22},{wch:14},{wch:14},{wch:20},{wch:20},{wch:30}];
-  ws['!merges']=[
-    {s:{r:0,c:12},e:{r:0,c:15}},{s:{r:1,c:14},e:{r:1,c:15}},
-    {s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},
-    {s:{r:0,c:3},e:{r:1,c:3}},{s:{r:0,c:4},e:{r:1,c:4}},{s:{r:0,c:5},e:{r:1,c:5}},
-    {s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},
-    {s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},{s:{r:0,c:16},e:{r:1,c:16}}
-  ];
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Hoja1');
+  applyExcelStyle(ws,rows.length);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Registros');
   XLSX.writeFile(wb,'DVP_Infraestructura_'+catName+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
   closeModal('em');toast('Excel exportado: '+records.length+' registros');
 }
 
-// ===== TEMPLATE EXCEL =====
+// ===== PLANTILLA EXCEL =====
 function downloadExcelTemplate(){
-  const h1=['Fecha','N de Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Km / Progresiva','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Empresa / Responsable','Coordenadas','','','','Observaciones'];
-  const h2=['','','','','','','','','','','','','LATITUD','LONGITUD','GAUSS-KRUGER FAJA 5','',''];
-  const ex=['01/01/2025','001','Si','Cruce Ruta 11 - Km 50','Cruce de ruta','Ruta Nacional 11','Km 50,0','Resistencia','Bueno','1,20 m','Hormigon','DPV Chaco',-27.451,-58.987,5487230,6956780,'Ejemplo - borrar esta fila'];
-  const cats=[[''],['CATEGORIAS DISPONIBLES:'],...db.categories.map(c=>['  - '+c.name]),[''],['ESTADOS VALIDOS: Bueno / Regular / Critico / Sin datos'],[''],['COORDENADAS: ingresar Lat/Lon decimal O GaussKruger X,Y Faja 5 (la app convierte automaticamente)']];
-  const ws=XLSX.utils.aoa_to_sheet([h1,h2,ex]);
-  ws['!cols']=[{wch:12},{wch:14},{wch:14},{wch:32},{wch:22},{wch:20},{wch:14},{wch:16},{wch:12},{wch:18},{wch:22},{wch:22},{wch:14},{wch:14},{wch:20},{wch:20},{wch:30}];
-  ws['!merges']=[{s:{r:0,c:12},e:{r:0,c:15}},{s:{r:1,c:14},e:{r:1,c:15}},{s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},{s:{r:0,c:3},e:{r:1,c:3}},{s:{r:0,c:4},e:{r:1,c:4}},{s:{r:0,c:5},e:{r:1,c:5}},{s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},{s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},{s:{r:0,c:16},e:{r:1,c:16}}];
-  const wsG=XLSX.utils.aoa_to_sheet(cats);wsG['!cols']=[{wch:60}];
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Registros');XLSX.utils.book_append_sheet(wb,wsG,'Guia');
-  XLSX.writeFile(wb,'Plantilla_DVP_Infraestructura.xlsx');toast('Plantilla Excel descargada');
+  const{h1,h2}=buildExcelRows([]);
+  const exRow=[
+    '01/01/2025','001','Si',
+    'Cruce Ruta 11 - Km 50','Cruce de ruta','Ruta Nacional 11','Km 50,0','Resistencia','Bueno',
+    '1,20 m','Hormigon','12,50 m','DPV Chaco',
+    // Central: solo GK — la app convierte automaticamente al importar
+    '','',5487230,6956780,
+    // Inicio: solo GK
+    '','',5487210,6956760,
+    // Fin: solo GK
+    '','',5487250,6956800,
+    'Ejemplo — borrar esta fila'
+  ];
+  const exRow2=[
+    '01/01/2025','002','No',
+    'Gasoducto Norte - Km 12','Gasoducto / Ducto de gas','Ruta Provincial 89','Km 12,3','Villa Rio Bermejito','Bueno',
+    '1,50 m','Acero 8 pulgadas','15,00 m','Camuzzi Gas',
+    // Central: con Lat/Lon decimal
+    -25.200,-60.800,'','',
+    // Inicio: con Lat/Lon
+    -25.201,-60.801,'','',
+    // Fin: con Lat/Lon
+    -25.199,-60.799,'','',
+    'Ejemplo con Lat/Lon — la app calcula GK automaticamente'
+  ];
+  const ws=XLSX.utils.aoa_to_sheet([h1,h2,exRow,exRow2]);
+  applyExcelStyle(ws,2);
+  // Hoja de guia
+  const guia=[
+    ['GUIA PARA COMPLETAR EL EXCEL DVP — INFRAESTRUCTURA VIAL'],[''],
+    ['COLUMNAS PRINCIPALES:'],
+    ['  Fecha, N Tramite, Autorizo DVP: datos administrativos (opcionales)'],
+    ['  Nombre / Denominacion: OBLIGATORIO. Ej: Cruce Ruta 11 Km 50'],
+    ['  Categoria: nombre de la categoria (ver lista abajo)'],
+    ['  Ruta / Calle, Km / Progresiva, Localidad, Estado, etc.'],
+    ['  Longitud del cruce: tamaño fisico del cruce en metros (ej: 12,50 m)'],[''],
+    ['COORDENADAS — INGRESAR EN CUALQUIERA DE LOS DOS SISTEMAS:'],
+    ['  Opcion A — Lat/Lon decimal:'],
+    ['    Latitud: numero negativo (ej: -27.4510)  — la S se pone como negativo'],
+    ['    Longitud: numero negativo (ej: -58.9870) — la O/W se pone como negativo'],
+    ['  Opcion B — Gauss-Kruger Faja 5 (POSGAR 2007):'],
+    ['    GK X Faja 5: coordenada Este (ej: 5487230)'],
+    ['    GK Y Faja 5: coordenada Norte (ej: 6956780)'],
+    ['  >>> La app convierte automaticamente entre sistemas al importar <<<'],
+    ['  >>> Podes mezclar: algunas filas con Lat/Lon y otras con GK <<<'],[''],
+    ['TRES GRUPOS DE COORDENADAS:'],
+    ['  Punto Central: ubicacion del punto medio/central del cruce'],
+    ['  Inicio del cruce: primer extremo del cruce sobre la ruta'],
+    ['  Fin del cruce: segundo extremo del cruce sobre la ruta'],[''],
+    ['CATEGORIAS DISPONIBLES:'],
+    ...db.categories.map(c=>['  - '+c.name]),[''],
+    ['ESTADOS VALIDOS:'],
+    ['  Bueno / Regular / Critico / Sin datos'],
+  ];
+  const wsG=XLSX.utils.aoa_to_sheet(guia);
+  wsG['!cols']=[{wch:80}];
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Registros');
+  XLSX.utils.book_append_sheet(wb,wsG,'Guia');
+  XLSX.writeFile(wb,'Plantilla_DVP_Infraestructura.xlsx');
+  toast('Plantilla Excel descargada');
 }
-
 // ===== IMPORT MODAL =====
 function openImportModal(){
   setImpTab('json');
@@ -1184,22 +1312,36 @@ function updMap(sel){
   if(ci!==null)_csvParsed.colMap[ci]=f;
 }
 
-// Resolver coordenadas de una fila: si hay GK pero no LL, convertir automaticamente
+// Verificar si un valor es una coordenada valida (numero en rango geografico)
+function _isValidCoord(val){
+  const n=parseFloat(String(val||'').replace(',','.'));
+  return !isNaN(n)&&isFinite(n);
+}
+// Verificar si un valor parece latitud argentina (-60 a -20)
+function _isValidLat(val){const n=parseFloat(String(val||'').replace(',','.'));return !isNaN(n)&&n>=-60&&n<=-15;}
+// Verificar si un valor parece longitud argentina (-75 a -50)
+function _isValidLon(val){const n=parseFloat(String(val||'').replace(',','.'));return !isNaN(n)&&n>=-75&&n<=-45;}
+// Verificar si un valor parece coordenada GK Faja 5 (X: ~5.3M-5.8M, Y: ~6.5M-7.5M)
+function _isValidGKX(val){const n=parseFloat(String(val||'').replace(',','.'));return !isNaN(n)&&n>=5000000&&n<=6000000;}
+function _isValidGKY(val){const n=parseFloat(String(val||'').replace(',','.'));return !isNaN(n)&&n>=6500000&&n<=8000000;}
+
+// Resolver coordenadas: acepta LL o GK, convierte automaticamente entre sistemas
 function _resolveRowCoords(g,latF,lonF,gkxF,gkyF){
-  let lat=parseCoord(g(latF).replace(',','.'));
-  let lon=parseCoord(g(lonF).replace(',','.'));
-  let gkx=null,gky=null;
-  if(!isNaN(lat)&&!isNaN(lon)){
+  const latRaw=g(latF);const lonRaw=g(lonF);
+  const gkxRaw=g(gkxF);const gkyRaw=g(gkyF);
+  // Intentar desde Lat/Lon valido
+  if(_isValidLat(latRaw)&&_isValidLon(lonRaw)){
+    const lat=parseFloat(String(latRaw).replace(',','.'));
+    const lon=parseFloat(String(lonRaw).replace(',','.'));
     const gk=llToGK(5,lat,lon);
-    if(gk){gkx=Math.round(gk.x);gky=Math.round(gk.y);}
-    return{lat,lon,gkx,gky};
+    if(gk)return{lat,lon,gkx:Math.round(gk.x),gky:Math.round(gk.y)};
   }
-  // Intentar desde GK
-  const x=parseFloat(g(gkxF).replace(',','.'));
-  const y=parseFloat(g(gkyF).replace(',','.'));
-  if(!isNaN(x)&&!isNaN(y)){
+  // Intentar desde GK valido
+  if(_isValidGKX(gkxRaw)&&_isValidGKY(gkyRaw)){
+    const x=parseFloat(String(gkxRaw).replace(',','.'));
+    const y=parseFloat(String(gkyRaw).replace(',','.'));
     const ll=gkToLL(5,x,y);
-    if(ll){return{lat:ll.lat,lon:ll.lon,gkx:Math.round(x),gky:Math.round(y)};}
+    if(ll)return{lat:ll.lat,lon:ll.lon,gkx:Math.round(x),gky:Math.round(y)};
   }
   return{lat:null,lon:null,gkx:null,gky:null};
 }
@@ -1208,28 +1350,35 @@ function doImportCSV(){
   if(!_csvParsed)return;
   if(!Object.values(_csvParsed.colMap).includes('nombre')){alert('El campo Nombre es obligatorio.');return;}
   const eMap={bueno:'Bueno',regular:'Regular',critico:'Critico',malo:'Critico','sin datos':'Sin datos','sin_datos':'Sin datos',''   :'Sin datos'};
+  const normStr=s=>String(s||'').replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').toLowerCase().trim();
   let ok=0,skip=0;
   _csvParsed.rows.forEach(row=>{
-    const g=f=>row[f]||'';
-    const name=g('nombre').trim();if(!name){skip++;return;}
-    // Categoría
+    const g=f=>String(row[f]||'').trim();
+    const name=g('nombre');if(!name){skip++;return;}
+    // Categoría: buscar por nombre normalizado
     let catId=db.categories[0].id;
-    const cr=g('catId').toLowerCase();
+    const cr=normStr(g('catId'));
     if(cr){
-      const normStr=s=>s.replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').toLowerCase().trim();
-      const normCr=normStr(cr);
-      const found=db.categories.find(c=>{const nc=normStr(c.name);return nc===normCr||nc.includes(normCr)||normCr.includes(nc);});
+      const found=db.categories.find(c=>{const nc=normStr(c.name);return nc===cr||nc.includes(cr)||cr.includes(nc);});
       if(found)catId=found.id;
     }
-    // Coordenadas: central, inicio y fin — convierte GK<->LL automáticamente
+    // Longitud del cruce: puede venir del campo longcruce O
+    // del campo lon si contiene texto como "6.70m" (no es coordenada)
+    let longcruce=g('longcruce');
+    const lonRaw=g('lon');
+    if(!longcruce&&lonRaw&&!_isValidLon(lonRaw)){
+      // El valor en columna longitud no es coordenada -> es longitud fisica del cruce
+      longcruce=lonRaw;
+    }
+    // Coordenadas: central, inicio y fin — convierte GK<->LL automaticamente
     const cen=_resolveRowCoords(g,'lat','lon','gkx','gky');
     const ini=_resolveRowCoords(g,'lat1','lon1','gkx1','gky1');
     const fin=_resolveRowCoords(g,'lat2','lon2','gkx2','gky2');
     db.records.push({
       id:uid(),name,catId,
       ruta:g('ruta'),km:g('km'),loc:g('loc'),
-      estado:eMap[g('estado').toLowerCase()]||'Sin datos',
-      prof:g('prof'),mat:g('mat'),longcruce:g('longcruce'),resp:g('resp'),obs:g('obs'),
+      estado:eMap[normStr(g('estado'))]||'Sin datos',
+      prof:g('prof'),mat:g('mat'),longcruce,resp:g('resp'),obs:g('obs'),
       lat:cen.lat,lon:cen.lon,gkx:cen.gkx,gky:cen.gky,
       lat1:ini.lat,lon1:ini.lon,gkx1:ini.gkx,gky1:ini.gky,
       lat2:fin.lat,lon2:fin.lon,gkx2:fin.gkx,gky2:fin.gky
