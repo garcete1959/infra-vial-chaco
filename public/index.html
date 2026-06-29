@@ -458,18 +458,7 @@ const INIT={
     {id:'c7',name:'Fibra optica / Telecom',color:'#00838f'},
     {id:'c8',name:'Otros',color:'#4527a0'}
   ],
-  records:[
-    {id:'r1',name:'Cruce Ruta 11 Km 234',catId:'c1',ruta:'Ruta Nacional 11',km:'Km 234,5',loc:'Resistencia',estado:'Bueno',prof:'1,20 m',mat:'Hormigon',resp:'DPV Chaco',obs:'Verificado 2024.',lat:-27.4510,lon:-58.9870},
-    {id:'r2',name:'Cruce Ruta 16 Km 89',catId:'c1',ruta:'Ruta Nacional 16',km:'Km 89,0',loc:'Saenz Pena',estado:'Regular',prof:'0,90 m',mat:'Hormigon',resp:'Vialidad Nacional',obs:'Monitorear en lluvias.',lat:-27.000,lon:-61.500},
-    {id:'r3',name:'Cruce Castelli Ruta 89',catId:'c1',ruta:'Ruta Provincial 89',km:'Km 0,5',loc:'Castelli',estado:'Regular',prof:'1,10 m',mat:'Hormigon',resp:'DPV Chaco',obs:'',lat:-25.950,lon:-60.620},
-    {id:'r4',name:'Gasoducto Norte Ruta 89',catId:'c3',ruta:'Ruta Provincial 89',km:'Km 12,3',loc:'Villa Rio Bermejito',estado:'Bueno',prof:'1,50 m',mat:'Acero 8 pulgadas',resp:'Camuzzi Gas',obs:'',lat:-25.200,lon:-60.800},
-    {id:'r5',name:'Gasoducto Sur Barranqueras',catId:'c3',ruta:'Acceso Barranqueras',km:'Km 3,1',loc:'Barranqueras',estado:'Critico',prof:'0,80 m',mat:'Acero 6 pulgadas',resp:'Camuzzi Gas',obs:'Senalizacion deteriorada.',lat:-27.490,lon:-58.940},
-    {id:'r6',name:'Tuberia principal Ruta 7',catId:'c2',ruta:'Ruta Provincial 7',km:'Km 45,0',loc:'Fontana',estado:'Bueno',prof:'2,00 m',mat:'PVC 200mm',resp:'SAMEEP',obs:'',lat:-27.430,lon:-58.720},
-    {id:'r7',name:'Acueducto Castelli Centro',catId:'c2',ruta:'Av. San Martin',km:'--',loc:'Castelli',estado:'Bueno',prof:'1,50 m',mat:'PVC 160mm',resp:'SAMEEP',obs:'',lat:-25.955,lon:-60.625},
-    {id:'r8',name:'Linea 13.2 kV Ruta 11',catId:'c4',ruta:'Ruta Nacional 11',km:'Km 198,0',loc:'Quitilipi',estado:'Bueno',prof:'--',mat:'13,2 kV aereo',resp:'SECHEEP',obs:'',lat:-26.870,lon:-60.220},
-    {id:'r9',name:'Tendido electrico Castelli Norte',catId:'c4',ruta:'Ruta Provincial 5',km:'Km 2,0',loc:'Castelli',estado:'Bueno',prof:'--',mat:'33 kV aereo',resp:'SECHEEP',obs:'',lat:-25.940,lon:-60.610},
-    {id:'r10',name:'Fibra optica Ruta 16',catId:'c7',ruta:'Ruta Nacional 16',km:'Km 102,0',loc:'Saenz Pena',estado:'Bueno',prof:'0,60 m',mat:'Fibra 96 hilos',resp:'Telecom Argentina',obs:'',lat:-27.010,lon:-61.490}
-  ],
+  records:[],
   savedAt:new Date().toISOString()
 };
 
@@ -483,6 +472,11 @@ function enrichRecs(recs){
   });
 }
 
+// Limpiar localStorage si tiene datos de demo (version anterior)
+(()=>{try{const old=JSON.parse(localStorage.getItem('infra_chaco')||'null');
+  if(old&&old.records&&old.records.some(r=>['r1','r2','r3','r4','r5','r6','r7','r8','r9','r10'].includes(r.id))){
+    localStorage.removeItem('infra_chaco');
+  }}catch(e){}})();
 let db=JSON.parse(localStorage.getItem('infra_chaco')||'null')||JSON.parse(JSON.stringify(INIT));
 db.records=enrichRecs(db.records);
 let selCat='all',selAlpha='all',selRec=null,editId=null,markers={},tmpMark=null,map;
