@@ -279,7 +279,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
       <div class="fg"><label>Diametro / Tension / Tipo</label><input type="text" id="f-mat" placeholder="200mm - PVC - 13kV"></div>
     </div>
     <div class="frow">
-      <div class="fg"><label>Longitud del cruce (m)</label><input type="text" id="f-longcruce" placeholder="Ej: 12,50 m"></div>
+      <!-- Longitud del cruce: calculada automaticamente desde inicio/fin -->
       <div class="fg"><label>Empresa / Responsable</label><input type="text" id="f-resp" placeholder="SAMEEP - SECHEEP - Camuzzi - DVP..."></div>
     </div>
 
@@ -492,6 +492,23 @@ function save(){
   document.getElementById('save-st').textContent='Guardado '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
 }
 
+// Calcula distancia en metros entre dos puntos lat/lon (formula Haversine)
+function haversineM(lat1,lon1,lat2,lon2){
+  const R=6371000;
+  const toRad=x=>x*Math.PI/180;
+  const dLat=toRad(lat2-lat1),dLon=toRad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+// Calcula la longitud del cruce si hay inicio y fin, devuelve string formateado
+function calcLongcruce(r){
+  if(r.lat1!=null&&r.lon1!=null&&r.lat2!=null&&r.lon2!=null){
+    const m=haversineM(r.lat1,r.lon1,r.lat2,r.lon2);
+    return m>=1000?(m/1000).toFixed(3)+' km':m.toFixed(1)+' m';
+  }
+  return r.longcruce||'';
+}
+
 // ===== MAPA =====
 function initMap(){
   map=L.map('map',{center:[-26.5,-60.5],zoom:8});
@@ -540,14 +557,51 @@ function mkIcon(color){
   const s='<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30"><path d="M11 0C4.9 0 0 4.9 0 11c0 8.25 11 19 11 19s11-10.75 11-19C22 4.9 17.1 0 11 0z" fill="'+color+'" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/><circle cx="11" cy="11" r="4.5" fill="#fff" opacity=".85"/></svg>';
   return L.divIcon({html:s,className:'',iconSize:[22,30],iconAnchor:[11,30],popupAnchor:[0,-30]});
 }
+// Devuelve el mejor punto representativo de un registro (para centrar el mapa / fly):
+// 1) Punto central si existe
+// 2) Si hay inicio y fin, el punto medio entre ambos
+// 3) Si solo hay inicio, el inicio
+// 4) Si solo hay fin, el fin
+function getMapPoint(r){
+  if(r.lat!=null&&r.lon!=null)return{lat:r.lat,lon:r.lon};
+  const hasIni=r.lat1!=null&&r.lon1!=null;
+  const hasFin=r.lat2!=null&&r.lon2!=null;
+  if(hasIni&&hasFin)return{lat:(r.lat1+r.lat2)/2,lon:(r.lon1+r.lon2)/2};
+  if(hasIni)return{lat:r.lat1,lon:r.lon1};
+  if(hasFin)return{lat:r.lat2,lon:r.lon2};
+  return null;
+}
+
+// markers[id] ahora guarda un ARRAY de capas Leaflet (1 o 2 marcadores + linea opcional)
 function refreshMarkers(){
-  Object.values(markers).forEach(m=>map.removeLayer(m));markers={};
+  Object.values(markers).forEach(arr=>arr.forEach(l=>map.removeLayer(l)));
+  markers={};
   db.records.forEach(r=>{
-    if(!r.lat||!r.lon)return;
     const cat=getCat(r.catId);
-    const m=L.marker([r.lat,r.lon],{icon:mkIcon(cat.color)}).addTo(map);
-    m.on('click',()=>{selRec=r.id;showDet(r.id);renderList();});
-    markers[r.id]=m;
+    const layers=[];
+    const hasIni=r.lat1!=null&&r.lon1!=null;
+    const hasFin=r.lat2!=null&&r.lon2!=null;
+    const hasCen=r.lat!=null&&r.lon!=null;
+    const onClick=()=>{selRec=r.id;showDet(r.id);renderList();};
+
+    if(hasIni&&hasFin){
+      // Tramo completo: dos marcadores + linea conectora
+      const mIni=L.marker([r.lat1,r.lon1],{icon:mkIcon(cat.color)}).addTo(map);
+      const mFin=L.marker([r.lat2,r.lon2],{icon:mkIcon(cat.color)}).addTo(map);
+      mIni.on('click',onClick);mFin.on('click',onClick);
+      mIni.bindTooltip(r.name+' (inicio)',{direction:'top',offset:[0,-26]});
+      mFin.bindTooltip(r.name+' (fin)',{direction:'top',offset:[0,-26]});
+      const line=L.polyline([[r.lat1,r.lon1],[r.lat2,r.lon2]],{color:cat.color,weight:3,opacity:.75,dashArray:'5,5'}).addTo(map);
+      line.on('click',onClick);
+      layers.push(mIni,mFin,line);
+    }else if(hasIni||hasFin||hasCen){
+      // Un solo punto disponible
+      const p=hasCen?{lat:r.lat,lon:r.lon}:hasIni?{lat:r.lat1,lon:r.lon1}:{lat:r.lat2,lon:r.lon2};
+      const m=L.marker([p.lat,p.lon],{icon:mkIcon(cat.color)}).addTo(map);
+      m.on('click',onClick);
+      layers.push(m);
+    }
+    if(layers.length)markers[r.id]=layers;
   });
 }
 function fly(lat,lon,z){map.flyTo([lat,lon],z||15,{duration:1.2});}
@@ -603,7 +657,7 @@ function renderList(){
       <div class="rtags">
         <span class="rtag" style="background:${cat.color}25;color:${cat.color}">${cat.name}</span>
         <span class="rtag" style="background:${EB[r.estado]||'#1a1a1a'};color:${ET[r.estado]||'#3a5a3a'}">${r.estado}</span>
-        ${r.lat?'<span class="rtag" style="background:#0a1a0a;color:#2a6a2a">GPS</span>':''}
+        ${(r.lat||r.lat1||r.lat2)?'<span class="rtag" style="background:#0a1a0a;color:#2a6a2a">GPS</span>':''}
       </div></div>`;
   }).join('');
 }
@@ -625,9 +679,14 @@ function renderLocs(){
   }).join('');
 }
 function selectLoc(loc){
-  const recs=db.records.filter(r=>r.loc===loc&&r.lat&&r.lon);
-  if(recs.length){
-    const lats=recs.map(r=>r.lat),lons=recs.map(r=>r.lon);
+  const pts=[];
+  db.records.filter(r=>r.loc===loc).forEach(r=>{
+    if(r.lat1!=null&&r.lon1!=null)pts.push({lat:r.lat1,lon:r.lon1});
+    if(r.lat2!=null&&r.lon2!=null)pts.push({lat:r.lat2,lon:r.lon2});
+    if(r.lat!=null&&r.lon!=null)pts.push({lat:r.lat,lon:r.lon});
+  });
+  if(pts.length){
+    const lats=pts.map(p=>p.lat),lons=pts.map(p=>p.lon);
     map.fitBounds([[Math.min(...lats),Math.min(...lons)],[Math.max(...lats),Math.max(...lons)]],{padding:[50,50],maxZoom:15});
   }
   setTab('b');document.getElementById('q').value=loc;render();
@@ -767,7 +826,7 @@ function showDet(id){
       <div class="det-f"><label>Estado</label><span class="${EC[r.estado]||'est-s'}" style="font-weight:700">${r.estado||'--'}</span></div>
       ${row('Profundidad / Altura',r.prof)}
       ${row('Diametro / Tension / Tipo',r.mat)}
-      ${row('Longitud del cruce',r.longcruce)}
+      ${(()=>{const lc=calcLongcruce(r);return lc?'<div class="det-f full"><label>Longitud del cruce</label><span>'+lc+'</span></div>':''})()}
       ${rowFull('Empresa / Responsable',r.resp)}
       ${r.obs?`<div class="det-f full"><label>Observaciones</label><div class="det-obs">${r.obs}</div></div>`:''}
     </div>
@@ -781,11 +840,25 @@ function showDet(id){
   document.getElementById('det').classList.add('show');
 }
 function closeDet(){document.getElementById('det').classList.remove('show');selRec=null;renderList();}
-function clickRec(id){selRec=id;showDet(id);const r=db.records.find(x=>x.id===id);if(r&&r.lat&&r.lon)fly(r.lat,r.lon);renderList();}
+function clickRec(id){
+  selRec=id;showDet(id);
+  const r=db.records.find(x=>x.id===id);
+  if(r){
+    const hasIni=r.lat1!=null&&r.lon1!=null;
+    const hasFin=r.lat2!=null&&r.lon2!=null;
+    if(hasIni&&hasFin){
+      map.fitBounds([[r.lat1,r.lon1],[r.lat2,r.lon2]],{padding:[80,80],maxZoom:17,duration:1.2});
+    }else{
+      const p=getMapPoint(r);
+      if(p)fly(p.lat,p.lon);
+    }
+  }
+  renderList();
+}
 function delRec(id){
   if(!confirm('Eliminar este registro?'))return;
   db.records=db.records.filter(r=>r.id!==id);save();
-  if(markers[id]){map.removeLayer(markers[id]);delete markers[id];}
+  if(markers[id]){markers[id].forEach(l=>map.removeLayer(l));delete markers[id];}
   closeDet();render();toast('Registro eliminado');
 }
 
@@ -815,7 +888,7 @@ function fConvGK2(){clearTimeout(_fGK2);_fGK2=setTimeout(()=>_syncGK('f-gkx2','f
 // ===== MODAL REGISTRO =====
 function openRecordModal(){
   editId=null;document.getElementById('mtitle').textContent='Nuevo registro';
-  ['fecha','tramite','name','ruta','km','loc','prof','mat','longcruce','resp','obs'].forEach(f=>document.getElementById('f-'+f).value='');
+  ['fecha','tramite','name','ruta','km','loc','prof','mat','resp','obs'].forEach(f=>document.getElementById('f-'+f).value='');
   document.getElementById('f-est').value='Sin datos';
   // Limpiar todos los campos de coordenadas
   ['f-lat','f-lon','f-gkx','f-gky','f-lat1','f-lon1','f-gkx1','f-gky1','f-lat2','f-lon2','f-gkx2','f-gky2'].forEach(id=>document.getElementById(id).value='');
@@ -850,7 +923,7 @@ function openEditModal(id){
   document.getElementById('f-est').value=r.estado||'Sin datos';
   document.getElementById('f-prof').value=r.prof||'';
   document.getElementById('f-mat').value=r.mat||'';
-  document.getElementById('f-longcruce').value=r.longcruce||'';
+
   document.getElementById('f-resp').value=r.resp||'';
   document.getElementById('f-obs').value=r.obs||'';
   // Coordenadas centrales
@@ -903,7 +976,7 @@ function saveRecord(){
     estado:document.getElementById('f-est').value,
     prof:document.getElementById('f-prof').value.trim(),
     mat:document.getElementById('f-mat').value.trim(),
-    longcruce:document.getElementById('f-longcruce').value.trim(),
+    longcruce:null, // se calcula en showDet via calcLongcruce()
     resp:document.getElementById('f-resp').value.trim(),
     obs:document.getElementById('f-obs').value.trim(),
     // Punto central
@@ -915,12 +988,9 @@ function saveRecord(){
   };
   if(editId)db.records=db.records.map(r=>r.id===editId?rec:r);else db.records.push(rec);
   save();if(tmpMark){map.removeLayer(tmpMark);tmpMark=null;}closeModal('rm');
-  if(markers[rec.id])map.removeLayer(markers[rec.id]);
-  if(rec.lat&&rec.lon){
-    const m=L.marker([rec.lat,rec.lon],{icon:mkIcon(getCat(rec.catId).color)}).addTo(map);
-    m.on('click',()=>{selRec=rec.id;showDet(rec.id);renderList();});
-    markers[rec.id]=m;fly(rec.lat,rec.lon);
-  }
+  refreshMarkers();
+  const recP=getMapPoint(rec);
+  if(recP)fly(recP.lat,recP.lon);
   selRec=rec.id;render();showDet(rec.id);toast(editId?'Registro actualizado':'Registro guardado');
 }
 
@@ -965,20 +1035,15 @@ function updateExpCount(){
 // Fila 1: grupos de columnas (merged donde corresponde)
 // Fila 2: sub-columnas de cada grupo
 function buildExcelRows(records){
-  //               0        1              2              3                      4           5             6                 7           8        9                    10                       11                    12               13          14              15              16              17             18               19             20              21              22
-  const h1=['Fecha','N Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Km / Progresiva','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Long. Cruce (m)','Empresa / Responsable','Coordenadas (Punto Central)','','','','Coordenadas Inicio Cruce','','','','Coordenadas Fin Cruce','','','','Observaciones'];
-  const h2=['',    '',          '',             '',                     '',         '',            '',               '',         '',      '',                   '',                         '',                '',                    'LATITUD','LONGITUD','GK X Faja 5','GK Y Faja 5',  'LATITUD',      'LONGITUD',    'GK X Faja 5','GK Y Faja 5',  'LATITUD',      'LONGITUD',    'GK X Faja 5','GK Y Faja 5',''];
+  const h1=['Fecha','N Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Progresiva (Km)','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Empresa / Responsable','Coordenadas INICIO','','','','Coordenadas FIN','','','','Observaciones'];
+  const h2=['',    '',          '',             '',                     '',         '',            '',               '',         '',      '',                   '',                         '',                    'LATITUD','LONGITUD','GK X Faja 5','GK Y Faja 5','LATITUD','LONGITUD','GK X Faja 5','GK Y Faja 5',''];
 
   const rows=records.map(r=>{
     const cat=getCat(r.catId);
     return[
       r.fecha||'', r.tramite||'', r.autorizo||'',
       r.name||'', cat.name, r.ruta||'', r.km||'', r.loc||'', r.estado||'',
-      r.prof||'', r.mat||'', r.longcruce||'', r.resp||'',
-      // Central
-      r.lat!=null?parseFloat(r.lat.toFixed(6)):'',
-      r.lon!=null?parseFloat(r.lon.toFixed(6)):'',
-      r.gkx||'', r.gky||'',
+      r.prof||'', r.mat||'', r.resp||'',
       // Inicio
       r.lat1!=null?parseFloat(r.lat1.toFixed(6)):'',
       r.lon1!=null?parseFloat(r.lon1.toFixed(6)):'',
@@ -994,30 +1059,24 @@ function buildExcelRows(records){
 }
 
 function applyExcelStyle(ws,nDataRows){
-  // Anchos de columna
   ws['!cols']=[
     {wch:12},{wch:12},{wch:13},          // fecha, tramite, autorizo
     {wch:30},{wch:20},                   // nombre, categoria
     {wch:20},{wch:14},{wch:16},          // ruta, km, localidad
     {wch:12},{wch:16},{wch:22},          // estado, profundidad, diametro
-    {wch:14},{wch:20},                   // long cruce, empresa
-    {wch:13},{wch:13},{wch:16},{wch:16}, // central lat,lon,gkx,gky
+    {wch:20},                            // empresa
     {wch:13},{wch:13},{wch:16},{wch:16}, // inicio lat,lon,gkx,gky
     {wch:13},{wch:13},{wch:16},{wch:16}, // fin lat,lon,gkx,gky
     {wch:30}                             // observaciones
   ];
-  // Merges: fila 1 agrupa columnas de coordenadas
   ws['!merges']=[
-    // Columnas simples: merge fila1+fila2 para que queden en una sola fila
     {s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},
     {s:{r:0,c:3},e:{r:1,c:3}},{s:{r:0,c:4},e:{r:1,c:4}},{s:{r:0,c:5},e:{r:1,c:5}},
     {s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},
     {s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},
-    {s:{r:0,c:12},e:{r:1,c:12}},{s:{r:0,c:26},e:{r:1,c:26}},
-    // Grupos de coordenadas (4 columnas cada uno)
-    {s:{r:0,c:13},e:{r:0,c:16}}, // Central
-    {s:{r:0,c:17},e:{r:0,c:20}}, // Inicio
-    {s:{r:0,c:21},e:{r:0,c:24}}, // Fin
+    {s:{r:0,c:20},e:{r:1,c:20}},
+    {s:{r:0,c:12},e:{r:0,c:15}}, // Inicio
+    {s:{r:0,c:16},e:{r:0,c:19}}, // Fin
   ];
 }
 
@@ -1041,38 +1100,36 @@ function downloadExcelTemplate(){
   const exRow=[
     '01/01/2025','001','Si',
     'Cruce Ruta 11 - Km 50','Cruce de ruta','Ruta Nacional 11','Km 50,0','Resistencia','Bueno',
-    '1,20 m','Hormigon','12,50 m','DPV Chaco',
-    // Central: solo GK — la app convierte automaticamente al importar
-    '','',5487230,6956780,
-    // Inicio: solo GK
+    '1,20 m','Hormigon','DPV Chaco',
     '','',5487210,6956760,
-    // Fin: solo GK
     '','',5487250,6956800,
-    'Ejemplo — borrar esta fila'
+    'Ejemplo con inicio y fin — borrar esta fila'
   ];
   const exRow2=[
     '01/01/2025','002','No',
     'Gasoducto Norte - Km 12','Gasoducto / Ducto de gas','Ruta Provincial 89','Km 12,3','Villa Rio Bermejito','Bueno',
-    '1,50 m','Acero 8 pulgadas','15,00 m','Camuzzi Gas',
-    // Central: con Lat/Lon decimal
-    -25.200,-60.800,'','',
-    // Inicio: con Lat/Lon
+    '1,50 m','Acero 8 pulgadas','Camuzzi Gas',
     -25.201,-60.801,'','',
-    // Fin: con Lat/Lon
     -25.199,-60.799,'','',
     'Ejemplo con Lat/Lon — la app calcula GK automaticamente'
   ];
-  const ws=XLSX.utils.aoa_to_sheet([h1,h2,exRow,exRow2]);
-  applyExcelStyle(ws,2);
-  // Hoja de guia
+  const exRow3=[
+    '01/01/2025','003','Si',
+    'Cruce Ruta 89 - Pinedo','Cruce de ruta','Ruta Nacional 89','','Pinedo','Bueno',
+    '','\u00d8125mm','BTU-esuco',
+    '','',5373823.91,6976403.04,
+    '','','','',
+    'Ejemplo solo con INICIO (sin fin) — se considera punto unico'
+  ];
+  const ws=XLSX.utils.aoa_to_sheet([h1,h2,exRow,exRow2,exRow3]);
+  applyExcelStyle(ws,3);
   const guia=[
-    ['GUIA PARA COMPLETAR EL EXCEL DVP — INFRAESTRUCTURA VIAL'],[''],
+    ['GUIA PARA COMPLETAR EL EXCEL DVP — CRUCES VIAL'],[''],
     ['COLUMNAS PRINCIPALES:'],
     ['  Fecha, N Tramite, Autorizo DVP: datos administrativos (opcionales)'],
     ['  Nombre / Denominacion: OBLIGATORIO. Ej: Cruce Ruta 11 Km 50'],
     ['  Categoria: nombre de la categoria (ver lista abajo)'],
-    ['  Ruta / Calle, Km / Progresiva, Localidad, Estado, etc.'],
-    ['  Longitud del cruce: tamaño fisico del cruce en metros (ej: 12,50 m)'],[''],
+    ['  Ruta / Calle, Km / Progresiva, Localidad, Estado, etc.'],[''],
     ['COORDENADAS — INGRESAR EN CUALQUIERA DE LOS DOS SISTEMAS:'],
     ['  Opcion A — Lat/Lon decimal:'],
     ['    Latitud: numero negativo (ej: -27.4510)  — la S se pone como negativo'],
@@ -1082,10 +1139,12 @@ function downloadExcelTemplate(){
     ['    GK Y Faja 5: coordenada Norte (ej: 6956780)'],
     ['  >>> La app convierte automaticamente entre sistemas al importar <<<'],
     ['  >>> Podes mezclar: algunas filas con Lat/Lon y otras con GK <<<'],[''],
-    ['TRES GRUPOS DE COORDENADAS:'],
-    ['  Punto Central: ubicacion del punto medio/central del cruce'],
-    ['  Inicio del cruce: primer extremo del cruce sobre la ruta'],
-    ['  Fin del cruce: segundo extremo del cruce sobre la ruta'],[''],
+    ['DOS GRUPOS DE COORDENADAS — INICIO Y FIN DEL CRUCE:'],
+    ['  Coordenadas INICIO: primer extremo del cruce sobre la ruta'],
+    ['  Coordenadas FIN: segundo extremo del cruce sobre la ruta'],[''],
+    ['SI EL CRUCE TIENE UN SOLO PUNTO (sin tramo):'],
+    ['  Completar solo las columnas de INICIO y dejar FIN vacio.'],
+    ['  La app lo va a tomar como punto unico del cruce.'],[''],
     ['CATEGORIAS DISPONIBLES:'],
     ...db.categories.map(c=>['  - '+c.name]),[''],
     ['ESTADOS VALIDOS:'],
@@ -1161,7 +1220,7 @@ const CSV_FIELDS={
   nombre:  ['nombre','name','denominacion','nombre_denominacion','nombre___denominacion'],
   catId:   ['categoria','category','tipo','cat'],
   ruta:    ['ruta','calle','route','camino','ruta_calle','ruta___calle'],
-  km:      ['km','kilometro','progresiva','pk','km_progresiva','km___progresiva'],
+  km:      ['km','kilometro','progresiva','pk','km_progresiva','km___progresiva','progresiva_km'],
   loc:     ['localidad','ciudad','loc','lugar','municipio'],
   estado:  ['estado','status','condicion'],
   prof:    ['profundidad','altura','prof','profundidad_altura','profundidad___altura'],
@@ -1188,20 +1247,38 @@ const CSV_FIELDS={
 
 // Resolver headers de Excel con doble fila (como el formato DVP)
 function resolveHeaders(row1, row2){
-  // Grupos de columnas merged en fila1 y sus sub-columnas en fila2
-  const MERGE_GROUPS={
-    'coordenadas':         ['latitud','longitud','gauss_kruger_faja_5_x','gauss_kruger_faja_5_y'],
-    'coordenadas_inicio':  ['latitud_inicio','longitud_inicio','gk_x_inicio','gk_y_inicio'],
-    'coordenadas_fin':     ['latitud_fin','longitud_fin','gk_x_fin','gk_y_fin'],
-  };
+  // Grupos de columnas merged en fila1 (texto variable) y su sufijo segun keyword
+  // Cuando fila2 repite "LATITUD"/"LONGITUD"/"GK X..."/"GK Y..." para INICIO y FIN,
+  // hay que usar el contexto del grupo (fila1) para diferenciarlos.
+  let lastGroup=''; // arrastra el ultimo grupo merged visto (INICIO/FIN/CENTRAL/etc)
   return row1.map((h,i)=>{
-    const n1=normH(h);
+    const n1raw=String(h||'').trim().toLowerCase();
     const n2=normH(row2[i]||'');
-    // Si fila1 está vacía o es uno de los grupos merged, usar fila2
-    if(!n1||MERGE_GROUPS[n1])return n2||n1;
-    return n1;
+    // Detectar si fila1 tiene texto que indique grupo de coordenadas
+    if(n1raw){
+      if(n1raw.includes('inicio'))lastGroup='inicio';
+      else if(n1raw.includes('fin'))lastGroup='fin';
+      else if(n1raw.includes('central')||n1raw==='coordenadas')lastGroup='central';
+      else if(!n1raw.match(/latitud|longitud|gauss|gk/)) lastGroup=''; // columna normal, resetea grupo
+    }
+    const n1=normH(h);
+    if(n1&&!MERGE_KEYWORDS.some(k=>n1.includes(k))){
+      // Columna normal con texto propio (ej: "fecha", "nombre_denominacion")
+      return n1;
+    }
+    // Es una sub-columna de coordenadas (lat/lon/gk) o celda vacia bajo un merge
+    if(n2&&lastGroup){
+      // Sufijar segun el grupo para que coincida con los aliases (lat1, lat2, etc)
+      if(n2==='latitud')return lastGroup==='inicio'?'latitud_inicio':lastGroup==='fin'?'latitud_fin':'latitud';
+      if(n2==='longitud')return lastGroup==='inicio'?'longitud_inicio':lastGroup==='fin'?'longitud_fin':'longitud';
+      if(n2.includes('gk_x')||n2.includes('gauss_kruger_faja_5_x')||n2==='x')return lastGroup==='inicio'?'gk_x_inicio':lastGroup==='fin'?'gk_x_fin':'gk_x';
+      if(n2.includes('gk_y')||n2.includes('gauss_kruger_faja_5_y')||n2==='y')return lastGroup==='inicio'?'gk_y_inicio':lastGroup==='fin'?'gk_y_fin':'gk_y';
+      return n2;
+    }
+    return n2||n1;
   });
 }
+const MERGE_KEYWORDS=['coordenadas','latitud','longitud','gauss','gk_x','gk_y'];
 
 // Mapear array de headers normalizado a campos internos
 function mapHeaders(headers){
@@ -1371,10 +1448,28 @@ function doImportCSV(){
       // El valor en columna longitud no es coordenada -> es longitud fisica del cruce
       longcruce=lonRaw;
     }
-    // Coordenadas: central, inicio y fin — convierte GK<->LL automaticamente
-    const cen=_resolveRowCoords(g,'lat','lon','gkx','gky');
+    // Coordenadas: inicio y fin — convierte GK<->LL automaticamente
     const ini=_resolveRowCoords(g,'lat1','lon1','gkx1','gky1');
     const fin=_resolveRowCoords(g,'lat2','lon2','gkx2','gky2');
+    // Tambien soportar formato viejo con punto central (compatibilidad)
+    const cenLegacy=_resolveRowCoords(g,'lat','lon','gkx','gky');
+
+    const hasIni=ini.lat!=null||ini.gkx!=null;
+    const hasFin=fin.lat!=null||fin.gkx!=null;
+
+    // Si solo hay INICIO (sin FIN) -> es un cruce de punto unico:
+    // se guarda tambien como "punto central" para que el detalle lo muestre como tal
+    let cen={lat:null,lon:null,gkx:null,gky:null};
+    let recIni=ini, recFin=fin;
+    if(hasIni&&!hasFin){
+      cen=ini;
+      recIni={lat:null,lon:null,gkx:null,gky:null};
+      recFin={lat:null,lon:null,gkx:null,gky:null};
+    }else if(cenLegacy.lat!=null||cenLegacy.gkx!=null){
+      // Compatibilidad con excel viejo que solo tenia punto central
+      cen=cenLegacy;
+    }
+
     db.records.push({
       id:uid(),name,catId,
       fecha:g('fecha'),tramite:g('tramite'),autorizo:g('autorizo'),
@@ -1382,8 +1477,8 @@ function doImportCSV(){
       estado:eMap[normStr(g('estado'))]||'Sin datos',
       prof:g('prof'),mat:g('mat'),longcruce,resp:g('resp'),obs:g('obs'),
       lat:cen.lat,lon:cen.lon,gkx:cen.gkx,gky:cen.gky,
-      lat1:ini.lat,lon1:ini.lon,gkx1:ini.gkx,gky1:ini.gky,
-      lat2:fin.lat,lon2:fin.lon,gkx2:fin.gkx,gky2:fin.gky
+      lat1:recIni.lat,lon1:recIni.lon,gkx1:recIni.gkx,gky1:recIni.gky,
+      lat2:recFin.lat,lon2:recFin.lon,gkx2:recFin.gkx,gky2:recFin.gky
     });
     ok++;
   });
