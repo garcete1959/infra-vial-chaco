@@ -140,6 +140,26 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 .ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .fab{position:absolute;top:10px;right:10px;z-index:900;padding:7px 13px;border-radius:7px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
 .fab:hover{background:#1e4d1e}
+.draw-bar{position:absolute;top:50px;right:10px;z-index:900;display:flex;flex-direction:column;gap:5px}
+.draw-btn{padding:6px 10px;border-radius:6px;border:1px solid #1e3a1e;background:#0d170d;color:#6aaf6a;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:all .15s}
+.draw-btn:hover{background:#1a3d1a}
+.draw-btn.active{background:#1a3d1a;border-color:#4adf6a;color:#4adf6a}
+.draw-btn.t2{border-color:#3a1e00;color:#c8a050}.draw-btn.t2:hover{background:#2a1000}
+.draw-btn.t2.active{background:#2a1000;border-color:#c8a050;color:#c8a050}
+.draw-btn.danger{border-color:#4a1a1a;color:#c07070}.draw-btn.danger:hover{background:#2a0808}
+.ix-panel{position:absolute;bottom:60px;right:10px;width:260px;background:#0d170d;border:1px solid #2a5a2a;border-radius:10px;padding:11px;z-index:1000;display:none}
+.ix-panel.show{display:block}
+.ix-title{font-size:11px;font-weight:700;color:#6aaf6a;margin-bottom:8px}
+.ix-field{background:#111811;border-radius:5px;padding:6px 8px;margin-bottom:4px}
+.ix-field label{font-size:8px;font-weight:700;color:#3a6a3a;text-transform:uppercase;display:block;margin-bottom:2px}
+.ix-field span{font-family:monospace;font-size:11px;color:#a0d0a0}
+.ix-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
+.ix-btns{display:flex;gap:4px;margin-top:6px}
+.ix-btns button{flex:1;padding:6px;border-radius:5px;border:1px solid #2a5a2a;background:transparent;color:#6aaf6a;font-size:10px;font-weight:700;cursor:pointer}
+.ix-btns button:hover{background:#141e14}
+.ix-btns .ix-close{border-color:#4a1a1a;color:#c07070}
+.ix-btns .ix-close:hover{background:#200808}
+.ix-legend{font-size:9px;color:#3a5a3a;margin-top:5px;line-height:1.5}
 </style>
 </head>
 <body>
@@ -214,6 +234,48 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
         <div class="cerr" id="err-gk"></div>
         <div class="cres" id="r-gk"></div>
         <div class="cnote">Datum POSGAR 2007 / WGS84. Faja 5 predeterminada para Chaco.</div>
+      </div>
+
+      <!-- CALCULADORA DE INTERSECCION -->
+      <div class="csec">
+        <div class="clabel">&#9678; Interseccion de dos tramos</div>
+        <div class="cnote" style="margin-bottom:8px;color:#6a9a6a">
+          Ingresa los vertices de dos tramos (ruta y camino vecinal) para calcular el punto exacto donde se cruzan.<br>
+          Acepta Lat/Lon decimal o GK Faja 5 — detecta automaticamente.
+        </div>
+
+        <div style="font-size:9px;font-weight:700;color:#1565c0;text-transform:uppercase;margin-bottom:4px">&#9644; Tramo 1 — Ruta / Camino principal</div>
+        <div style="background:#0a1020;border:1px solid #1a2a4a;border-radius:6px;padding:8px;margin-bottom:6px">
+          <div style="font-size:8px;color:#4a6a9a;margin-bottom:3px">PUNTO A (inicio del tramo 1)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:5px">
+            <input class="cinput" id="ix-a-lat" placeholder="Lat o GK X" oninput="ixLiveConv('a')">
+            <input class="cinput" id="ix-a-lon" placeholder="Lon o GK Y" oninput="ixLiveConv('a')">
+          </div>
+          <div style="font-size:8px;color:#4a6a9a;margin-bottom:3px">PUNTO B (fin del tramo 1)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+            <input class="cinput" id="ix-b-lat" placeholder="Lat o GK X" oninput="ixLiveConv('b')">
+            <input class="cinput" id="ix-b-lon" placeholder="Lon o GK Y" oninput="ixLiveConv('b')">
+          </div>
+        </div>
+
+        <div style="font-size:9px;font-weight:700;color:#b35900;text-transform:uppercase;margin-bottom:4px">&#9644; Tramo 2 — Camino vecinal / cruce</div>
+        <div style="background:#1a0a00;border:1px solid #4a2a0a;border-radius:6px;padding:8px;margin-bottom:6px">
+          <div style="font-size:8px;color:#8a5a2a;margin-bottom:3px">PUNTO C (inicio del tramo 2)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:5px">
+            <input class="cinput" id="ix-c-lat" placeholder="Lat o GK X" oninput="ixLiveConv('c')">
+            <input class="cinput" id="ix-c-lon" placeholder="Lon o GK Y" oninput="ixLiveConv('c')">
+          </div>
+          <div style="font-size:8px;color:#8a5a2a;margin-bottom:3px">PUNTO D (fin del tramo 2)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+            <input class="cinput" id="ix-d-lat" placeholder="Lat o GK X" oninput="ixLiveConv('d')">
+            <input class="cinput" id="ix-d-lon" placeholder="Lon o GK Y" oninput="ixLiveConv('d')">
+          </div>
+        </div>
+
+        <button class="cbtn" onclick="calcInterseccion()">Calcular punto de interseccion</button>
+        <div class="cerr" id="err-ix"></div>
+        <div class="cres" id="r-ix"></div>
+        <button class="cbtn" id="btn-ix-uso" style="display:none;background:#0a2a1a;margin-top:4px;color:#4adf8a" onclick="usarInterseccionEnForm()">Abrir formulario con estas coordenadas</button>
       </div>
     </div>
 
@@ -466,7 +528,7 @@ function enrichRecs(recs){
   return recs.map(r=>{
     if(r.lat&&r.lon&&!r.gkx){
       const gk=llToGK(5,r.lat,r.lon);
-      if(gk){r.gkx=Math.round(gk.x);r.gky=Math.round(gk.y);}
+      if(gk){r.gkx=parseFloat(gk.x.toFixed(2));r.gky=parseFloat(gk.y.toFixed(2));}
     }
     return r;
   });
@@ -703,9 +765,9 @@ function liveConvLL(){
     const faja=parseInt(document.getElementById('gk-faja').value)||5;
     const gk=llToGK(faja,lat,lon);
     if(gk){
-      document.getElementById('gk-x').value=Math.round(gk.x);
-      document.getElementById('gk-y').value=Math.round(gk.y);
-      document.getElementById('r-ll').innerHTML='<b>X GK Faja '+faja+':</b> '+Math.round(gk.x)+'<br><b>Y GK Faja '+faja+':</b> '+Math.round(gk.y);
+      document.getElementById('gk-x').value=gk.x.toFixed(2);
+      document.getElementById('gk-y').value=gk.y.toFixed(2);
+      document.getElementById('r-ll').innerHTML='<b>X GK Faja '+faja+':</b> '+gk.x.toFixed(2)+'<br><b>Y GK Faja '+faja+':</b> '+gk.y.toFixed(2);
       document.getElementById('r-ll').classList.add('show');
       document.getElementById('err-ll').classList.remove('show');
     }
@@ -735,13 +797,13 @@ function goLL(){
   el.classList.remove('show');
   const faja=parseInt(document.getElementById('gk-faja').value)||5;
   const gk=llToGK(faja,lat,lon);
-  if(gk){document.getElementById('gk-x').value=Math.round(gk.x);document.getElementById('gk-y').value=Math.round(gk.y);}
+  if(gk){document.getElementById('gk-x').value=gk.x.toFixed(2);document.getElementById('gk-y').value=gk.y.toFixed(2);}
   fly(lat,lon);
   if(tmpMark)map.removeLayer(tmpMark);
   tmpMark=L.circleMarker([lat,lon],{radius:9,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.4,weight:2}).addTo(map);
   const res=document.getElementById('r-ll');
-  const xR=gk?Math.round(gk.x):null;
-  const yR=gk?Math.round(gk.y):null;
+  const xR=gk?parseFloat(gk.x.toFixed(2)):null;
+  const yR=gk?parseFloat(gk.y.toFixed(2)):null;
   res.innerHTML=
     `<b>Lat:</b> ${lat.toFixed(6)} <button class="copy-btn" onclick="copyVal(${lat.toFixed(6)})">copiar</button><br>`+
     `<b>Lon:</b> ${lon.toFixed(6)} <button class="copy-btn" onclick="copyVal(${lon.toFixed(6)})">copiar</button>`+
@@ -868,7 +930,7 @@ function _syncLL(latId,lonId,gkxId,gkyId){
   const lon=parseCoord(document.getElementById(lonId).value);
   if(isNaN(lat)||isNaN(lon))return;
   const gk=llToGK(5,lat,lon);
-  if(gk){document.getElementById(gkxId).value=Math.round(gk.x);document.getElementById(gkyId).value=Math.round(gk.y);}
+  if(gk){document.getElementById(gkxId).value=gk.x.toFixed(2);document.getElementById(gkyId).value=gk.y.toFixed(2);}
 }
 function _syncGK(gkxId,gkyId,latId,lonId){
   const x=parseFloat(document.getElementById(gkxId).value);
@@ -902,7 +964,7 @@ function _setCoord(latId,lonId,gkxId,gkyId,lat,lon){
   document.getElementById(latId).value=lat;
   document.getElementById(lonId).value=lon;
   const gk=llToGK(5,parseFloat(lat),parseFloat(lon));
-  if(gk){document.getElementById(gkxId).value=Math.round(gk.x);document.getElementById(gkyId).value=Math.round(gk.y);}
+  if(gk){document.getElementById(gkxId).value=gk.x.toFixed(2);document.getElementById(gkyId).value=gk.y.toFixed(2);}
 }
 // Funcion auxiliar: setear par GK + calcular LL
 function _setGK(latId,lonId,gkxId,gkyId,x,y){
@@ -946,7 +1008,7 @@ function _readCoords(latId,lonId,gkxId,gkyId){
   // Si hay LL valido
   if(!isNaN(lat)&&!isNaN(lon)){
     const gk=llToGK(5,lat,lon);
-    if(gk){gkx=Math.round(gk.x);gky=Math.round(gk.y);}
+    if(gk){gkx=parseFloat(gk.x.toFixed(2));gky=parseFloat(gk.y.toFixed(2));}
     return{lat,lon,gkx,gky};
   }
   // Si no hay LL, intentar desde GK
@@ -954,7 +1016,7 @@ function _readCoords(latId,lonId,gkxId,gkyId){
   const y=parseFloat(document.getElementById(gkyId).value);
   if(!isNaN(x)&&!isNaN(y)){
     const ll=gkToLL(5,x,y);
-    if(ll){return{lat:ll.lat,lon:ll.lon,gkx:Math.round(x),gky:Math.round(y)};}
+    if(ll){return{lat:ll.lat,lon:ll.lon,gkx:parseFloat(x.toFixed(2)),gky:parseFloat(y.toFixed(2))};}
   }
   return{lat:null,lon:null,gkx:null,gky:null};
 }
@@ -1412,14 +1474,14 @@ function _resolveRowCoords(g,latF,lonF,gkxF,gkyF){
     const lat=parseFloat(String(latRaw).replace(',','.'));
     const lon=parseFloat(String(lonRaw).replace(',','.'));
     const gk=llToGK(5,lat,lon);
-    if(gk)return{lat,lon,gkx:Math.round(gk.x),gky:Math.round(gk.y)};
+    if(gk)return{lat,lon,gkx:parseFloat(gk.x.toFixed(2)),gky:parseFloat(gk.y.toFixed(2))};
   }
   // Intentar desde GK valido
   if(_isValidGKX(gkxRaw)&&_isValidGKY(gkyRaw)){
     const x=parseFloat(String(gkxRaw).replace(',','.'));
     const y=parseFloat(String(gkyRaw).replace(',','.'));
     const ll=gkToLL(5,x,y);
-    if(ll)return{lat:ll.lat,lon:ll.lon,gkx:Math.round(x),gky:Math.round(y)};
+    if(ll)return{lat:ll.lat,lon:ll.lon,gkx:parseFloat(x.toFixed(2)),gky:parseFloat(y.toFixed(2))};
   }
   return{lat:null,lon:null,gkx:null,gky:null};
 }
