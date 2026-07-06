@@ -5,167 +5,223 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DVP Chaco — Sistema de Cruces Vial</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/proj4@2.9.0/dist/proj4.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0e8e0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-.hdr{background:#0a140a;border-bottom:1px solid #1e3a1e;padding:8px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0;flex-wrap:wrap}
-.hdr-title{font-size:13px;font-weight:700;color:#c8e0c8}
-.hdr-sub{font-size:10px;color:#4a7a4a;margin-top:1px}
-.hdr-right{margin-left:auto;display:flex;gap:5px;align-items:center;flex-wrap:wrap}
-.hbtn{padding:5px 10px;border-radius:6px;border:1px solid #1e3a1e;background:#111e11;color:#8aba8a;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
-.hbtn:hover{background:#1e3a1e;color:#c8e0c8}
-.hbtn.warn{border-color:#3a1e0a;color:#b07040}.hbtn.warn:hover{background:#2a1008}
-#save-st{font-size:10px;color:#3a6a3a}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a2a1a;height:100vh;display:flex;flex-direction:column;overflow:hidden;font-size:15px}
+
+/* ── HEADER ── */
+.hdr{background:#ffffff;border-bottom:2px solid #c8d8c8;padding:10px 16px;display:flex;align-items:center;gap:14px;flex-shrink:0;flex-wrap:wrap;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+.hdr-title{font-size:15px;font-weight:800;color:#1a3a1a}
+.hdr-sub{font-size:12px;color:#5a7a5a;margin-top:2px}
+.hdr-right{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.hbtn{padding:7px 13px;border-radius:7px;border:1.5px solid #b0c8b0;background:#f5faf5;color:#2a5a2a;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.hbtn:hover{background:#dceadc;border-color:#2a5a2a;color:#1a3a1a}
+.hbtn.warn{border-color:#d4a0a0;color:#8a2020;background:#fff5f5}
+.hbtn.warn:hover{background:#fde8e8}
+#save-st{font-size:12px;color:#4a7a4a}
+
+/* ── LAYOUT ── */
 .app{display:flex;flex:1;overflow:hidden}
-.panel{width:290px;flex-shrink:0;background:#0d170d;border-right:1px solid #1a2e1a;display:flex;flex-direction:column;overflow:hidden}
-.ptabs{display:flex;border-bottom:1px solid #1a2e1a;flex-shrink:0}
-.ptab{flex:1;padding:8px 2px;text-align:center;font-size:10px;font-weight:700;color:#3a5a3a;cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
-.ptab.on{color:#6aaf6a;border-bottom-color:#6aaf6a}
-.pbody{flex:1;overflow-y:auto;padding:10px}
-.pbody::-webkit-scrollbar{width:3px}
-.pbody::-webkit-scrollbar-thumb{background:#1e3a1e;border-radius:2px}
-.sbox input{width:100%;padding:7px 10px;border-radius:7px;border:1px solid #1a2e1a;background:#111811;color:#d0d8d0;font-size:12px;outline:none;margin-bottom:8px}
-.sbox input:focus{border-color:#2a5a2a}
-.sbox input::placeholder{color:#3a4a3a}
-.abar{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:8px}
-.ab{width:20px;height:20px;border-radius:4px;border:1px solid #1a2e1a;background:#111811;font-size:9px;font-weight:700;cursor:pointer;color:#3a5a3a;display:flex;align-items:center;justify-content:center;transition:all .1s}
-.ab:hover:not(.off){border-color:#2a5a2a;color:#6aaf6a}
-.ab.on{background:#1a3d1a;color:#6aaf6a;border-color:#2a5a2a}
-.ab.off{opacity:.2;cursor:default}
-.ab.all{width:auto;padding:0 5px;font-size:9px}
-.clist{margin-bottom:8px}
-.ccat{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;border:1px solid transparent;background:#111811;cursor:pointer;font-size:11px;color:#8a9a8a;transition:all .12s;width:100%;margin-bottom:3px}
-.ccat:hover{background:#151e15;border-color:#1e3a1e}
-.ccat.on{background:#141e14;border-color:#2a5a2a;color:#c8e0c8}
-.cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.ccnt{margin-left:auto;font-size:9px;opacity:.5}
-.add-cat{width:100%;padding:5px;border-radius:6px;border:1px dashed #1e2e1e;background:transparent;color:#3a5a3a;font-size:10px;cursor:pointer;transition:all .15s;margin-top:2px}
-.add-cat:hover{border-color:#2a5a2a;color:#6aaf6a}
-.rmeta{font-size:10px;color:#3a5a3a;margin-bottom:6px}
-.rcard{padding:8px 10px;border-radius:7px;border:1px solid #1a2a1a;background:#111811;cursor:pointer;margin-bottom:4px;transition:all .12s}
-.rcard:hover{border-color:#2a5a2a;background:#141e14}
-.rcard.sel{border-color:#4a8a4a;background:#141e14}
-.rname{font-size:12px;font-weight:600;color:#c0d0c0;display:flex;align-items:center;gap:5px}
-.rdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.rsub{font-size:10px;color:#3a5a3a;margin-top:1px;padding-left:11px}
-.rtags{padding-left:11px;margin-top:4px;display:flex;gap:4px;flex-wrap:wrap}
-.rtag{font-size:9px;padding:1px 6px;border-radius:10px;font-weight:700}
-.loc-btn{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;border:1px solid #1a2a1a;background:#111811;cursor:pointer;font-size:11px;color:#8a9a8a;width:100%;text-align:left;margin-bottom:3px;transition:all .12s}
-.loc-btn:hover{background:#151e15;border-color:#2a5a2a;color:#c8e0c8}
-.lcnt{margin-left:auto;font-size:9px;opacity:.5}
-.csec{margin-bottom:12px;padding:10px;background:#111811;border-radius:8px;border:1px solid #1a2a1a}
-.clabel{font-size:10px;font-weight:700;color:#4a8a4a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.cinput{width:100%;padding:6px 8px;border-radius:5px;border:1px solid #1a2a1a;background:#0d170d;color:#c0d0c0;font-size:11px;font-family:monospace;outline:none;margin-bottom:5px;transition:border .15s}
+.panel{width:310px;flex-shrink:0;background:#ffffff;border-right:2px solid #d0ddd0;display:flex;flex-direction:column;overflow:hidden;box-shadow:2px 0 8px rgba(0,0,0,.06)}
+
+/* ── TABS ── */
+.ptabs{display:flex;border-bottom:2px solid #d0ddd0;flex-shrink:0;background:#f5f8f5}
+.ptab{flex:1;padding:10px 4px;text-align:center;font-size:12px;font-weight:700;color:#4a6a4a;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;letter-spacing:.03em}
+.ptab.on{color:#2a6a2a;border-bottom-color:#2a8a2a;background:#ffffff}
+.ptab:hover:not(.on){color:#5a7a5a;background:#edf5ed}
+
+/* ── PANEL BODY ── */
+.pbody{flex:1;overflow-y:auto;padding:12px}
+.pbody::-webkit-scrollbar{width:5px}
+.pbody::-webkit-scrollbar-thumb{background:#c0d0c0;border-radius:3px}
+
+/* ── BUSQUEDA ── */
+.sbox input{width:100%;padding:9px 12px;border-radius:8px;border:1.5px solid #c0d0c0;background:#f8fbf8;color:#1a2a1a;font-size:14px;outline:none;margin-bottom:10px}
+.sbox input:focus{border-color:#2a5a2a;background:#fff}
+.sbox input::placeholder{color:#8aaa8a}
+
+/* ── ABECEDARIO ── */
+.abar{display:flex;flex-wrap:wrap;gap:3px;margin-bottom:10px}
+.ab{width:23px;height:23px;border-radius:5px;border:1.5px solid #c8d8c8;background:#f5f8f5;font-size:10px;font-weight:700;cursor:pointer;color:#5a7a5a;display:flex;align-items:center;justify-content:center;transition:all .1s}
+.ab:hover:not(.off){border-color:#2a5a2a;color:#2a6a2a;background:#e8f5e8}
+.ab.on{background:#2a6a2a;color:#fff;border-color:#2a6a2a}
+.ab.off{opacity:.25;cursor:default}
+.ab.all{width:auto;padding:0 7px;font-size:10px}
+
+/* ── CATEGORIAS ── */
+.clist{margin-bottom:10px}
+.ccat{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:7px;border:1.5px solid transparent;background:#f5f8f5;cursor:pointer;font-size:13px;color:#5a7a5a;transition:all .12s;width:100%;margin-bottom:4px}
+.ccat:hover{background:#e8f5e8;border-color:#b0d0b0}
+.ccat.on{background:#e0f0e0;border-color:#2a5a2a;color:#1a3a1a;font-weight:600}
+.cdot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.ccnt{margin-left:auto;font-size:11px;color:#8aaa8a;font-weight:600}
+.add-cat{width:100%;padding:7px;border-radius:7px;border:1.5px dashed #b0c8b0;background:transparent;color:#4a7a4a;font-size:13px;cursor:pointer;transition:all .15s;margin-top:3px}
+.add-cat:hover{border-color:#2a5a2a;color:#2a6a2a;background:#f0f8f0}
+
+/* ── LISTA REGISTROS ── */
+.rmeta{font-size:12px;color:#4a6a4a;margin-bottom:8px;font-weight:600}
+.rcard{padding:10px 12px;border-radius:8px;border:1.5px solid #d0ddd0;background:#ffffff;cursor:pointer;margin-bottom:6px;transition:all .12s;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.rcard:hover{border-color:#2a5a2a;background:#f5fbf5;box-shadow:0 2px 8px rgba(42,106,42,.1)}
+.rcard.sel{border-color:#2a8a2a;background:#e8f5e8;box-shadow:0 2px 8px rgba(42,106,42,.15)}
+.rname{font-size:14px;font-weight:700;color:#1a2a1a;display:flex;align-items:center;gap:6px}
+.rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rsub{font-size:12px;color:#4a6a4a;margin-top:2px;padding-left:14px}
+.rtags{padding-left:14px;margin-top:5px;display:flex;gap:5px;flex-wrap:wrap}
+.rtag{font-size:11px;padding:2px 8px;border-radius:12px;font-weight:700}
+
+/* ── LOCALIDAD ── */
+.loc-btn{display:flex;align-items:center;gap:7px;padding:9px 11px;border-radius:8px;border:1.5px solid #d0ddd0;background:#ffffff;cursor:pointer;font-size:13px;color:#5a7a5a;width:100%;text-align:left;margin-bottom:4px;transition:all .12s}
+.loc-btn:hover{background:#e8f5e8;border-color:#2a5a2a;color:#1a3a1a}
+.lcnt{margin-left:auto;font-size:11px;color:#8aaa8a;font-weight:600}
+
+/* ── COORD ── */
+.csec{margin-bottom:14px;padding:12px;background:#f8fbf8;border-radius:10px;border:1.5px solid #c8d8c8}
+.clabel{font-size:12px;font-weight:800;color:#2a5a2a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+.cinput{width:100%;padding:8px 10px;border-radius:6px;border:1.5px solid #c0d0c0;background:#ffffff;color:#1a2a1a;font-size:13px;font-family:monospace;outline:none;margin-bottom:6px;transition:border .15s}
 .cinput:focus{border-color:#2a5a2a}
-.cinput::placeholder{color:#2a3a2a;font-size:9px}
-.cbtn{width:100%;padding:7px;border-radius:6px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:11px;font-weight:700;cursor:pointer;margin-top:2px;transition:background .15s}
-.cbtn:hover{background:#1e4d1e}
-.cres{font-size:10px;color:#6aaf6a;margin-top:6px;padding:7px 9px;background:#0a1a0a;border:1px solid #1e3a1e;border-radius:6px;display:none;line-height:1.8}
+.cinput::placeholder{color:#9aaa9a;font-size:11px}
+.cbtn{width:100%;padding:9px;border-radius:7px;border:none;background:#2a6a2a;color:#ffffff;font-size:13px;font-weight:700;cursor:pointer;margin-top:3px;transition:background .15s}
+.cbtn:hover{background:#1a5a1a}
+.cres{font-size:13px;color:#2a6a2a;margin-top:7px;padding:8px 10px;background:#e8f5e8;border:1.5px solid #a0c8a0;border-radius:7px;display:none;line-height:1.8}
 .cres.show{display:block}
-.cerr{font-size:10px;color:#c07070;margin-top:4px;padding:5px 8px;background:#2a0a0a;border-radius:5px;display:none}
+.cerr{font-size:12px;color:#8a2020;margin-top:5px;padding:6px 9px;background:#fde8e8;border:1.5px solid #d0a0a0;border-radius:6px;display:none;font-weight:600}
 .cerr.show{display:block}
-.fsel{width:100%;padding:5px 7px;border-radius:5px;border:1px solid #1a2a1a;background:#0d170d;color:#c0d0c0;font-size:10px;outline:none;margin-bottom:6px}
-.cnote{font-size:9px;color:#3a6a3a;margin-top:5px;line-height:1.5}
-.copy-btn{font-size:9px;padding:2px 6px;border-radius:4px;border:1px solid #2a5a2a;background:transparent;color:#4a8a4a;cursor:pointer;margin-left:4px}
-.copy-btn:hover{background:#1a3a1a;color:#6aaf6a}
-.inst-s{padding:7px 10px;border-radius:6px;border-left:3px solid #2a5a2a;background:#111811;margin-bottom:5px;font-size:10px;color:#6a8a6a;line-height:1.7}
-.inst-h{font-size:10px;font-weight:700;color:#4a8a4a;text-transform:uppercase;letter-spacing:.06em;margin:8px 0 5px;border-bottom:1px solid #1a2a1a;padding-bottom:3px}
-.det{position:absolute;bottom:14px;right:14px;width:310px;background:#0d170d;border:1px solid #2a5a2a;border-radius:10px;padding:12px 12px 6px 12px;z-index:1000;display:none;max-height:82vh;overflow-y:auto;overflow-x:hidden}
+.fsel{width:100%;padding:7px 9px;border-radius:6px;border:1.5px solid #c0d0c0;background:#ffffff;color:#1a2a1a;font-size:13px;outline:none;margin-bottom:7px}
+.cnote{font-size:12px;color:#4a7a4a;margin-top:6px;line-height:1.6}
+.copy-btn{font-size:11px;padding:3px 8px;border-radius:5px;border:1.5px solid #a0c0a0;background:#f0f8f0;color:#2a5a2a;cursor:pointer}
+.copy-btn:hover{background:#d8eed8;color:#1a3a1a}
+
+/* ── AYUDA ── */
+.inst-s{padding:9px 12px;border-radius:7px;border-left:4px solid #4a8a4a;background:#f0f8f0;margin-bottom:6px;font-size:13px;color:#2a4a2a;line-height:1.8}
+.inst-h{font-size:12px;font-weight:800;color:#2a6a2a;text-transform:uppercase;letter-spacing:.06em;margin:10px 0 6px;border-bottom:1.5px solid #c8d8c8;padding-bottom:4px}
+
+/* ── DETALLE (popup) ── */
+.det{position:absolute;bottom:14px;right:14px;width:320px;background:#ffffff;border:2px solid #4a8a4a;border-radius:12px;padding:14px 14px 8px 14px;z-index:1000;display:none;max-height:82vh;overflow-y:auto;overflow-x:hidden;box-shadow:0 4px 20px rgba(0,0,0,.18)}
 .det.show{display:block}
-.det::-webkit-scrollbar{width:3px}
-.det::-webkit-scrollbar-thumb{background:#1e3a1e}
-.det-title{font-size:13px;font-weight:700;color:#c8e0c8;margin-bottom:1px;padding-right:20px}
-.det-cat{font-size:10px;color:#4a8a4a;margin-bottom:8px}
-.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
-.det-f{background:#111811;border-radius:5px;padding:6px 8px}
-.det-f label{font-size:9px;font-weight:700;color:#3a6a3a;text-transform:uppercase;display:block;margin-bottom:2px}
-.det-f span{font-size:11px;color:#a0b8a0;font-weight:500;word-break:break-word}
+.det::-webkit-scrollbar{width:5px}
+.det::-webkit-scrollbar-thumb{background:#b0c8b0;border-radius:3px}
+.det-title{font-size:16px;font-weight:800;color:#1a2a1a;margin-bottom:2px;padding-right:24px}
+.det-cat{font-size:12px;color:#4a7a4a;margin-bottom:10px;font-weight:600}
+.det-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
+.det-f{background:#f5f8f5;border-radius:6px;padding:7px 9px;border:1px solid #d8e8d8}
+.det-f label{font-size:10px;font-weight:800;color:#4a7a4a;text-transform:uppercase;display:block;margin-bottom:3px;letter-spacing:.04em}
+.det-f span{font-size:13px;color:#1a2a1a;font-weight:600;word-break:break-word}
 .det-f.full{grid-column:1/-1}
-.det-obs{font-size:10px;color:#6a8a6a;line-height:1.5;background:#111811;border-radius:5px;padding:7px;border:1px solid #1a2a1a}
-.det-acts{display:flex;gap:5px;margin-top:8px;padding-top:8px;border-top:1px solid #1a2a1a}
-.det-edit{flex:1;padding:6px;border-radius:6px;border:1px solid #2a5a2a;background:transparent;color:#6aaf6a;font-size:11px;cursor:pointer;font-weight:600}
-.det-edit:hover{background:#141e14}
-.det-del{padding:6px 9px;border-radius:6px;border:1px solid #4a1a1a;background:transparent;color:#c07070;font-size:11px;cursor:pointer}
-.det-close{position:absolute;top:8px;right:8px;background:transparent;border:none;color:#3a5a3a;font-size:13px;cursor:pointer}
-.det-close:hover{color:#8aaa8a}
-.est-b{color:#6aaf6a}.est-r{color:#c8a050}.est-c{color:#c07070}.est-s{color:#3a5a3a}
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:2000;align-items:center;justify-content:center}
+.det-obs{font-size:12px;color:#5a7a5a;line-height:1.6;background:#f5f8f5;border-radius:6px;padding:8px;border:1px solid #d0ddd0}
+.det-acts{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1.5px solid #d0ddd0}
+.det-edit{flex:1;padding:8px;border-radius:7px;border:1.5px solid #4a8a4a;background:#f0f8f0;color:#2a6a2a;font-size:13px;cursor:pointer;font-weight:700}
+.det-edit:hover{background:#e0f0e0}
+.det-del{padding:8px 11px;border-radius:7px;border:1.5px solid #d0a0a0;background:#fff5f5;color:#8a2020;font-size:13px;cursor:pointer;font-weight:600}
+.det-close{position:absolute;top:10px;right:10px;background:transparent;border:none;color:#8aaa8a;font-size:16px;cursor:pointer;font-weight:700;line-height:1}
+.det-close:hover{color:#4a6a4a}
+.est-b{color:#1a7a1a;font-weight:800}.est-r{color:#8a5500;font-weight:800}.est-c{color:#8a1a1a;font-weight:800}.est-s{color:#6a7a6a}
+
+/* ── MODALES ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:2000;align-items:center;justify-content:center}
 .overlay.open{display:flex}
-.modal{background:#0d170d;border:1px solid #1e3a1e;border-radius:12px;padding:20px;width:95%;max-width:500px;max-height:92vh;overflow-y:auto}
-.modal::-webkit-scrollbar{width:3px}
-.modal::-webkit-scrollbar-thumb{background:#1e3a1e}
-.modal h2{font-size:14px;font-weight:700;color:#c8e0c8;margin-bottom:14px}
-.fg{margin-bottom:9px}
-.fg label{display:block;font-size:10px;font-weight:700;color:#4a8a4a;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
-.fg input,.fg select,.fg textarea{width:100%;padding:7px 9px;border-radius:6px;border:1px solid #1a2a1a;background:#111811;color:#c0d0c0;font-size:12px;font-family:inherit;outline:none;transition:border .15s}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#2a5a2a}
-.fg textarea{resize:vertical;min-height:56px}
-.frow{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.mact{display:flex;gap:6px;margin-top:14px}
-.bsave{flex:1;padding:9px;border-radius:7px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:13px;font-weight:700;cursor:pointer}
-.bsave:hover{background:#1e4d1e}
-.bcanc{padding:9px 14px;border-radius:7px;border:1px solid #1e2e1e;background:transparent;color:#5a7a5a;font-size:12px;cursor:pointer}
-.coord-box{background:#0d170d;border:1px solid #1a2a1a;border-radius:8px;padding:10px;margin-top:4px}
-.coord-lbl{font-size:9px;font-weight:700;color:#4a8a4a;margin-bottom:4px}
-.coord-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:4px}
-.coord-sep{text-align:center;font-size:10px;color:#2a5a2a;margin:4px 0}
-.coord-hint{font-size:9px;color:#3a5a3a;margin-top:4px}
-.imp-tabs{display:flex;gap:6px;margin-bottom:12px}
-.imp-tab{flex:1;padding:7px;border-radius:6px;border:1px solid #1a2a1a;background:#111811;color:#5a7a5a;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s}
-.imp-tab.on{border-color:#2a5a2a;background:#141e14;color:#6aaf6a}
+.modal{background:#ffffff;border:2px solid #c8d8c8;border-radius:14px;padding:22px;width:95%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.modal::-webkit-scrollbar{width:5px}
+.modal::-webkit-scrollbar-thumb{background:#c0d0c0;border-radius:3px}
+.modal h2{font-size:17px;font-weight:800;color:#1a3a1a;margin-bottom:16px}
+.fg{margin-bottom:11px}
+.fg label{display:block;font-size:11px;font-weight:800;color:#2a5a2a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.fg input,.fg select,.fg textarea{width:100%;padding:9px 11px;border-radius:7px;border:1.5px solid #c0d0c0;background:#f8fbf8;color:#1a2a1a;font-size:14px;font-family:inherit;outline:none;transition:border .15s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#2a5a2a;background:#fff}
+.fg textarea{resize:vertical;min-height:60px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mact{display:flex;gap:8px;margin-top:16px}
+.bsave{flex:1;padding:11px;border-radius:8px;border:none;background:#2a6a2a;color:#fff;font-size:15px;font-weight:800;cursor:pointer}
+.bsave:hover{background:#1a5a1a}
+.bcanc{padding:11px 16px;border-radius:8px;border:1.5px solid #c0d0c0;background:#f5f5f5;color:#4a6a4a;font-size:14px;cursor:pointer;font-weight:600}
+.bcanc:hover{background:#e8e8e8}
+
+/* ── COORD BOX (formulario) ── */
+.coord-box{background:#f0f8f0;border:1.5px solid #b0d0b0;border-radius:9px;padding:11px;margin-top:5px}
+.coord-lbl{font-size:11px;font-weight:800;color:#2a6a2a;margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.coord-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:5px}
+.coord-sep{text-align:center;font-size:12px;color:#4a7a4a;margin:5px 0;font-weight:600}
+.coord-hint{font-size:11px;color:#5a7a5a;margin-top:5px;line-height:1.5}
+
+/* ── IMPORTAR ── */
+.imp-tabs{display:flex;gap:7px;margin-bottom:14px}
+.imp-tab{flex:1;padding:9px;border-radius:7px;border:1.5px solid #c0d0c0;background:#f5f8f5;color:#5a7a5a;font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s}
+.imp-tab.on{border-color:#2a5a2a;background:#e8f5e8;color:#2a6a2a}
 .imp-body{display:none}.imp-body.on{display:block}
-.drop-zone{border:2px dashed #1e3a1e;border-radius:8px;padding:20px 14px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:8px}
-.drop-zone:hover,.drop-zone.over{border-color:#2a5a2a;background:#0a1e0a}
-.dz-icon{font-size:26px;margin-bottom:5px;color:#2a5a2a}
-.dz-lbl{font-size:11px;color:#4a7a4a;line-height:1.5}
-.dz-lbl b{color:#6aaf6a}
-.imp-note{font-size:10px;color:#3a6a3a;line-height:1.6;padding:7px 9px;background:#0a1a0a;border-radius:6px;border-left:3px solid #1e3a1e;margin-bottom:8px}
-.imp-note b{color:#6aaf6a}
-.prev-box{background:#0a1a0a;border:1px solid #1e3a1e;border-radius:6px;padding:9px;margin-top:7px;font-size:10px;color:#4a8a4a;line-height:1.8;max-height:150px;overflow-y:auto;display:none}
+.drop-zone{border:2.5px dashed #b0c8b0;border-radius:9px;padding:22px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px;background:#f8fbf8}
+.drop-zone:hover,.drop-zone.over{border-color:#2a5a2a;background:#e8f5e8}
+.dz-icon{font-size:28px;margin-bottom:6px;color:#2a5a2a}
+.dz-lbl{font-size:13px;color:#5a7a5a;line-height:1.6}
+.dz-lbl b{color:#2a6a2a}
+.imp-note{font-size:12px;color:#4a6a4a;line-height:1.7;padding:8px 11px;background:#f0f8f0;border-radius:7px;border-left:4px solid #6ab06a;margin-bottom:10px}
+.imp-note b{color:#2a6a2a}
+.prev-box{background:#f5f8f5;border:1.5px solid #c8d8c8;border-radius:7px;padding:10px;margin-top:8px;font-size:13px;color:#5a7a5a;line-height:1.9;max-height:170px;overflow-y:auto;display:none}
 .prev-box.show{display:block}
-.csv-map-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:8px 0}
-.csv-map-row{display:flex;flex-direction:column;gap:2px}
-.csv-map-lbl{font-size:9px;font-weight:700;color:#4a8a4a;text-transform:uppercase}
-.bsave-imp{width:100%;padding:9px;border-radius:7px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:12px;font-weight:700;cursor:pointer;margin-top:8px}
-.bsave-imp:hover{background:#1e4d1e}
-.bsave-imp:disabled{opacity:.4;cursor:default}
-.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#1a3d1a;color:#6aaf6a;border:1px solid #2a5a2a;padding:7px 16px;border-radius:20px;font-size:11px;font-weight:600;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.csv-map-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0}
+.csv-map-row{display:flex;flex-direction:column;gap:3px}
+.csv-map-lbl{font-size:11px;font-weight:800;color:#2a5a2a;text-transform:uppercase}
+.bsave-imp{width:100%;padding:10px;border-radius:8px;border:none;background:#2a6a2a;color:#fff;font-size:13px;font-weight:800;cursor:pointer;margin-top:10px}
+.bsave-imp:hover{background:#1a5a1a}
+.bsave-imp:disabled{opacity:.35;cursor:default}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#2a6a2a;color:#fff;border:2px solid #4a9a4a;padding:9px 20px;border-radius:22px;font-size:13px;font-weight:700;z-index:9999;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;box-shadow:0 3px 12px rgba(0,0,0,.2)}
 .toast.show{opacity:1}
-.legend{position:absolute;bottom:18px;left:8px;background:rgba(10,20,10,.92);border:1px solid #1e3a1e;border-radius:8px;padding:8px 10px;z-index:900;font-size:10px;color:#5a8a5a;min-width:110px}
-.li{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+
+/* ── LEYENDA ── */
+.legend{position:absolute;bottom:20px;left:10px;background:rgba(255,255,255,.95);border:1.5px solid #c8d8c8;border-radius:10px;padding:10px 13px;z-index:900;font-size:13px;color:#2a4a2a;min-width:130px;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.li{display:flex;align-items:center;gap:7px;margin-bottom:4px}
 .li:last-child{margin-bottom:0}
-.ldot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.fab{position:absolute;top:10px;right:10px;z-index:900;padding:7px 13px;border-radius:7px;border:none;background:#1a3d1a;color:#6aaf6a;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
-.fab:hover{background:#1e4d1e}
-.draw-bar{position:absolute;top:50px;right:10px;z-index:900;display:flex;flex-direction:column;gap:5px}
-.draw-btn{padding:6px 10px;border-radius:6px;border:1px solid #1e3a1e;background:#0d170d;color:#6aaf6a;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.4);transition:all .15s}
-.draw-btn:hover{background:#1a3d1a}
-.draw-btn.active{background:#1a3d1a;border-color:#4adf6a;color:#4adf6a}
-.draw-btn.t2{border-color:#3a1e00;color:#c8a050}.draw-btn.t2:hover{background:#2a1000}
-.draw-btn.t2.active{background:#2a1000;border-color:#c8a050;color:#c8a050}
-.draw-btn.danger{border-color:#4a1a1a;color:#c07070}.draw-btn.danger:hover{background:#2a0808}
-.ix-panel{position:absolute;bottom:60px;right:10px;width:260px;background:#0d170d;border:1px solid #2a5a2a;border-radius:10px;padding:11px;z-index:1000;display:none}
-.ix-panel.show{display:block}
-.ix-title{font-size:11px;font-weight:700;color:#6aaf6a;margin-bottom:8px}
-.ix-field{background:#111811;border-radius:5px;padding:6px 8px;margin-bottom:4px}
-.ix-field label{font-size:8px;font-weight:700;color:#3a6a3a;text-transform:uppercase;display:block;margin-bottom:2px}
-.ix-field span{font-family:monospace;font-size:11px;color:#a0d0a0}
-.ix-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:6px}
-.ix-btns{display:flex;gap:4px;margin-top:6px}
-.ix-btns button{flex:1;padding:6px;border-radius:5px;border:1px solid #2a5a2a;background:transparent;color:#6aaf6a;font-size:10px;font-weight:700;cursor:pointer}
-.ix-btns button:hover{background:#141e14}
-.ix-btns .ix-close{border-color:#4a1a1a;color:#c07070}
-.ix-btns .ix-close:hover{background:#200808}
-.ix-legend{font-size:9px;color:#3a5a3a;margin-top:5px;line-height:1.5}
+.ldot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+
+/* ── FAB ── */
+.fab{position:absolute;top:12px;right:12px;z-index:900;padding:9px 15px;border-radius:8px;border:none;background:#2a6a2a;color:#fff;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.fab:hover{background:#1a5a1a}
+.fab2{position:absolute;top:56px;right:12px;z-index:900;padding:8px 13px;border-radius:8px;border:none;background:#1a4a8a;color:#fff;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.2)}
+.fab2:hover{background:#0a3a6a}
+
+/* ── PANEL CALCULADORA DE INTERSECCION ── */
+.ix-panel{position:absolute;top:12px;left:12px;width:300px;background:#ffffff;border:2px solid #b0c8b0;border-radius:12px;padding:14px;z-index:950;display:none;max-height:80vh;overflow-y:auto;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+.ix-panel.open{display:block}
+.ix-panel h3{font-size:15px;font-weight:800;color:#1a3a1a}
+.ix-tab{display:flex;gap:5px;margin-bottom:10px;background:#f0f5f0;border-radius:7px;padding:3px}
+.ix-tab-btn{flex:1;padding:7px 4px;border-radius:5px;text-align:center;font-size:12px;font-weight:700;cursor:pointer;color:#5a7a5a;transition:all .15s;border:none;background:transparent}
+.ix-tab-btn.on{background:#ffffff;color:#2a6a2a;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.ix-body{display:none}.ix-body.on{display:block}
+.ix-step{font-size:12px;color:#5a7a5a;line-height:1.7;padding:8px 10px;background:#f0f8f0;border-radius:6px;margin-bottom:8px;border-left:3px solid #6ab06a}
+.ix-btn{width:100%;padding:8px;border-radius:7px;border:none;background:#2a6a2a;color:#fff;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:5px}
+.ix-btn:hover{background:#1a5a1a}
+.ix-btn-calc{background:#1a4a8a;color:#fff}
+.ix-btn-calc:hover{background:#0a3a6a}
+.ix-btn-clear{background:#f5f0f0;color:#8a2020;border:1.5px solid #d0a0a0}
+.ix-btn-clear:hover{background:#fde8e8}
+.ix-btn-use{background:#2a6a2a;color:#fff}
+.ix-res{display:none;margin-top:8px;padding:10px;background:#f0f8f0;border:1.5px solid #a0c8a0;border-radius:8px}
+.ix-res.show{display:block}
+.ix-res-title{font-size:12px;font-weight:800;color:#2a6a2a;margin-bottom:6px;text-transform:uppercase}
+.ix-coord{font-size:12px;color:#1a3a1a;line-height:1.9;font-family:monospace;margin-bottom:7px}
+.draw-hint{font-size:12px;color:#5a7a5a;padding:6px 8px;background:#f5f8f5;border-radius:5px;line-height:1.6}
+.map-toolbar{position:absolute;top:100px;right:12px;width:260px;background:#fff;border:2px solid #b0c8b0;border-radius:11px;padding:12px;z-index:940;display:none;box-shadow:0 4px 16px rgba(0,0,0,.12)}
+.map-toolbar.open{display:block}
+.tb-title{font-size:14px;font-weight:800;color:#1a3a1a;margin-bottom:8px}
+.tb-btn{width:100%;padding:8px 10px;border-radius:7px;border:1.5px solid #c0d0c0;background:#f5f8f5;color:#5a7a5a;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:5px;text-align:left;transition:all .15s}
+.tb-btn:hover{border-color:#2a5a2a;background:#e8f5e8}
+.tb-btn.on{border-color:#2a8a2a;background:#e0f0e0;color:#2a5a2a;font-weight:700}
+.tb-step{font-size:12px;color:#5a7a5a;margin-bottom:6px;line-height:1.6}
+.tb-sep{height:1px;background:#d0ddd0;margin:8px 0}
+.tb-res{margin-top:8px;padding:9px;background:#f0f8f0;border:1.5px solid #a0c8a0;border-radius:7px;font-size:12px;color:#1a3a1a;line-height:1.8;display:none}
+.tb-res.show{display:block}
+.tb-coord{font-family:monospace;font-size:12px;color:#2a6a2a;line-height:1.9}
 </style>
 </head>
 <body>
 <div class="hdr">
   <img src="data:image/png;base64,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" alt="DVP" style="height:36px;border-radius:6px;flex-shrink:0">
-  <div style="width:1px;height:30px;background:#1e3a1e;flex-shrink:0"></div>
+  <div style="width:2px;height:32px;background:#c8d8c8;flex-shrink:0;border-radius:1px"></div>
   <div>
     <div class="hdr-title">Sistema de Cruces Vial</div>
     <div class="hdr-sub">Direccion de Tierras, Vialidad Provincial</div>
@@ -207,9 +263,9 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
       <div class="csec">
         <div class="clabel">Lat / Lon &rarr; Gauss-Kruger</div>
         <div class="cnote" style="margin-bottom:8px">Acepta: decimal (-27.451), con letra (27.451 S), grados/min/seg (27&deg;20'7.9"S), o pega todo de Google Earth.</div>
-        <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">LATITUD</div>
+        <div style="font-size:10px;color:#3a6a3a;font-weight:600;margin-bottom:3px">LATITUD</div>
         <input class="cinput" id="c-lat" placeholder="-27.4510  o  27&deg;20'7.90&quot;S" oninput="liveConvLL()">
-        <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">LONGITUD</div>
+        <div style="font-size:10px;color:#3a6a3a;font-weight:600;margin-bottom:3px">LONGITUD</div>
         <input class="cinput" id="c-lon" placeholder="-58.9870  o  58&deg;59'13&quot;O" oninput="liveConvLL()">
         <button class="cbtn" onclick="goLL()">Ir al punto en el mapa</button>
         <div class="cerr" id="err-ll"></div>
@@ -226,9 +282,9 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
           <option value="6">Faja 6 — Patagonia Oeste</option>
           <option value="7">Faja 7 — Patagonia Este</option>
         </select>
-        <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">X (ESTE)</div>
+        <div style="font-size:10px;color:#3a6a3a;font-weight:600;margin-bottom:3px">X (ESTE)</div>
         <input class="cinput" id="gk-x" placeholder="Ej: 5547320" oninput="liveConvGK()">
-        <div style="font-size:9px;color:#3a6a3a;margin-bottom:3px">Y (NORTE)</div>
+        <div style="font-size:10px;color:#3a6a3a;font-weight:600;margin-bottom:3px">Y (NORTE)</div>
         <input class="cinput" id="gk-y" placeholder="Ej: 6959800" oninput="liveConvGK()">
         <button class="cbtn" onclick="goGK()">Ir al punto en el mapa</button>
         <div class="cerr" id="err-gk"></div>
@@ -236,81 +292,152 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
         <div class="cnote">Datum POSGAR 2007 / WGS84. Faja 5 predeterminada para Chaco.</div>
       </div>
 
-      <!-- CALCULADORA DE INTERSECCION -->
-      <div class="csec">
-        <div class="clabel">&#9678; Interseccion de dos tramos</div>
-        <div class="cnote" style="margin-bottom:8px;color:#6a9a6a">
-          Ingresa los vertices de dos tramos (ruta y camino vecinal) para calcular el punto exacto donde se cruzan.<br>
-          Acepta Lat/Lon decimal o GK Faja 5 — detecta automaticamente.
+      <!-- HERRAMIENTA DE INTERSECCION CON POLILINEA -->
+      <div class="csec" style="margin-bottom:0">
+        <div class="clabel">&#9678; Cruces de polilinea con caminos</div>
+        <div class="cnote" style="margin-bottom:10px;color:#6a9a6a;line-height:1.6">
+          Ingresa los vertices de tu polilinea (2 o mas puntos). La app la dibuja en el mapa y detecta automaticamente donde cruza rutas, caminos vecinales, alambrados y cunetas usando OpenStreetMap.
         </div>
 
-        <div style="font-size:9px;font-weight:700;color:#1565c0;text-transform:uppercase;margin-bottom:4px">&#9644; Tramo 1 — Ruta / Camino principal</div>
-        <div style="background:#0a1020;border:1px solid #1a2a4a;border-radius:6px;padding:8px;margin-bottom:6px">
-          <div style="font-size:8px;color:#4a6a9a;margin-bottom:3px">PUNTO A (inicio del tramo 1)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:5px">
-            <input class="cinput" id="ix-a-lat" placeholder="Lat o GK X" oninput="ixLiveConv('a')">
-            <input class="cinput" id="ix-a-lon" placeholder="Lon o GK Y" oninput="ixLiveConv('a')">
-          </div>
-          <div style="font-size:8px;color:#4a6a9a;margin-bottom:3px">PUNTO B (fin del tramo 1)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-            <input class="cinput" id="ix-b-lat" placeholder="Lat o GK X" oninput="ixLiveConv('b')">
-            <input class="cinput" id="ix-b-lon" placeholder="Lon o GK Y" oninput="ixLiveConv('b')">
-          </div>
+        <!-- Lista dinamica de vertices -->
+        <div id="poly-pts-list"></div>
+
+        <!-- Boton agregar vertice -->
+        <button class="cbtn" onclick="polyAddPt()" style="background:#e8f5e8;color:#2a6a2a;border:1.5px solid #a0c8a0;margin-bottom:6px">+ Agregar vertice</button>
+
+        <div style="display:flex;gap:5px;margin-bottom:6px">
+          <button class="cbtn" id="btn-poly-calc" onclick="polyCalcOSM()" style="flex:1;margin:0">Dibujar y buscar cruces</button>
+          <button class="cbtn" onclick="polyClear()" style="flex:0 0 70px;margin:0;background:#fff0f0;color:#8a2020">Limpiar</button>
         </div>
 
-        <div style="font-size:9px;font-weight:700;color:#b35900;text-transform:uppercase;margin-bottom:4px">&#9644; Tramo 2 — Camino vecinal / cruce</div>
-        <div style="background:#1a0a00;border:1px solid #4a2a0a;border-radius:6px;padding:8px;margin-bottom:6px">
-          <div style="font-size:8px;color:#8a5a2a;margin-bottom:3px">PUNTO C (inicio del tramo 2)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:5px">
-            <input class="cinput" id="ix-c-lat" placeholder="Lat o GK X" oninput="ixLiveConv('c')">
-            <input class="cinput" id="ix-c-lon" placeholder="Lon o GK Y" oninput="ixLiveConv('c')">
-          </div>
-          <div style="font-size:8px;color:#8a5a2a;margin-bottom:3px">PUNTO D (fin del tramo 2)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-            <input class="cinput" id="ix-d-lat" placeholder="Lat o GK X" oninput="ixLiveConv('d')">
-            <input class="cinput" id="ix-d-lon" placeholder="Lon o GK Y" oninput="ixLiveConv('d')">
-          </div>
-        </div>
+        <div class="cerr" id="err-poly"></div>
 
-        <button class="cbtn" onclick="calcInterseccion()">Calcular punto de interseccion</button>
-        <div class="cerr" id="err-ix"></div>
-        <div class="cres" id="r-ix"></div>
-        <button class="cbtn" id="btn-ix-uso" style="display:none;background:#0a2a1a;margin-top:4px;color:#4adf8a" onclick="usarInterseccionEnForm()">Abrir formulario con estas coordenadas</button>
+        <!-- Resultados de cruces encontrados -->
+        <div id="r-poly-list" style="margin-top:4px"></div>
       </div>
+
     </div>
 
     <div class="pbody" id="body-i" style="display:none">
-      <div style="font-size:12px;font-weight:700;color:#6aaf6a;margin-bottom:10px">INSTRUCTIVO DE USO</div>
+      <div style="font-size:12px;font-weight:700;color:#2a6a2a;margin-bottom:10px">INSTRUCTIVO DE USO</div>
       <div class="inst-h">A — Instalar la app</div>
-      <div class="inst-s">1. Guarda el archivo <b style="color:#c0d0c0">infraestructura_vial.html</b> en tu PC<br>2. Doble clic &rarr; se abre en Chrome, Edge o Firefox<br>3. Si hay datos previos: clic en <b style="color:#c0d0c0">Importar &rarr; JSON</b> y carga el archivo<br>&nbsp;&nbsp;Necesitas internet para ver el mapa satelital</div>
+      <div class="inst-s">1. Guarda el archivo <b style="color:#2a3a2a">infraestructura_vial.html</b> en tu PC<br>2. Doble clic &rarr; se abre en Chrome, Edge o Firefox<br>3. Si hay datos previos: clic en <b style="color:#2a3a2a">Importar &rarr; JSON</b> y carga el archivo<br>&nbsp;&nbsp;Necesitas internet para ver el mapa satelital</div>
       <div class="inst-h">B — Cargar un nuevo registro</div>
-      <div class="inst-s">1. Clic en <b style="color:#c0d0c0">+ Nuevo registro</b> (mapa, esquina superior derecha)<br>2. Completar: Nombre, Categoria, Ruta, Km, Localidad, Estado, Empresa<br>3. Coordenadas (elegir una opcion):<br>&nbsp;&nbsp;· Ingresar Lat/Lon &rarr; X,Y GK se calcula solo<br>&nbsp;&nbsp;· Ingresar X,Y GK &rarr; Lat/Lon se calcula sola<br>&nbsp;&nbsp;· Clic en el mapa con el formulario abierto<br>4. Clic en <b style="color:#c0d0c0">Guardar registro</b></div>
+      <div class="inst-s">1. Clic en <b style="color:#2a3a2a">+ Nuevo registro</b> (mapa, esquina superior derecha)<br>2. Completar: Nombre, Categoria, Ruta, Km, Localidad, Estado, Empresa<br>3. Coordenadas (elegir una opcion):<br>&nbsp;&nbsp;· Ingresar Lat/Lon &rarr; X,Y GK se calcula solo<br>&nbsp;&nbsp;· Ingresar X,Y GK &rarr; Lat/Lon se calcula sola<br>&nbsp;&nbsp;· Clic en el mapa con el formulario abierto<br>4. Clic en <b style="color:#2a3a2a">Guardar registro</b></div>
       <div class="inst-h">C — Buscar registros</div>
-      <div class="inst-s"><b style="color:#c0d0c0">Por nombre/abecedario:</b> pestana BUSCAR, barra o letras<br><b style="color:#c0d0c0">Por localidad:</b> pestana LOCALIDAD, clic en el pueblo<br><b style="color:#c0d0c0">Por coordenadas:</b> pestana COORD, ingresar X,Y o Lat/Lon</div>
+      <div class="inst-s"><b style="color:#2a3a2a">Por nombre/abecedario:</b> pestana BUSCAR, barra o letras<br><b style="color:#2a3a2a">Por localidad:</b> pestana LOCALIDAD, clic en el pueblo<br><b style="color:#2a3a2a">Por coordenadas:</b> pestana COORD, ingresar X,Y o Lat/Lon</div>
       <div class="inst-h">D — Conversor de coordenadas</div>
-      <div class="inst-s"><b style="color:#c0d0c0">Lat/Lon &rarr; GK:</b> escribi lat/lon y mientras escribis el X,Y GK se completa automaticamente. Luego "Ir al punto" mueve el mapa.<br><br><b style="color:#c0d0c0">GK &rarr; Lat/Lon:</b> escribi X e Y y la Lat/Lon se completa sola.<br><br><b style="color:#c0d0c0">Google Earth:</b> pega todo (ej: 27&deg;20'7.9"S, 61&deg;16'29.4"O) en el campo Latitud y el sistema lo convierte solo.</div>
+      <div class="inst-s"><b style="color:#2a3a2a">Lat/Lon &rarr; GK:</b> escribi lat/lon y mientras escribis el X,Y GK se completa automaticamente. Luego "Ir al punto" mueve el mapa.<br><br><b style="color:#2a3a2a">GK &rarr; Lat/Lon:</b> escribi X e Y y la Lat/Lon se completa sola.<br><br><b style="color:#2a3a2a">Google Earth:</b> pega todo (ej: 27&deg;20'7.9"S, 61&deg;16'29.4"O) en el campo Latitud y el sistema lo convierte solo.</div>
       <div class="inst-h">E — Exportar datos</div>
-      <div class="inst-s"><b style="color:#c0d0c0">Exportar JSON:</b> copia de seguridad completa para Drive o pendrive.<br><b style="color:#c0d0c0">Exportar Excel:</b> genera .xlsx con el formato oficial DVP. Podes elegir exportar todas las categorias o solo una (ej: solo Gasoductos).</div>
+      <div class="inst-s"><b style="color:#2a3a2a">Exportar JSON:</b> copia de seguridad completa para Drive o pendrive.<br><b style="color:#2a3a2a">Exportar Excel:</b> genera .xlsx con el formato oficial DVP. Podes elegir exportar todas las categorias o solo una (ej: solo Gasoductos).</div>
       <div class="inst-h">F — Importar datos</div>
-      <div class="inst-s"><b style="color:#c0d0c0">JSON:</b> restaura copia completa. Reemplaza todos los datos actuales.<br><b style="color:#c0d0c0">CSV/Excel:</b> agrega registros sin borrar nada. Descarga la plantilla Excel como guia.</div>
+      <div class="inst-s"><b style="color:#2a3a2a">JSON:</b> restaura copia completa. Reemplaza todos los datos actuales.<br><b style="color:#2a3a2a">CSV/Excel:</b> agrega registros sin borrar nada. Descarga la plantilla Excel como guia.</div>
       <div class="inst-h">G — Compartir</div>
-      <div class="inst-s">1. Exportar JSON al terminar de cargar datos<br>2. Subir el .json a Google Drive de la oficina<br>3. Los demas agentes importan ese .json y tienen la base actualizada<br><b style="color:#c0d0c0">Para otra reparticion:</b> copiar .html + ultimo .json en un pendrive</div>
+      <div class="inst-s">1. Exportar JSON al terminar de cargar datos<br>2. Subir el .json a Google Drive de la oficina<br>3. Los demas agentes importan ese .json y tienen la base actualizada<br><b style="color:#2a3a2a">Para otra reparticion:</b> copiar .html + ultimo .json en un pendrive</div>
       <div class="inst-h">H — Estados</div>
       <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
-        <div style="padding:6px 9px;border-radius:5px;background:#0a2a0a;border-left:3px solid #6aaf6a;font-size:10px"><b style="color:#6aaf6a">BUENO</b> — Funciona normalmente. Sin danos ni riesgo.</div>
-        <div style="padding:6px 9px;border-radius:5px;background:#2a1a00;border-left:3px solid #c8a050;font-size:10px"><b style="color:#c8a050">REGULAR</b> — Deterioro visible. Requiere mantenimiento proximo.</div>
-        <div style="padding:6px 9px;border-radius:5px;background:#2a0a0a;border-left:3px solid #c07070;font-size:10px"><b style="color:#c07070">CRITICO</b> — Dano importante. Intervencion urgente.</div>
-        <div style="padding:6px 9px;border-radius:5px;background:#1a1a1a;border-left:3px solid #3a5a3a;font-size:10px"><b style="color:#3a5a3a">SIN DATOS</b> — Estado no verificado. Actualizar al inspeccionar.</div>
+        <div style="padding:6px 9px;border-radius:5px;background:#d8f0d8;border-left:3px solid #2a8a2a;font-size:10px"><b style="color:#2a6a2a">BUENO</b> — Funciona normalmente. Sin danos ni riesgo.</div>
+        <div style="padding:6px 9px;border-radius:5px;background:#fff5e0;border-left:3px solid #d4a020;font-size:10px"><b style="color:#8a5500">REGULAR</b> — Deterioro visible. Requiere mantenimiento proximo.</div>
+        <div style="padding:6px 9px;border-radius:5px;background:#fff0f0;border-left:3px solid #c04040;font-size:10px"><b style="color:#8a2020">CRITICO</b> — Dano importante. Intervencion urgente.</div>
+        <div style="padding:6px 9px;border-radius:5px;background:#f5f5f5;border-left:3px solid #8aaa8a;font-size:10px"><b style="color:#5a7a5a">SIN DATOS</b> — Estado no verificado. Actualizar al inspeccionar.</div>
       </div>
-      <div style="padding:6px 9px;border-radius:5px;background:#1a1a08;border:1px solid #3a3a1a;font-size:10px;color:#8a8a4a;line-height:1.5">Categoria "Otros": para infraestructura que no entra en las 8 categorias. Si hay muchos del mismo tipo nuevo, crear una categoria con + Nueva categoria.</div>
-      <div style="font-size:10px;color:#2a4a2a;text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid #1a2a1a;line-height:1.6">Infraestructura Vial — Provincia del Chaco<br>Base de datos interna DVP</div>
+      <div style="padding:6px 9px;border-radius:5px;background:#fffff0;border:1px solid #3a3a1a;font-size:10px;color:#6a6a10;line-height:1.5">Categoria "Otros": para infraestructura que no entra en las 8 categorias. Si hay muchos del mismo tipo nuevo, crear una categoria con + Nueva categoria.</div>
+      <div style="font-size:10px;color:#2a4a2a;text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid #d0ddd0;line-height:1.6">Infraestructura Vial — Provincia del Chaco<br>Base de datos interna DVP</div>
     </div>
   </div>
 
   <div style="flex:1;position:relative;overflow:hidden">
     <div id="map" style="width:100%;height:100%"></div>
     <button class="fab" onclick="openRecordModal()">+ Nuevo registro</button>
-    <div class="legend" id="legend"></div>
+    <button class="fab2" id="btn-ix" onclick="toggleIxPanel()">&#9974; Calcular cruce</button>
+
+    <!-- PANEL CALCULADORA DE INTERSECCION -->
+    <div class="ix-panel" id="ix-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <h3 style="margin:0;font-size:16px;color:#1a3a1a">Calcular punto de cruce</h3>
+        <button onclick="toggleIxPanel()" style="background:transparent;border:none;color:#5a7a5a;cursor:pointer;font-size:18px;font-weight:700">&#10005;</button>
+      </div>
+      <div style="font-size:13px;color:#3a5a3a;line-height:1.7;margin-bottom:12px;padding:8px 10px;background:#f0f8f0;border-radius:7px;border-left:3px solid #4a8a4a">
+        Ingresa los <b>4 vértices</b> de los dos tramos que se cruzan.<br>
+        Acepta <b>Lat/Lon</b> (decimal o GMS) o <b>GK Faja 5</b> — detecta automáticamente.
+      </div>
+
+      <div style="font-size:12px;font-weight:800;color:#1565c0;text-transform:uppercase;margin-bottom:6px">&#9644; Tramo 1 (Ruta / Camino principal)</div>
+      <div style="background:#f0f5ff;border:1.5px solid #b0c0e0;border-radius:8px;padding:10px;margin-bottom:8px">
+        <div style="font-size:11px;color:#3a5a9a;font-weight:700;margin-bottom:4px">PUNTO A</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:7px">
+          <input class="cinput" id="ix-a1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('a')">
+          <input class="cinput" id="ix-a2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('a')">
+        </div>
+        <div style="font-size:11px;color:#3a5a9a;font-weight:700;margin-bottom:4px">PUNTO B</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+          <input class="cinput" id="ix-b1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('b')">
+          <input class="cinput" id="ix-b2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('b')">
+        </div>
+      </div>
+
+      <div style="font-size:12px;font-weight:800;color:#b35900;text-transform:uppercase;margin-bottom:6px">&#9644; Tramo 2 (Camino vecinal / cruce)</div>
+      <div style="background:#fff8f0;border:1.5px solid #e0c0a0;border-radius:8px;padding:10px;margin-bottom:10px">
+        <div style="font-size:11px;color:#7a4a1a;font-weight:700;margin-bottom:4px">PUNTO C</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:7px">
+          <input class="cinput" id="ix-c1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('c')">
+          <input class="cinput" id="ix-c2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('c')">
+        </div>
+        <div style="font-size:11px;color:#7a4a1a;font-weight:700;margin-bottom:4px">PUNTO D</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+          <input class="cinput" id="ix-d1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('d')">
+          <input class="cinput" id="ix-d2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('d')">
+        </div>
+      </div>
+
+      <button class="cbtn" onclick="calcIxPanel()">Calcular intersección</button>
+      <div class="cerr" id="err-ix-panel" style="margin-top:6px"></div>
+      <div id="r-ix-panel" style="margin-top:8px"></div>
+    </div>
+      <div class="ix-tab">
+        <div class="ix-tab-btn on" id="ixtab-draw" onclick="setIxTab('draw')">Dibujar en mapa</div>
+        <div class="ix-tab-btn" id="ixtab-osm" onclick="setIxTab('osm')">Detectar caminos OSM</div>
+      </div>
+
+      <!-- OPCION A: Dibujar dos lineas -->
+      <div class="ix-body on" id="ixbody-draw">
+        <div class="ix-step">
+          Dibuja dos segmentos sobre el mapa. El sistema calcula automaticamente el punto donde se cruzan.<br><br>
+          <b>Paso 1:</b> Activar "Tramo 1", hacer clic en dos puntos del primer camino.<br>
+          <b>Paso 2:</b> Activar "Tramo 2", hacer clic en dos puntos del segundo camino.<br>
+          <b>Paso 3:</b> Calcular interseccion.
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px">
+          <button class="ix-btn ix-btn-calc" id="btn-draw-t1" onclick="startDrawTramo(1)">&#9642; Dibujar Tramo 1</button>
+          <button class="ix-btn ix-btn-calc" id="btn-draw-t2" onclick="startDrawTramo(2)" style="background:#fff5e0;color:#8a5500">&#9642; Dibujar Tramo 2</button>
+        </div>
+        <div class="draw-hint" id="draw-hint">Activa un tramo para comenzar a dibujar sobre el mapa.</div>
+        <div id="draw-status" style="font-size:10px;color:#2a5a2a;margin-bottom:5px;font-weight:600;min-height:16px"></div>
+        <button class="ix-btn ix-btn-calc" onclick="calcInterseccionDraw()">&#10006; Calcular interseccion</button>
+        <button class="ix-btn ix-btn-clear" onclick="clearDrawTramos()" style="margin-top:4px">Limpiar trazados</button>
+        <div class="ix-res" id="ix-res-draw">
+          <div class="ix-res-title">Punto de interseccion calculado</div>
+          <div class="ix-coord" id="ix-draw-coords"></div>
+          <button class="ix-btn ix-btn-use" onclick="usarIxEnForm('draw')">Usar en nuevo registro</button>
+        </div>
+      </div>
+
+      <!-- OPCION B: Detectar caminos OSM -->
+      <div class="ix-body" id="ixbody-osm">
+        <div class="ix-step">
+          Dibuja tu polilinea sobre el mapa. El sistema consulta los caminos de OpenStreetMap en esa zona y calcula automaticamente todos los puntos donde tu linea los cruza.<br><br>
+          <b>Requiere internet.</b> Funciona mejor a zoom alto (acercate a la zona primero).
+        </div>
+        <button class="ix-btn ix-btn-calc" id="btn-draw-poly" onclick="startDrawPolyline()">&#9644; Dibujar mi polilinea</button>
+        <div class="draw-hint" id="draw-hint-osm" style="margin-top:5px">Activa el dibujo y traza tu linea sobre el mapa haciendo clic en cada punto. Doble clic para terminar.</div>
+        <button class="ix-btn ix-btn-calc" onclick="detectarCrucesOSM()" style="margin-top:4px">Buscar cruces con caminos OSM</button>
+        <button class="ix-btn ix-btn-clear" onclick="clearPolyline()" style="margin-top:4px">Limpiar polilinea</button>
+        <div id="osm-loading" style="display:none;font-size:10px;color:#2a6a2a;margin-top:6px;text-align:center">Consultando OpenStreetMap...</div>
+        <div id="osm-results" style="margin-top:6px"></div>
+      </div>
+    </div>
+
+</div>
     <div class="det" id="det">
       <button class="det-close" onclick="closeDet()">x</button>
       <div id="det-inner"></div>
@@ -445,12 +572,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
       </div>
       <div class="prev-box" id="prev-csv"></div>
       <div id="csv-map-wrap" style="display:none">
-        <div style="font-size:10px;font-weight:700;color:#4a8a4a;margin:10px 0 6px">Mapeo de columnas detectadas</div>
+        <div style="font-size:10px;font-weight:800;color:#2a5a2a;margin:10px 0 6px">Mapeo de columnas detectadas</div>
         <div class="csv-map-grid" id="csv-map-grid"></div>
       </div>
       <button class="bsave-imp" id="btn-imp-csv" onclick="doImportCSV()" disabled>Importar registros</button>
       <div style="margin-top:8px;text-align:center">
-        <button style="background:transparent;border:none;color:#3a6a3a;font-size:10px;cursor:pointer;text-decoration:underline" onclick="downloadExcelTemplate()">Descargar plantilla Excel de ejemplo</button>
+        <button style="background:transparent;border:none;color:#2a5a2a;font-size:10px;cursor:pointer;text-decoration:underline" onclick="downloadExcelTemplate()">Descargar plantilla Excel de ejemplo</button>
       </div>
     </div>
     <div class="mact" style="margin-top:12px"><button class="bcanc" onclick="closeModal('im')">Cerrar</button></div>
@@ -461,12 +588,12 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#0f1a0f;color:#e0
 <div class="overlay" id="em">
   <div class="modal" style="max-width:400px">
     <h2>Exportar a Excel</h2>
-    <div style="font-size:11px;color:#6a8a6a;margin-bottom:12px;line-height:1.6">Genera un archivo .xlsx con el formato oficial DVP. Elegir que categoria exportar:</div>
+    <div style="font-size:11px;color:#4a6a4a;margin-bottom:12px;line-height:1.6">Genera un archivo .xlsx con el formato oficial DVP. Elegir que categoria exportar:</div>
     <div class="fg">
       <label>Categoria a exportar</label>
-      <select id="exp-cat" style="background:#111811;color:#c0d0c0;border:1px solid #1a2a1a;border-radius:6px;padding:8px;width:100%;font-size:13px;outline:none" onchange="updateExpCount()"></select>
+      <select id="exp-cat" style="background:#f8fbf8;color:#2a3a2a;border:1px solid #d0ddd0;border-radius:6px;padding:8px;width:100%;font-size:13px;outline:none" onchange="updateExpCount()"></select>
     </div>
-    <div style="font-size:10px;color:#3a6a3a;margin-top:4px;margin-bottom:12px" id="exp-count"></div>
+    <div style="font-size:10px;color:#2a5a2a;margin-top:4px;margin-bottom:12px" id="exp-count"></div>
     <div class="mact">
       <button class="bcanc" onclick="closeModal('em')">Cancelar</button>
       <button class="bsave" onclick="doExportExcel()">Descargar Excel</button>
@@ -602,6 +729,8 @@ function initMap(){
     {position:'topleft', collapsed:true}
   ).addTo(map);
   map.on('click',function(e){
+    // Modo interseccion activo: capturar puntos para calcular cruce
+    if(_ixDrawing){ixMapClick(e);return;}
     if(document.getElementById('rm').classList.contains('open')){
       document.getElementById('f-lat').value=e.latlng.lat.toFixed(6);
       document.getElementById('f-lon').value=e.latlng.lng.toFixed(6);
@@ -644,7 +773,17 @@ function refreshMarkers(){
     const hasIni=r.lat1!=null&&r.lon1!=null;
     const hasFin=r.lat2!=null&&r.lon2!=null;
     const hasCen=r.lat!=null&&r.lon!=null;
-    const onClick=()=>{selRec=r.id;showDet(r.id);renderList();};
+    const onClick=()=>{
+      selRec=r.id;showDet(r.id);renderList();
+      // Mover el mapa al registro
+      const hasIni=r.lat1!=null&&r.lon1!=null;
+      const hasFin=r.lat2!=null&&r.lon2!=null;
+      if(hasIni&&hasFin){
+        map.fitBounds([[r.lat1,r.lon1],[r.lat2,r.lon2]],{padding:[80,80],maxZoom:17,animate:true,duration:1.2});
+      }else{
+        const p=getMapPoint(r);if(p)fly(p.lat,p.lon);
+      }
+    };
 
     if(hasIni&&hasFin){
       // Tramo completo: dos marcadores + linea conectora
@@ -676,6 +815,7 @@ function setTab(t){
     document.getElementById('body-'+x).style.display=x===t?'':'none';
   });
   if(t==='l')renderLocs();
+  if(t==='c')initPolyTool();
 }
 
 // ===== BUSCAR =====
@@ -719,7 +859,7 @@ function renderList(){
       <div class="rtags">
         <span class="rtag" style="background:${cat.color}25;color:${cat.color}">${cat.name}</span>
         <span class="rtag" style="background:${EB[r.estado]||'#1a1a1a'};color:${ET[r.estado]||'#3a5a3a'}">${r.estado}</span>
-        ${(r.lat||r.lat1||r.lat2)?'<span class="rtag" style="background:#0a1a0a;color:#2a6a2a">GPS</span>':''}
+        ${(r.lat||r.lat1||r.lat2)?'<span class="rtag" style="background:#e8f5e8;color:#2a6a2a">GPS</span>':''}
       </div></div>`;
   }).join('');
 }
@@ -848,13 +988,13 @@ function showDet(id){
     if(!lat&&!lon&&!gkx&&!gky)return'';
     const latV=lat!=null?lat.toFixed(6):'';
     const lonV=lon!=null?lon.toFixed(6):'';
-    return `<div style="background:#0a1a0a;border:1px solid #1a3a1a;border-radius:7px;padding:8px 10px;margin-top:6px">
-      <div style="font-size:9px;font-weight:700;color:#6aaf6a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">${label}</div>
+    return `<div style="background:#e8f5e8;border:1px solid #b0d0b0;border-radius:7px;padding:8px 10px;margin-top:6px">
+      <div style="font-size:9px;font-weight:700;color:#2a6a2a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">${label}</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-        ${latV?`<div style="background:#111811;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#3a6a3a;font-weight:700;margin-bottom:2px">LATITUD</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${latV}</div></div>`:''}
-        ${lonV?`<div style="background:#111811;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#3a6a3a;font-weight:700;margin-bottom:2px">LONGITUD</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${lonV}</div></div>`:''}
-        ${gkx?`<div style="background:#111811;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#3a6a3a;font-weight:700;margin-bottom:2px">GK X FAJA 5</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${gkx}</div></div>`:''}
-        ${gky?`<div style="background:#111811;border-radius:4px;padding:5px 7px"><div style="font-size:8px;color:#3a6a3a;font-weight:700;margin-bottom:2px">GK Y FAJA 5</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${gky}</div></div>`:''}
+        ${latV?`<div style="background:#f8fbf8;border-radius:4px;padding:5px 7px"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;font-weight:700;margin-bottom:2px">LATITUD</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${latV}</div></div>`:''}
+        ${lonV?`<div style="background:#f8fbf8;border-radius:4px;padding:5px 7px"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;font-weight:700;margin-bottom:2px">LONGITUD</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${lonV}</div></div>`:''}
+        ${gkx?`<div style="background:#f8fbf8;border-radius:4px;padding:5px 7px"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;font-weight:700;margin-bottom:2px">GK X FAJA 5</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${gkx}</div></div>`:''}
+        ${gky?`<div style="background:#f8fbf8;border-radius:4px;padding:5px 7px"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;font-weight:700;margin-bottom:2px">GK Y FAJA 5</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${gky}</div></div>`:''}
       </div>
     </div>`;
   };
@@ -1249,7 +1389,7 @@ function processJSONFile(f){
       const prev=document.getElementById('prev-json');
       prev.innerHTML='<b style="color:#a0d0a0">Archivo valido</b><br>Categorias: '+p.categories.length+'<br>Registros: '+p.records.length+'<br>Guardado: '+(p.savedAt?new Date(p.savedAt).toLocaleString('es-AR'):'--')+'<br><br><button class="cbtn" style="margin:0;padding:7px" onclick="confirmImportJSON('+JSON.stringify(JSON.stringify(p))+')">Confirmar - Reemplazar base actual</button>';
       prev.classList.add('show');
-    }catch(e){const prev=document.getElementById('prev-json');prev.innerHTML='<span style="color:#c07070">Archivo invalido.</span>';prev.classList.add('show');}
+    }catch(e){const prev=document.getElementById('prev-json');prev.innerHTML='<span style="color:#8a2020">Archivo invalido.</span>';prev.classList.add('show');}
   };
   r.readAsText(f);
 }
@@ -1385,14 +1525,14 @@ function processImportFile(f){
           total:dataRows.length
         };
         _csvParsed=parsed;showImportPreview(parsed);
-      }catch(e){const p=document.getElementById('prev-csv');p.innerHTML='<span style="color:#c07070">Error al leer Excel: '+e.message+'</span>';p.classList.add('show');}
+      }catch(e){const p=document.getElementById('prev-csv');p.innerHTML='<span style="color:#8a2020">Error al leer Excel: '+e.message+'</span>';p.classList.add('show');}
     };
     r.readAsArrayBuffer(f);
   }else{
     const r=new FileReader();
     r.onload=ev=>{
       try{const result=parseCSVText(ev.target.result);_csvParsed=result;showImportPreview(result);}
-      catch(e){const p=document.getElementById('prev-csv');p.innerHTML='<span style="color:#c07070">Error: '+e.message+'</span>';p.classList.add('show');}
+      catch(e){const p=document.getElementById('prev-csv');p.innerHTML='<span style="color:#8a2020">Error: '+e.message+'</span>';p.classList.add('show');}
     };
     r.readAsText(f,'UTF-8');
   }
@@ -1422,7 +1562,7 @@ function parseCSVText(text){
 function showImportPreview(result){
   const mapped=[...new Set(Object.values(result.colMap).filter(Boolean))];
   const p=document.getElementById('prev-csv');
-  p.innerHTML='<b style="color:#a0d0a0">Archivo leido</b><br>Columnas: '+result.headers.length+' | Registros: '+result.total+'<br>Campos mapeados: <b style="color:#6aaf6a">'+mapped.length+'</b><br><br><b>Vista previa:</b><br>'+result.rows.slice(0,3).map(r=>'- '+(r.nombre||'sin nombre')+(r.loc?' - '+r.loc:'')).join('<br>');
+  p.innerHTML='<b style="color:#a0d0a0">Archivo leido</b><br>Columnas: '+result.headers.length+' | Registros: '+result.total+'<br>Campos mapeados: <b style="color:#2a6a2a">'+mapped.length+'</b><br><br><b>Vista previa:</b><br>'+result.rows.slice(0,3).map(r=>'- '+(r.nombre||'sin nombre')+(r.loc?' - '+r.loc:'')).join('<br>');
   p.classList.add('show');
   buildMapUI(result);
   document.getElementById('csv-map-wrap').style.display='block';
@@ -1547,6 +1687,495 @@ function doImportCSV(){
   save();refreshMarkers();render();closeModal('im');_csvParsed=null;
   toast('Importados: '+ok+' registros'+(skip?' ('+skip+' omitidos)':''));
 }
+// ===== INTERSECCION DE TRAMOS =====
+// Variable global para el resultado de la interseccion calculada
+let _ixResult=null;
+// Capas de dibujo sobre el mapa para la herramienta OSM
+let _ixDrawLayers=[];
+let _ixDrawMode=false;
+let _ixDrawPoints=[];
+let _ixOsmLayers=[];
+
+// Detecta si un par de valores es GK (X~5M-6M, Y~6.5M-8M) o Lat/Lon
+function ixParsePoint(rawLat, rawLon){
+  const a=parseFloat(String(rawLat).replace(',','.'));
+  const b=parseFloat(String(rawLon).replace(',','.'));
+  if(isNaN(a)||isNaN(b))return null;
+  // Detectar si son GK (X e Y grandes)
+  if(a>=5000000&&a<=6000000&&b>=6000000&&b<=8000000){
+    const ll=gkToLL(5,a,b);
+    return ll?{lat:ll.lat,lon:ll.lon,gkx:a,gky:b}:null;
+  }
+  // Si el primer campo parece Lat (pequeño negativo) y el segundo Lon
+  const lat=parseCoord(String(rawLat));
+  const lon=parseCoord(String(rawLon));
+  if(isNaN(lat)||isNaN(lon))return null;
+  const gk=llToGK(5,lat,lon);
+  return{lat,lon,gkx:gk?parseFloat(gk.x.toFixed(2)):null,gky:gk?parseFloat(gk.y.toFixed(2)):null};
+}
+
+// Conversion en vivo para los campos de interseccion
+function ixLiveConv(pt){
+  const lat=document.getElementById('ix-'+pt+'-lat').value;
+  const lon=document.getElementById('ix-'+pt+'-lon').value;
+  if(!lat||!lon)return;
+  const p=ixParsePoint(lat,lon);
+  if(p){
+    document.getElementById('ix-'+pt+'-lat').value=p.lat.toFixed(6);
+    document.getElementById('ix-'+pt+'-lon').value=p.lon.toFixed(6);
+  }
+}
+
+// Calcula la interseccion matematica de dos segmentos (A-B y C-D) en Lat/Lon
+// Usa algebra lineal sobre coordenadas planas (valido para distancias cortas ~Chaco)
+function segmentIntersect(a,b,c,d){
+  const dx1=b.lon-a.lon, dy1=b.lat-a.lat;
+  const dx2=d.lon-c.lon, dy2=d.lat-c.lat;
+  const denom=dx1*dy2-dy1*dx2;
+  if(Math.abs(denom)<1e-12)return null; // paralelas
+  const t=((c.lon-a.lon)*dy2-(c.lat-a.lat)*dx2)/denom;
+  const u=((c.lon-a.lon)*dy1-(c.lat-a.lat)*dx1)/denom;
+  // Solo si la interseccion ocurre dentro de ambos segmentos (t y u entre 0 y 1)
+  // Para extrapolacion de lineas infinitas no verificamos esto
+  return{
+    lat:a.lat+t*dy1,
+    lon:a.lon+t*dx1,
+    tInSegment:(t>=0&&t<=1),
+    uInSegment:(u>=0&&u<=1)
+  };
+}
+
+// Opcion A: calcular desde los 4 vertices ingresados manualmente
+// ===== HERRAMIENTA DE POLILINEA + CRUCES OSM =====
+
+// Estado de la herramienta
+let _polyPts = [];          // [{lat,lon,gkx,gky}, ...]
+let _polyMapLayers = [];    // capas Leaflet dibujadas (linea + marcadores + cruces)
+let _polyResults = [];      // cruces encontrados [{lat,lon,gkx,gky,nombre,tipo}, ...]
+
+// ── Inicializar con 2 filas vacías ──────────────────────────────────────────
+function polyInit(){
+  _polyPts=[];_polyMapLayers=[];_polyResults=[];
+  document.getElementById('poly-pts-list').innerHTML='';
+  document.getElementById('r-poly-list').innerHTML='';
+  document.getElementById('err-poly').classList.remove('show');
+  polyAddPt();polyAddPt();
+}
+
+// ── Agregar fila de vértice ─────────────────────────────────────────────────
+function polyAddPt(){
+  const idx=_polyPts.length;
+  _polyPts.push({lat:null,lon:null,gkx:null,gky:null});
+  const label=String.fromCharCode(65+idx); // A, B, C ...
+  const row=document.createElement('div');
+  row.id='poly-row-'+idx;
+  row.style.cssText='margin-bottom:6px;background:#ffffff;border:1px solid #b0d0b0;border-radius:6px;padding:7px 8px';
+  row.innerHTML=`
+    <div style="font-size:9px;font-weight:700;color:#4aaf6a;margin-bottom:4px">VERTICE ${label}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:3px">
+      <input class="cinput" id="poly-lat-${idx}" placeholder="Lat  o  GK X" style="margin:0" oninput="polyConvPt(${idx})">
+      <input class="cinput" id="poly-lon-${idx}" placeholder="Lon  o  GK Y" style="margin:0" oninput="polyConvPt(${idx})">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+      <div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;padding:3px 4px;background:#e8f5e8;border-radius:3px" id="poly-gkx-${idx}">GK X: —</div>
+      <div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;padding:3px 4px;background:#e8f5e8;border-radius:3px" id="poly-gky-${idx}">GK Y: —</div>
+    </div>`;
+  document.getElementById('poly-pts-list').appendChild(row);
+}
+
+// ── Convertir automáticamente al tipear ────────────────────────────────────
+function polyConvPt(idx){
+  const rawA=document.getElementById('poly-lat-'+idx).value.trim();
+  const rawB=document.getElementById('poly-lon-'+idx).value.trim();
+  const elGKX=document.getElementById('poly-gkx-'+idx);
+  const elGKY=document.getElementById('poly-gky-'+idx);
+  if(!rawA||!rawB){
+    _polyPts[idx]={lat:null,lon:null,gkx:null,gky:null};
+    elGKX.textContent='GK X: —';elGKY.textContent='GK Y: —';return;
+  }
+  const numA=parseFloat(rawA.replace(',','.'));
+  const numB=parseFloat(rawB.replace(',','.'));
+
+  // Detectar si son GK (X ~5M-6M, Y ~6.5M-8M)
+  if(!isNaN(numA)&&!isNaN(numB)&&_isValidGKX(numA)&&_isValidGKY(numB)){
+    const ll=gkToLL(5,numA,numB);
+    if(ll){
+      _polyPts[idx]={lat:ll.lat,lon:ll.lon,gkx:parseFloat(numA.toFixed(2)),gky:parseFloat(numB.toFixed(2))};
+      elGKX.textContent='GK X: '+numA.toFixed(2);
+      elGKY.textContent='GK Y: '+numB.toFixed(2);
+      elGKX.style.background='#d8f0d8';elGKY.style.background='#d8f0d8';
+      return;
+    }
+  }
+  // Intentar como Lat/Lon en cualquier formato (decimal, GMS, con S/O/W)
+  const lat=parseCoord(rawA);
+  const lon=parseCoord(rawB);
+  if(!isNaN(lat)&&!isNaN(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){
+    const gk=llToGK(5,lat,lon);
+    const gkx=gk?parseFloat(gk.x.toFixed(2)):null;
+    const gky=gk?parseFloat(gk.y.toFixed(2)):null;
+    _polyPts[idx]={lat,lon,gkx,gky};
+    if(gk){
+      elGKX.textContent='GK X: '+gkx;
+      elGKY.textContent='GK Y: '+gky;
+      elGKX.style.background='#d8f0d8';elGKY.style.background='#d8f0d8';
+    }
+  }else{
+    _polyPts[idx]={lat:null,lon:null,gkx:null,gky:null};
+    elGKX.textContent='GK X: —';elGKY.textContent='GK Y: —';
+    elGKX.style.background='#f8f0e8';elGKY.style.background='#f8f0e8';
+  }
+}
+
+// ── Limpiar todo ────────────────────────────────────────────────────────────
+function polyClear(){
+  _polyMapLayers.forEach(l=>map.removeLayer(l));
+  _polyMapLayers=[];_polyResults=[];
+  polyInit();
+}
+
+// ── Dibujar polilínea en el mapa y buscar cruces OSM ────────────────────────
+async function polyCalcOSM(){
+  const err=document.getElementById('err-poly');
+  const resList=document.getElementById('r-poly-list');
+  err.classList.remove('show');
+  resList.innerHTML='';
+
+  // Reunir vértices válidos
+  const pts=_polyPts.filter(p=>p.lat!=null&&p.lon!=null);
+  if(pts.length<2){
+    err.textContent='Necesitas al menos 2 vertices con coordenadas validas.';
+    err.classList.add('show');return;
+  }
+
+  // Limpiar capas anteriores
+  _polyMapLayers.forEach(l=>map.removeLayer(l));
+  _polyMapLayers=[];
+
+  // Dibujar la polilínea
+  const latlngs=pts.map(p=>[p.lat,p.lon]);
+  const poly=L.polyline(latlngs,{color:'#ffcc00',weight:3,opacity:.9,dashArray:'6,4'}).addTo(map);
+  _polyMapLayers.push(poly);
+
+  // Marcadores de vértices
+  pts.forEach((p,i)=>{
+    const lbl=String.fromCharCode(65+i);
+    const m=L.circleMarker([p.lat,p.lon],{radius:6,color:'#ffcc00',fillColor:'#ffcc00',fillOpacity:1,weight:2}).addTo(map);
+    m.bindTooltip('Vértice '+lbl,{permanent:true,direction:'top',offset:[0,-8],className:'',opacity:.9});
+    _polyMapLayers.push(m);
+  });
+
+  // Ajustar vista al bounding box de la polilínea
+  map.fitBounds(poly.getBounds(),{padding:[40,40]});
+
+  // Mostrar estado de búsqueda
+  resList.innerHTML='<div style="font-size:10px;color:#1a4a8a;padding:6px 0">&#9881; Consultando caminos de OpenStreetMap...</div>';
+
+  // Calcular bbox para la query OSM (con margen)
+  const lats=pts.map(p=>p.lat), lons=pts.map(p=>p.lon);
+  const margin=0.002;
+  const minLat=Math.min(...lats)-margin, maxLat=Math.max(...lats)+margin;
+  const minLon=Math.min(...lons)-margin, maxLon=Math.max(...lons)+margin;
+
+  // Query Overpass API — buscar todos los caminos en el área
+  const query=`[out:json][timeout:25];
+(
+  way["highway"](${minLat},${minLon},${maxLat},${maxLon});
+  way["railway"](${minLat},${minLon},${maxLat},${maxLon});
+);
+out geom;`;
+
+  try{
+    const resp=await fetch('https://overpass-api.de/api/interpreter',{
+      method:'POST',
+      body:'data='+encodeURIComponent(query)
+    });
+    if(!resp.ok)throw new Error('Error al conectar con OpenStreetMap');
+    const data=await resp.json();
+
+    // Para cada segmento de la polilínea, buscar intersecciones con los caminos OSM
+    const cruces=[];
+    for(let i=0;i<pts.length-1;i++){
+      const A={lat:pts[i].lat,lon:pts[i].lon};
+      const B={lat:pts[i+1].lat,lon:pts[i+1].lon};
+      for(const way of data.elements){
+        if(!way.geometry||way.geometry.length<2)continue;
+        const nombre=way.tags&&(way.tags.name||way.tags.ref||way.tags.highway||way.tags.railway)||'Camino sin nombre';
+        const tipo=way.tags&&way.tags.highway||way.tags&&way.tags.railway||'way';
+        for(let j=0;j<way.geometry.length-1;j++){
+          const C={lat:way.geometry[j].lat,lon:way.geometry[j].lon};
+          const D={lat:way.geometry[j+1].lat,lon:way.geometry[j+1].lon};
+          const ix=segIntersect(A,B,C,D);
+          if(ix){
+            // Evitar duplicados muy cercanos (mismo cruce detectado 2 veces)
+            const dup=cruces.some(c=>haversineM(c.lat,c.lon,ix.lat,ix.lon)<5);
+            if(!dup){
+              const gk=llToGK(5,ix.lat,ix.lon);
+              cruces.push({
+                lat:ix.lat,lon:ix.lon,
+                gkx:gk?parseFloat(gk.x.toFixed(2)):null,
+                gky:gk?parseFloat(gk.y.toFixed(2)):null,
+                nombre,tipo,
+                segmento:String.fromCharCode(65+i)+'-'+String.fromCharCode(65+i+1)
+              });
+            }
+          }
+        }
+      }
+    }
+
+    _polyResults=cruces;
+
+    if(!cruces.length){
+      resList.innerHTML='<div style="font-size:13px;color:#7a4a00;padding:8px;background:#fff8e8;border-radius:6px;border-left:3px solid #d4a020">No se encontraron cruces con caminos de OSM en esta area. Verifica que la polilinea pase por encima de caminos conocidos.</div>';
+      return;
+    }
+
+    // Marcar cada cruce en el mapa y mostrar resultados
+    resList.innerHTML='<div style="font-size:14px;font-weight:800;color:#1a5a1a;margin-bottom:8px">'+cruces.length+' cruce'+(cruces.length!==1?'s':'')+' encontrado'+(cruces.length!==1?'s':'')+' con OSM:</div>';
+    cruces.forEach((c,n)=>{
+      // Marcador en el mapa
+      const mk=L.circleMarker([c.lat,c.lon],{radius:8,color:'#ff4444',fillColor:'#ff2222',fillOpacity:.85,weight:2}).addTo(map);
+      mk.bindTooltip('<b>'+(n+1)+'.</b> '+c.nombre,{direction:'top',offset:[0,-10],permanent:false});
+      _polyMapLayers.push(mk);
+
+      // Tarjeta de resultado
+      const card=document.createElement('div');
+      card.style.cssText='background:#f0f8f0;border:1.5px solid #4a8a4a;border-radius:8px;padding:10px 12px;margin-bottom:7px;font-size:13px';
+      card.innerHTML=`
+        <div style="color:#1a4a1a;font-weight:800;margin-bottom:5px;font-size:14px">${n+1}. ${c.nombre} <span style="font-weight:500;color:#5a7a5a">(${tipoLabel(c.tipo)})</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:5px">
+          <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">LATITUD</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${c.lat.toFixed(6)}</div></div>
+          <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">LONGITUD</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${c.lon.toFixed(6)}</div></div>
+          ${c.gkx?'<div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK X</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">'+c.gkx+'</div></div>':''}
+          ${c.gky?'<div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK Y</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">'+c.gky+'</div></div>':''}
+        </div>
+        <div style="display:flex;gap:4px">
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('${c.lat.toFixed(6)}, ${c.lon.toFixed(6)}').then(()=>toast('Lat/Lon copiado'))">Copiar Lat/Lon</button>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText('${c.gkx||''}, ${c.gky||''}').then(()=>toast('GK copiado'))">Copiar GK</button>
+          <button class="copy-btn" style="background:#e8f5e8;color:#2a6a2a;border:1.5px solid #a0c8a0" onclick="polyUsarCruce(${n})">Usar en registro</button>
+        </div>`;
+      resList.appendChild(card);
+    });
+
+  }catch(e){
+    resList.innerHTML='';
+    err.textContent='Error al consultar OSM: '+e.message+'. Verifica tu conexion a internet.';
+    err.classList.add('show');
+  }
+}
+
+// ── Etiqueta legible para tipo de camino OSM ───────────────────────────────
+function tipoLabel(t){
+  const m={primary:'Ruta principal',secondary:'Ruta secundaria',tertiary:'Camino terciario',
+    unclassified:'Camino vecinal',residential:'Calle',track:'Huella/Camino rural',
+    path:'Sendero',footway:'Senda peatonal',railway:'Ferrocarril',primary_link:'Acceso ruta',
+    trunk:'Ruta troncal',motorway:'Autopista',road:'Camino'};
+  return m[t]||t;
+}
+
+// ── Intersección geométrica de dos segmentos ──────────────────────────────
+function segIntersect(A,B,C,D){
+  // Usando lat/lon como plano (válido para distancias cortas)
+  const r={lat:B.lat-A.lat,lon:B.lon-A.lon};
+  const s={lat:D.lat-C.lat,lon:D.lon-C.lon};
+  const denom=r.lat*s.lon-r.lon*s.lat;
+  if(Math.abs(denom)<1e-12)return null; // paralelos
+  const dx=C.lat-A.lat, dy=C.lon-A.lon;
+  const t=(dx*s.lon-dy*s.lat)/denom;
+  const u=(dx*r.lon-dy*r.lat)/denom;
+  if(t>=0&&t<=1&&u>=0&&u<=1){
+    return{lat:A.lat+t*r.lat,lon:A.lon+t*r.lon};
+  }
+  return null;
+}
+
+// ── Usar un cruce como coordenada de inicio en nuevo registro ─────────────
+function polyUsarCruce(n){
+  const c=_polyResults[n];
+  if(!c)return;
+  openRecordModal();
+  // Poner coordenadas en el bloque de inicio
+  setTimeout(()=>{
+    document.getElementById('f-lat1').value=c.lat.toFixed(6);
+    document.getElementById('f-lon1').value=c.lon.toFixed(6);
+    fConvLL1();
+    if(c.nombre&&c.nombre!=='Camino sin nombre'){
+      const ruta=document.getElementById('f-ruta');
+      if(!ruta.value)ruta.value=c.nombre;
+    }
+    toast('Coordenadas del cruce cargadas en el formulario');
+  },300);
+}
+
+// Inicializar con 2 vértices al arrancar la pestaña COORD
+function initPolyTool(){
+  if(document.getElementById('poly-pts-list').children.length===0)polyInit();
+}
+
+
+
+// ===== PANEL IX: Conversión automática y cálculo de intersección =====
+
+// Convierte un par de campos al tipear: acepta Lat/Lon decimal, GMS o GK
+function ixAutoConv(pt){
+  const v1=document.getElementById('ix-'+pt+'1').value.trim();
+  const v2=document.getElementById('ix-'+pt+'2').value.trim();
+  if(!v1||!v2)return;
+  const n1=parseFloat(v1.replace(',','.'));
+  const n2=parseFloat(v2.replace(',','.'));
+  // Si parecen GK (X ~5M-6M, Y ~6.5M-8M)
+  if(!isNaN(n1)&&!isNaN(n2)&&_isValidGKX(n1)&&_isValidGKY(n2)){
+    const ll=gkToLL(5,n1,n2);
+    if(ll){
+      // Mostrar lat/lon convertidos debajo de los campos
+      document.getElementById('ix-'+pt+'1').title='Lat: '+ll.lat.toFixed(6);
+      document.getElementById('ix-'+pt+'2').title='Lon: '+ll.lon.toFixed(6);
+      document.getElementById('ix-'+pt+'1').style.borderColor='#4a8a4a';
+      document.getElementById('ix-'+pt+'2').style.borderColor='#4a8a4a';
+    }
+    return;
+  }
+  // Si parecen Lat/Lon en cualquier formato
+  const lat=parseCoord(v1);
+  const lon=parseCoord(v2);
+  if(!isNaN(lat)&&!isNaN(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){
+    const gk=llToGK(5,lat,lon);
+    if(gk){
+      document.getElementById('ix-'+pt+'1').title='GK X: '+gk.x.toFixed(2);
+      document.getElementById('ix-'+pt+'2').title='GK Y: '+gk.y.toFixed(2);
+      document.getElementById('ix-'+pt+'1').style.borderColor='#4a8a4a';
+      document.getElementById('ix-'+pt+'2').style.borderColor='#4a8a4a';
+    }
+  }else{
+    document.getElementById('ix-'+pt+'1').style.borderColor='#d0a0a0';
+    document.getElementById('ix-'+pt+'2').style.borderColor='#d0a0a0';
+  }
+}
+
+// Leer punto del panel ix (acepta Lat/Lon o GK)
+function ixReadPt(pt){
+  const v1=document.getElementById('ix-'+pt+'1').value.trim();
+  const v2=document.getElementById('ix-'+pt+'2').value.trim();
+  if(!v1||!v2)return null;
+  const n1=parseFloat(v1.replace(',','.'));
+  const n2=parseFloat(v2.replace(',','.'));
+  // GK?
+  if(!isNaN(n1)&&!isNaN(n2)&&_isValidGKX(n1)&&_isValidGKY(n2)){
+    const ll=gkToLL(5,n1,n2);
+    if(ll)return{lat:ll.lat,lon:ll.lon,gkx:parseFloat(n1.toFixed(2)),gky:parseFloat(n2.toFixed(2))};
+  }
+  // Lat/Lon en cualquier formato
+  const lat=parseCoord(v1);
+  const lon=parseCoord(v2);
+  if(!isNaN(lat)&&!isNaN(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){
+    const gk=llToGK(5,lat,lon);
+    return{lat,lon,gkx:gk?parseFloat(gk.x.toFixed(2)):null,gky:gk?parseFloat(gk.y.toFixed(2)):null};
+  }
+  return null;
+}
+
+// Calcular intersección con los 4 puntos del panel ix
+function calcIxPanel(){
+  const err=document.getElementById('err-ix-panel');
+  const res=document.getElementById('r-ix-panel');
+  err.classList.remove('show');res.innerHTML='';
+
+  const A=ixReadPt('a'),B=ixReadPt('b'),C=ixReadPt('c'),D=ixReadPt('d');
+  if(!A||!B||!C||!D){
+    err.textContent='Necesitás ingresar los 4 puntos (A, B, C, D) con coordenadas válidas.';
+    err.classList.add('show');return;
+  }
+
+  // Calcular intersección en espacio lat/lon
+  const ix=segIntersect(A,B,C,D);
+  if(!ix){
+    // Los segmentos no se cruzan exactamente — calcular intersección de las rectas proyectadas
+    const ix2=lineIntersect(A,B,C,D);
+    if(!ix2){
+      err.textContent='Los dos tramos no se intersectan (son paralelos).';
+      err.classList.add('show');return;
+    }
+    // Mostrar igual con advertencia
+    showIxPanelResult(ix2.lat,ix2.lon,res,'Los tramos no se cruzan físicamente pero sus prolongaciones se intersectan en:');
+  }else{
+    showIxPanelResult(ix.lat,ix.lon,res,'Punto de intersección calculado:');
+  }
+
+  // Limpiar marcadores anteriores y dibujar los 4 puntos + líneas + intersección
+  if(tmpMark){map.removeLayer(tmpMark);tmpMark=null;}
+  const linesLayer=L.layerGroup().addTo(map);
+  L.polyline([[A.lat,A.lon],[B.lat,B.lon]],{color:'#1565c0',weight:3}).addTo(linesLayer);
+  L.polyline([[C.lat,C.lon],[D.lat,D.lon]],{color:'#b35900',weight:3}).addTo(linesLayer);
+  ['A','B','C','D'].forEach((name,i)=>{
+    const pt=[A,B,C,D][i];
+    L.circleMarker([pt.lat,pt.lon],{radius:6,color:i<2?'#1565c0':'#b35900',fillColor:i<2?'#1565c0':'#b35900',fillOpacity:.9,weight:2})
+      .bindTooltip('Punto '+name,{direction:'top'}).addTo(linesLayer);
+  });
+  // Guardar layers para poder limpiarlos
+  window._ixPanelLayers=linesLayer;
+}
+
+// Intersección de dos segmentos finitos en lat/lon
+function lineIntersect(A,B,C,D){
+  // Ecuaciones paramétricas: P=A+t(B-A), Q=C+s(D-C)
+  const denom=(B.lon-A.lon)*(D.lat-C.lat)-(B.lat-A.lat)*(D.lon-C.lon);
+  if(Math.abs(denom)<1e-12)return null;
+  const t=((C.lon-A.lon)*(D.lat-C.lat)-(C.lat-A.lat)*(D.lon-C.lon))/denom;
+  return{lat:A.lat+t*(B.lat-A.lat),lon:A.lon+t*(B.lon-A.lon)};
+}
+
+function showIxPanelResult(lat,lon,container,label){
+  const gk=llToGK(5,lat,lon);
+  const gkx=gk?gk.x.toFixed(2):'—';
+  const gky=gk?gk.y.toFixed(2):'—';
+
+  // Marcar en el mapa
+  if(window._ixPanelLayers){try{map.removeLayer(window._ixPanelLayers);}catch(e){}}
+  const mk=L.circleMarker([lat,lon],{radius:12,color:'#cc0000',fillColor:'#ff4444',fillOpacity:.85,weight:3}).addTo(map);
+  mk.bindTooltip('Intersección: '+lat.toFixed(6)+', '+lon.toFixed(6),{permanent:false,direction:'top'});
+  map.flyTo([lat,lon],17,{duration:1.5});
+
+  container.innerHTML=`
+    <div style="background:#f0f8f0;border:2px solid #4a8a4a;border-radius:9px;padding:12px">
+      <div style="font-size:12px;color:#3a6a3a;margin-bottom:8px">${label}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">
+        <div style="background:#fff;border-radius:6px;padding:7px;border:1px solid #d0ddd0">
+          <div style="font-size:10px;color:#5a7a5a;font-weight:700;text-transform:uppercase;margin-bottom:3px">LATITUD</div>
+          <div style="font-family:monospace;font-size:14px;color:#1a3a1a;font-weight:700">${lat.toFixed(6)}</div>
+        </div>
+        <div style="background:#fff;border-radius:6px;padding:7px;border:1px solid #d0ddd0">
+          <div style="font-size:10px;color:#5a7a5a;font-weight:700;text-transform:uppercase;margin-bottom:3px">LONGITUD</div>
+          <div style="font-family:monospace;font-size:14px;color:#1a3a1a;font-weight:700">${lon.toFixed(6)}</div>
+        </div>
+        <div style="background:#fff;border-radius:6px;padding:7px;border:1px solid #d0ddd0">
+          <div style="font-size:10px;color:#5a7a5a;font-weight:700;text-transform:uppercase;margin-bottom:3px">GK X FAJA 5</div>
+          <div style="font-family:monospace;font-size:14px;color:#1a3a1a;font-weight:700">${gkx}</div>
+        </div>
+        <div style="background:#fff;border-radius:6px;padding:7px;border:1px solid #d0ddd0">
+          <div style="font-size:10px;color:#5a7a5a;font-weight:700;text-transform:uppercase;margin-bottom:3px">GK Y FAJA 5</div>
+          <div style="font-family:monospace;font-size:14px;color:#1a3a1a;font-weight:700">${gky}</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button class="cbtn" style="flex:1;margin:0" onclick="copyVal('${lat.toFixed(6)}, ${lon.toFixed(6)}')">Copiar Lat/Lon</button>
+        <button class="cbtn" style="flex:1;margin:0;background:#1a4a7a" onclick="copyVal('${gkx}, ${gky}')">Copiar GK X,Y</button>
+      </div>
+      <button class="cbtn" onclick="usarIxEnFormPanel(${lat},${lon},${gk?gk.x:null},${gk?gk.y:null})" style="margin-top:6px;background:#1a5a1a">Usar en nuevo registro</button>
+    </div>`;
+}
+
+function usarIxEnFormPanel(lat,lon,gkx,gky){
+  openRecordModal();
+  setTimeout(()=>{
+    document.getElementById('f-lat1').value=lat.toFixed(6);
+    document.getElementById('f-lon1').value=lon.toFixed(6);
+    fConvLL1();
+    toast('Coordenadas del cruce cargadas en Inicio del tramo');
+  },200);
+  toggleIxPanel();
+}
+
 // ===== RESET =====
 function confirmReset(){
   if(confirm('Limpiar toda la base de datos?')&&confirm('Segunda confirmacion: borrar todo?')){
@@ -1554,6 +2183,567 @@ function confirmReset(){
     save();selRec=null;selCat='all';selAlpha='all';
     closeDet();refreshMarkers();renderLegend();render();toast('Base reiniciada');
   }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// CALCULADORA DE INTERSECCION DE TRAMOS
+// ═══════════════════════════════════════════════════════════════════
+
+// --- parseCoordFull: acepta decimal, GMS (27°20'7.9"S), GK detectado por rango
+function parseCoordFull(raw){
+  if(!raw||!String(raw).trim())return NaN;
+  raw=String(raw).trim();
+  // Numero puro
+  if(/^-?\d+(\.\d+)?$/.test(raw))return parseFloat(raw);
+  const up=raw.toUpperCase();
+  const isNeg=/[SOW]/.test(up);
+  // Extraer todos los numeros (con punto decimal)
+  const parts=[];const re=/\d+(\.\d+)?/g;let m;
+  while((m=re.exec(raw))!==null)parts.push(parseFloat(m[0]));
+  if(!parts.length)return NaN;
+  const dec=parts[0]+(parts[1]||0)/60+(parts[2]||0)/3600;
+  return isNeg?-dec:dec;
+}
+
+// --- Estado del modo de interseccion ---
+let _ixMode='manual';   // 'manual' | 'osm'
+let _ixStep=0;          // 0=inicio, 1=tramo1, 2=tramo2
+let _ixPts=[];          // puntos dibujados [[lat,lon],...]
+let _ixLayers=[];       // capas Leaflet temporales
+let _ixDrawing=false;
+
+function toggleIxPanel(){
+  // Usar ix-panel (el panel flotante)
+  const p=document.getElementById('ix-panel');
+  if(!p)return;
+  const isOpen=p.classList.toggle('open');
+  const btn=document.getElementById('btn-ix');
+  if(btn)btn.textContent=isOpen?'✕ Cerrar':'⟳ Calcular cruce';
+}
+
+function setIxMode(mode){
+  _ixMode=mode;
+  document.getElementById('btn-ix-manual').classList.toggle('on',mode==='manual');
+  document.getElementById('btn-ix-osm').classList.toggle('on',mode==='osm');
+  ixLimpiar();
+  if(mode==='manual'){
+    document.getElementById('ix-instruc').innerHTML=
+      'Vas a hacer clic en el mapa para marcar 2 puntos del <b style="color:#2a6a2a">Tramo 1</b> (ruta) y luego 2 puntos del <b style="color:#8a5500">Tramo 2</b> (camino vecinal).';
+    document.getElementById('btn-ix-start').style.display='';
+    document.getElementById('btn-ix-next').style.display='none';
+    document.getElementById('btn-ix-calc').style.display='none';
+    document.getElementById('btn-ix-clear').style.display='none';
+  }else{
+    document.getElementById('ix-instruc').innerHTML=
+      'Hace clic en el mapa para marcar los puntos de tu polilinea. El sistema va a buscar en OpenStreetMap los caminos que cruza y calcular los puntos de interseccion.';
+    document.getElementById('btn-ix-start').style.display='';
+    document.getElementById('btn-ix-next').style.display='none';
+    document.getElementById('btn-ix-calc').style.display='none';
+    document.getElementById('btn-ix-clear').style.display='none';
+  }
+  document.getElementById('ix-result').classList.remove('show');
+}
+
+function ixStartDraw(){
+  _ixStep=1;
+  _ixPts=[];
+  _ixDrawing=true;
+  if(_ixMode==='manual'){
+    document.getElementById('ix-instruc').innerHTML=
+      '<b style="color:#2a6a2a">TRAMO 1 — Ruta:</b> hace clic en 2 puntos del tramo principal (los 2 vertices de la ruta en ese tramo).';
+  }else{
+    document.getElementById('ix-instruc').innerHTML=
+      '<b style="color:#2a6a2a">POLILINEA:</b> hace clic en todos los puntos de tu camino sobre el mapa. Cuando termines, hace clic en "Buscar cruces".';
+  }
+  document.getElementById('btn-ix-start').style.display='none';
+  document.getElementById('btn-ix-clear').style.display='';
+  if(_ixMode==='osm'){
+    document.getElementById('btn-ix-calc').textContent='Buscar cruces con OSM';
+    document.getElementById('btn-ix-calc').style.display='none';
+  }
+  map.getContainer().style.cursor='crosshair';
+  toast('Hace clic en el mapa para marcar los puntos');
+}
+
+// Handler de clic del mapa para interseccion
+function ixMapClick(e){
+  if(!_ixDrawing)return;
+  const lat=e.latlng.lat,lon=e.latlng.lng;
+  _ixPts.push([lat,lon]);
+
+  if(_ixMode==='manual'){
+    // Colores: tramo1=azul (pts 0-1), tramo2=naranja (pts 2-3)
+    const color=_ixStep===1?'#4a8aff':'#ff8a2a';
+    const lbl=_ixPts.length===1?'A':_ixPts.length===2?'B':_ixPts.length===3?'C':'D';
+    const circle=L.circleMarker([lat,lon],{radius:7,color,fillColor:color,fillOpacity:.8,weight:2})
+      .addTo(map).bindTooltip(lbl,{permanent:true,direction:'top',offset:[0,-8]});
+    _ixLayers.push(circle);
+
+    if(_ixStep===1&&_ixPts.length===2){
+      // Dibujar linea del tramo 1
+      const line=L.polyline(_ixPts.slice(0,2),{color:'#4a8aff',weight:2,dashArray:'6,4',opacity:.8}).addTo(map);
+      _ixLayers.push(line);
+      document.getElementById('ix-instruc').innerHTML=
+        '<b style="color:#8a5500">TRAMO 2 — Camino vecinal:</b> hace clic en 2 puntos del camino que intersecta.';
+      document.getElementById('btn-ix-next').style.display='';
+      _ixStep=2;
+    }else if(_ixStep===2&&_ixPts.length===4){
+      // Dibujar linea del tramo 2
+      const line=L.polyline(_ixPts.slice(2,4),{color:'#ff8a2a',weight:2,dashArray:'6,4',opacity:.8}).addTo(map);
+      _ixLayers.push(line);
+      document.getElementById('ix-instruc').innerHTML='Listo. Hace clic en <b>Calcular interseccion</b>.';
+      document.getElementById('btn-ix-next').style.display='none';
+      document.getElementById('btn-ix-calc').textContent='Calcular interseccion';
+      document.getElementById('btn-ix-calc').style.display='';
+      map.getContainer().style.cursor='';
+      _ixDrawing=false;
+    }
+  }else{
+    // Modo OSM: acumular puntos de la polilinea
+    const circle=L.circleMarker([lat,lon],{radius:5,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.8,weight:2}).addTo(map);
+    _ixLayers.push(circle);
+    if(_ixPts.length>1){
+      const last=_ixPts[_ixPts.length-2];
+      const line=L.polyline([last,[lat,lon]],{color:'#6aaf6a',weight:2,opacity:.8}).addTo(map);
+      _ixLayers.push(line);
+    }
+    if(_ixPts.length>=2){
+      document.getElementById('btn-ix-calc').style.display='';
+    }
+    document.getElementById('ix-instruc').innerHTML=
+      '<b style="color:#2a6a2a">POLILINEA:</b> '+_ixPts.length+' punto'+(_ixPts.length!==1?'s':'')+' marcado'+(_ixPts.length!==1?'s':'')+'. Seguí haciendo clic o presioná "Buscar cruces con OSM".';
+  }
+}
+
+function ixNextStep(){
+  // Solo informativo en modo manual, ya manejado en ixMapClick
+}
+
+function ixLimpiar(){
+  _ixLayers.forEach(l=>map.removeLayer(l));
+  _ixLayers=[];_ixPts=[];_ixStep=0;_ixDrawing=false;_ixResult=null;
+  map.getContainer().style.cursor='';
+  document.getElementById('btn-ix-start').style.display='';
+  document.getElementById('btn-ix-next').style.display='none';
+  document.getElementById('btn-ix-calc').style.display='none';
+  document.getElementById('btn-ix-clear').style.display='none';
+  document.getElementById('ix-result').classList.remove('show');
+  if(_ixMode==='manual'){
+    document.getElementById('ix-instruc').innerHTML=
+      'Vas a hacer clic en el mapa para marcar 2 puntos del <b style="color:#2a6a2a">Tramo 1</b> (ruta) y luego 2 puntos del <b style="color:#8a5500">Tramo 2</b> (camino vecinal).';
+  }else{
+    document.getElementById('ix-instruc').innerHTML=
+      'Hace clic en el mapa para marcar los puntos de tu polilinea.';
+  }
+}
+
+// --- Interseccion geometrica de dos segmentos (coordenadas planas, precision local OK) ---
+function segmentsIntersect(p1,p2,p3,p4){
+  // p = [lat,lon]
+  const d1=[p2[0]-p1[0],p2[1]-p1[1]];
+  const d2=[p4[0]-p3[0],p4[1]-p3[1]];
+  const cross=d1[0]*d2[1]-d1[1]*d2[0];
+  if(Math.abs(cross)<1e-12)return null; // paralelas
+  const dx=p3[0]-p1[0],dy=p3[1]-p1[1];
+  const t=(dx*d2[1]-dy*d2[0])/cross;
+  const u=(dx*d1[1]-dy*d1[0])/cross;
+  // Interseccion dentro de ambos segmentos (con tolerancia para lineas que se prolongan)
+  if(t>=-0.01&&t<=1.01&&u>=-0.01&&u<=1.01){
+    return[p1[0]+t*d1[0],p1[1]+t*d1[1]];
+  }
+  return null;
+}
+
+function ixCalcular(){
+  if(_ixMode==='manual'){
+    if(_ixPts.length<4){toast('Faltan puntos. Marca 2 puntos por cada tramo.');return;}
+    const pt=segmentsIntersect(_ixPts[0],_ixPts[1],_ixPts[2],_ixPts[3]);
+    if(!pt){
+      document.getElementById('ix-instruc').innerHTML='<span style="color:#8a2020">Los tramos no se intersectan o son paralelos. Verifica los puntos marcados.</span>';
+      return;
+    }
+    ixMostrarResultado(pt[0],pt[1]);
+  }else{
+    ixBuscarOSM();
+  }
+}
+
+function ixMostrarResultado(lat,lon){
+  _ixResult={lat,lon};
+  const gk=llToGK(5,lat,lon);
+  // Marcador de interseccion
+  const star=L.circleMarker([lat,lon],{radius:10,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.9,weight:3})
+    .addTo(map).bindTooltip('CRUCE',{permanent:true,direction:'top',offset:[0,-12]});
+  _ixLayers.push(star);
+  map.flyTo([lat,lon],17,{duration:1});
+
+  const gkX=gk?gk.x.toFixed(2):'--';
+  const gkY=gk?gk.y.toFixed(2):'--';
+  document.getElementById('ix-result-val').innerHTML=
+    '<b>Lat:</b> '+lat.toFixed(6)+'<br>'+
+    '<b>Lon:</b> '+lon.toFixed(6)+'<br>'+
+    '<b>GK X Faja 5:</b> '+gkX+'<br>'+
+    '<b>GK Y Faja 5:</b> '+gkY;
+  document.getElementById('ix-result').classList.add('show');
+  document.getElementById('ix-instruc').innerHTML='<span style="color:#2a6a2a">Interseccion calculada. Podes usarla en un nuevo registro.</span>';
+}
+
+// --- Modo OSM: consultar Overpass API para caminos cercanos ---
+async function ixBuscarOSM(){
+  if(_ixPts.length<2){toast('Marca al menos 2 puntos de la polilinea.');return;}
+  document.getElementById('ix-instruc').innerHTML='<span style="color:#8a5500">Consultando OpenStreetMap...</span>';
+  document.getElementById('btn-ix-calc').disabled=true;
+
+  // Bounding box de la polilinea con margen
+  const lats=_ixPts.map(p=>p[0]),lons=_ixPts.map(p=>p[1]);
+  const margin=0.002;
+  const bbox=[Math.min(...lats)-margin,Math.min(...lons)-margin,
+              Math.max(...lats)+margin,Math.max(...lons)+margin].join(',');
+
+  const query=`[out:json][timeout:15];(way["highway"](${bbox});way["route"](${bbox}););out geom;`;
+  const url='https://overpass-api.de/api/interpreter?data='+encodeURIComponent(query);
+
+  try{
+    const resp=await fetch(url);
+    if(!resp.ok)throw new Error('Error consultando OSM: '+resp.status);
+    const data=await resp.json();
+    const ways=data.elements||[];
+
+    const intersections=[];
+    // Para cada segmento de mi polilinea
+    for(let i=0;i<_ixPts.length-1;i++){
+      const pA=_ixPts[i],pB=_ixPts[i+1];
+      // Para cada camino de OSM
+      for(const way of ways){
+        if(!way.geometry)continue;
+        const geom=way.geometry;
+        for(let j=0;j<geom.length-1;j++){
+          const pC=[geom[j].lat,geom[j].lon];
+          const pD=[geom[j+1].lat,geom[j+1].lon];
+          const pt=segmentsIntersect(pA,pB,pC,pD);
+          if(pt){
+            const nombre=way.tags&&(way.tags.name||way.tags.ref||way.tags.highway)||'camino';
+            intersections.push({lat:pt[0],lon:pt[1],nombre});
+          }
+        }
+      }
+    }
+
+    document.getElementById('btn-ix-calc').disabled=false;
+
+    if(!intersections.length){
+      document.getElementById('ix-instruc').innerHTML=
+        '<span style="color:#8a2020">No se encontraron cruces con caminos de OSM en esa zona. Proba con el modo manual o verifica que los caminos esten en OSM.</span>';
+      return;
+    }
+
+    // Mostrar todos los cruces encontrados
+    intersections.forEach((ix,idx)=>{
+      const c=L.circleMarker([ix.lat,ix.lon],{radius:9,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.9,weight:3})
+        .addTo(map)
+        .bindTooltip((idx+1)+'. '+ix.nombre,{permanent:true,direction:'top',offset:[0,-11]});
+      _ixLayers.push(c);
+    });
+
+    if(intersections.length===1){
+      ixMostrarResultado(intersections[0].lat,intersections[0].lon);
+    }else{
+      // Multiples cruces: mostrar lista para elegir
+      const lista=intersections.map((ix,idx)=>
+        `<div style="padding:4px 0;border-bottom:1px solid #d0ddd0;cursor:pointer" onclick="ixSeleccionarOSM(${idx})" onmouseover="this.style.color='#6aaf6a'" onmouseout="this.style.color='#a0d0a0'">
+          <span style="color:#2a6a2a;font-weight:700">${idx+1}.</span> ${ix.nombre}
+          <div style="font-size:9px;font-family:monospace;color:#2a5a2a">${ix.lat.toFixed(6)}, ${ix.lon.toFixed(6)}</div>
+        </div>`
+      ).join('');
+      document.getElementById('ix-result-val').innerHTML=
+        '<div style="font-size:10px;color:#8a5500;margin-bottom:5px">Se encontraron '+intersections.length+' cruces. Hace clic en uno:</div>'+lista;
+      document.getElementById('ix-result').classList.add('show');
+      document.getElementById('ix-instruc').innerHTML='<span style="color:#2a6a2a">Selecciona el cruce que corresponde.</span>';
+      // Guardar para uso posterior
+      window._ixOSMResults=intersections;
+    }
+  }catch(err){
+    document.getElementById('btn-ix-calc').disabled=false;
+    document.getElementById('ix-instruc').innerHTML='<span style="color:#8a2020">Error: '+err.message+'. Verifica tu conexion a internet.</span>';
+  }
+}
+
+function ixSeleccionarOSM(idx){
+  const ix=window._ixOSMResults[idx];
+  ixMostrarResultado(ix.lat,ix.lon);
+}
+
+// Usar el resultado en el formulario de nuevo registro
+function ixUsarEnForm(){
+  if(!_ixResult)return;
+  // Abrir formulario y precargar coordenadas como punto de inicio
+  openRecordModal();
+  setTimeout(()=>{
+    document.getElementById('f-lat1').value=_ixResult.lat.toFixed(6);
+    document.getElementById('f-lon1').value=_ixResult.lon.toFixed(6);
+    fConvLL1();
+    toast('Coordenadas del cruce cargadas como INICIO del registro');
+  },200);
+  // Cerrar toolbar
+  document.getElementById('ix-toolbar').classList.remove('show');
+}
+
+// ===== CALCULADORA DE INTERSECCION =====
+let ixDrawMode=null; // 'tramo1' | 'tramo2' | 'polyline' | null
+let ixTramo1=[],ixTramo2=[];       // [{lat,lon}] cada tramo tiene 2 puntos
+let ixPolyline=[];                  // [{lat,lon}] puntos de la polilinea OSM
+let ixLayers=[];                    // capas Leaflet temporales del dibujo
+let ixClickHandler=null;            // handler de clic del mapa para dibujo
+let ixLastResult=null;              // ultimo resultado calculado
+
+
+function setIxTab(t){
+  ['draw','osm'].forEach(x=>{
+    document.getElementById('ixtab-'+x).classList.toggle('on',x===t);
+    document.getElementById('ixbody-'+x).classList.toggle('on',x===t);
+  });
+  clearAllIxDraw();
+}
+
+// ── Limpieza ──────────────────────────────────────────────────────────────────
+function clearAllIxDraw(){
+  stopIxDraw();
+  ixLayers.forEach(l=>map.removeLayer(l));ixLayers=[];
+  ixTramo1=[];ixTramo2=[];ixPolyline=[];
+  document.getElementById('ix-res-draw').classList.remove('show');
+  const oRes=document.getElementById('osm-results');if(oRes)oRes.innerHTML='';
+  updDrawStatus();
+}
+function clearDrawTramos(){clearAllIxDraw();}
+function clearPolyline(){clearAllIxDraw();}
+
+function stopIxDraw(){
+  if(ixClickHandler){map.off('click',ixClickHandler);ixClickHandler=null;}
+  ixDrawMode=null;
+  ['btn-draw-t1','btn-draw-t2','btn-draw-poly'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.opacity='1';
+  });
+  map.getContainer().style.cursor='';
+}
+
+// ── Actualizar hint de estado ──────────────────────────────────────────────────
+function updDrawStatus(){
+  const s=document.getElementById('draw-status');
+  const h=document.getElementById('draw-hint');
+  if(!s)return;
+  const t1ok=ixTramo1.length===2,t2ok=ixTramo2.length===2;
+  const pts=(arr)=>arr.map((p,i)=>`P${i+1}(${p.lat.toFixed(4)},${p.lon.toFixed(4)})`).join(' ');
+  s.textContent=[
+    t1ok?`Tramo 1 ✓ ${pts(ixTramo1)}`:'Tramo 1: pendiente (2 puntos)',
+    t2ok?`Tramo 2 ✓ ${pts(ixTramo2)}`:'Tramo 2: pendiente (2 puntos)',
+  ].join(' | ');
+  if(h)h.style.display=(t1ok&&t2ok)?'none':'block';
+}
+
+// ── Dibujar tramos A/B ────────────────────────────────────────────────────────
+function startDrawTramo(n){
+  stopIxDraw();
+  ixDrawMode='tramo'+n;
+  const arr=n===1?ixTramo1:ixTramo2;
+  // Resetear el tramo que se va a redibujar
+  if(n===1){ixTramo1=[];ixLayers.filter(l=>l._ixT===1).forEach(l=>{map.removeLayer(l);});ixLayers=ixLayers.filter(l=>l._ixT!==1);}
+  else{ixTramo2=[];ixLayers.filter(l=>l._ixT===2).forEach(l=>{map.removeLayer(l);});ixLayers=ixLayers.filter(l=>l._ixT!==2);}
+  const color=n===1?'#1565c0':'#b35900';
+  const btnId='btn-draw-t'+(n===1?'1':'2');
+  document.getElementById(btnId).style.opacity='0.5';
+  map.getContainer().style.cursor='crosshair';
+  document.getElementById('draw-hint').textContent=`Haz clic en el PRIMER punto del Tramo ${n}...`;
+  document.getElementById('draw-hint').style.display='block';
+
+  const pts=n===1?ixTramo1:ixTramo2;
+  ixClickHandler=function(e){
+    pts.push({lat:e.latlng.lat,lon:e.latlng.lng});
+    // Marcador del punto
+    const ci=L.circleMarker([e.latlng.lat,e.latlng.lng],{radius:6,color:color,fillColor:color,fillOpacity:1,weight:2}).addTo(map);
+    ci._ixT=n;ixLayers.push(ci);
+    const lbl=L.marker([e.latlng.lat,e.latlng.lng],{icon:L.divIcon({html:`<div style="font-size:10px;font-weight:700;color:${color};background:#ffffff;padding:1px 4px;border-radius:3px;border:1px solid ${color}">${pts.length===1?'A':'B'}${n===2?String.fromCharCode(65+pts.length-1):''}${n===1?(pts.length===1?'A':'B'):(pts.length===1?'C':'D')}</div>`,className:'',iconAnchor:[8,8]})}).addTo(map);
+    lbl._ixT=n;ixLayers.push(lbl);
+
+    if(pts.length===1){
+      document.getElementById('draw-hint').textContent=`Haz clic en el SEGUNDO punto del Tramo ${n}...`;
+    } else if(pts.length===2){
+      // Dibujar la linea del tramo
+      const ln=L.polyline([[pts[0].lat,pts[0].lon],[pts[1].lat,pts[1].lon]],{color:color,weight:3,dashArray:'6,4'}).addTo(map);
+      ln._ixT=n;ixLayers.push(ln);
+      stopIxDraw();
+      updDrawStatus();
+    }
+  };
+  map.on('click',ixClickHandler);
+}
+
+// ── Calcular interseccion geometrica de dos segmentos ─────────────────────────
+
+
+function showIxResult(lat,lon,containerId,coordsId){
+  const gk=llToGK(5,lat,lon);
+  const gkxS=gk?gk.x.toFixed(2):'--';
+  const gkyS=gk?gk.y.toFixed(2):'--';
+  ixLastResult={lat,lon,gkx:gk?gk.x:null,gky:gk?gk.y:null};
+  document.getElementById(coordsId).innerHTML=`
+    <div class="ix-coord-cell"><label>LATITUD</label><span>${lat.toFixed(6)}</span></div>
+    <div class="ix-coord-cell"><label>LONGITUD</label><span>${lon.toFixed(6)}</span></div>
+    <div class="ix-coord-cell"><label>GK X FAJA 5</label><span>${gkxS}</span></div>
+    <div class="ix-coord-cell"><label>GK Y FAJA 5</label><span>${gkyS}</span></div>`;
+  document.getElementById(containerId).classList.add('show');
+  // Marcador en el punto de cruce
+  ixLayers.filter(l=>l._ixResult).forEach(l=>map.removeLayer(l));
+  const mk=L.circleMarker([lat,lon],{radius:10,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.8,weight:3}).addTo(map);
+  mk._ixResult=true;ixLayers.push(mk);
+  const pp=L.popup().setLatLng([lat,lon]).setContent(`<div style="font-size:11px;color:#0d170d;font-weight:700">Punto de cruce<br>${lat.toFixed(6)}, ${lon.toFixed(6)}</div>`).openOn(map);
+  map.flyTo([lat,lon],16,{duration:1});
+}
+
+function calcInterseccionDraw(){
+  const errEl=document.getElementById('err-ix');
+  if(ixTramo1.length<2||ixTramo2.length<2){
+    toast('Dibuja los dos tramos antes de calcular.');return;
+  }
+  const res=segIntersect(ixTramo1[0],ixTramo1[1],ixTramo2[0],ixTramo2[1]);
+  if(!res){
+    toast('Los tramos no se cruzan o son paralelos. Extendelos un poco mas alla del cruce esperado.');
+    return;
+  }
+  showIxResult(res.lat,res.lon,'ix-res-draw','ix-draw-coords');
+  toast('Interseccion calculada');
+}
+
+// ── Usar resultado en formulario de nuevo registro ─────────────────────────────
+function usarIxEnForm(from){
+  if(!ixLastResult){toast('Primero calcula la interseccion.');return;}
+  openRecordModal();
+  setTimeout(()=>{
+    // Poner coordenadas en el campo INICIO del formulario
+    document.getElementById('f-lat1').value=ixLastResult.lat.toFixed(6);
+    document.getElementById('f-lon1').value=ixLastResult.lon.toFixed(6);
+    if(ixLastResult.gkx){
+      document.getElementById('f-gkx1').value=ixLastResult.gkx.toFixed(2);
+      document.getElementById('f-gky1').value=ixLastResult.gky.toFixed(2);
+    }
+    toast('Coordenadas del cruce cargadas en el formulario');
+  },300);
+}
+
+// ── Dibujar polilínea para OSM ────────────────────────────────────────────────
+let ixPolyLayer=null,ixPolyPoints=[];
+
+function startDrawPolyline(){
+  stopIxDraw();
+  ixPolyPoints=[];
+  if(ixPolyLayer){map.removeLayer(ixPolyLayer);ixPolyLayer=null;}
+  ixDrawMode='polyline';
+  map.getContainer().style.cursor='crosshair';
+  document.getElementById('btn-draw-poly').style.opacity='0.5';
+  document.getElementById('draw-hint-osm').textContent='Haz clic para agregar puntos. Doble clic para terminar la polilinea.';
+  let lastMk=null;
+  ixClickHandler=function(e){
+    if(e.originalEvent&&e.originalEvent.detail>=2)return; // ignorar dblclick en este handler
+    ixPolyPoints.push([e.latlng.lat,e.latlng.lng]);
+    if(lastMk)map.removeLayer(lastMk);
+    if(ixPolyLayer)map.removeLayer(ixPolyLayer);
+    ixPolyLayer=L.polyline(ixPolyPoints,{color:'#6aaf6a',weight:3}).addTo(map);
+    lastMk=L.circleMarker([e.latlng.lat,e.latlng.lng],{radius:5,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:1}).addTo(map);
+    document.getElementById('draw-hint-osm').textContent=`${ixPolyPoints.length} punto(s) — Doble clic para terminar.`;
+  };
+  map.on('click',ixClickHandler);
+  map.once('dblclick',function(){
+    stopIxDraw();
+    document.getElementById('draw-hint-osm').textContent=`Polilinea lista con ${ixPolyPoints.length} puntos. Ahora busca cruces OSM.`;
+    toast('Polilinea dibujada — ahora buscá los cruces OSM');
+  });
+}
+
+// ── Detectar cruces con OpenStreetMap (Overpass API) ──────────────────────────
+async function detectarCrucesOSM(){
+  if(ixPolyPoints.length<2){toast('Dibuja la polilinea primero.');return;}
+  const loading=document.getElementById('osm-loading');
+  const results=document.getElementById('osm-results');
+  loading.style.display='block';results.innerHTML='';
+
+  // Bounding box de la polilinea
+  const lats=ixPolyPoints.map(p=>p[0]),lons=ixPolyPoints.map(p=>p[1]);
+  const buf=0.005; // ~500m de margen
+  const bbox=`${Math.min(...lats)-buf},${Math.min(...lons)-buf},${Math.max(...lats)+buf},${Math.max(...lons)+buf}`;
+
+  // Consulta Overpass: obtener todos los caminos (highway) en la zona
+  const query=`[out:json][timeout:25];(way["highway"](${bbox}););out geom;`;
+  try{
+    const resp=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(query));
+    if(!resp.ok)throw new Error('Error consultando OSM: '+resp.status);
+    const data=await resp.json();
+    loading.style.display='none';
+
+    // Calcular intersecciones entre cada segmento de la polilinea y cada segmento de cada camino OSM
+    const cruces=[];
+    const mySeg=[];
+    for(let i=0;i<ixPolyPoints.length-1;i++){
+      mySeg.push({p1:{lat:ixPolyPoints[i][0],lon:ixPolyPoints[i][1]},p2:{lat:ixPolyPoints[i+1][0],lon:ixPolyPoints[i+1][1]}});
+    }
+    data.elements.forEach(way=>{
+      if(!way.geometry||way.geometry.length<2)return;
+      const nombre=way.tags?.name||way.tags?.ref||way.tags?.highway||'(sin nombre)';
+      for(let j=0;j<way.geometry.length-1;j++){
+        const c1={lat:way.geometry[j].lat,lon:way.geometry[j].lon};
+        const c2={lat:way.geometry[j+1].lat,lon:way.geometry[j+1].lon};
+        mySeg.forEach(ms=>{
+          const ix=segIntersect(ms.p1,ms.p2,c1,c2);
+          if(ix){
+            // Evitar duplicados muy cercanos (< 5m)
+            const dup=cruces.some(c=>haversineM(c.lat,c.lon,ix.lat,ix.lon)<5);
+            if(!dup)cruces.push({lat:ix.lat,lon:ix.lon,nombre});
+          }
+        });
+      }
+    });
+
+    if(!cruces.length){
+      results.innerHTML='<div style="font-size:10px;color:#8a2020;padding:6px">No se encontraron cruces con caminos OSM en esta zona. Probá acercarte mas al lugar y redibujar.</div>';
+      return;
+    }
+
+    // Mostrar resultados
+    results.innerHTML=`<div style="font-size:14px;font-weight:800;color:#1a5a1a;margin-bottom:8px">${cruces.length} cruce(s) encontrado(s):</div>`+
+      cruces.map((c,i)=>{
+        const gk=llToGK(5,c.lat,c.lon);
+        const gkxS=gk?gk.x.toFixed(2):'--';const gkyS=gk?gk.y.toFixed(2):'--';
+        return `<div style="background:#e8f5e8;border:1px solid #b0d0b0;border-radius:6px;padding:8px;margin-bottom:5px">
+          <div style="font-size:10px;font-weight:700;color:#a0d0a0;margin-bottom:4px">Cruce ${i+1}: ${c.nombre}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:5px">
+            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">LAT</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${c.lat.toFixed(6)}</div></div>
+            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">LON</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${c.lon.toFixed(6)}</div></div>
+            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK X</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${gkxS}</div></div>
+            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK Y</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${gkyS}</div></div>
+          </div>
+          <button onclick="usarOsmCruce(${c.lat},${c.lon},${gk?gk.x:'null'},${gk?gk.y:'null'})" style="width:100%;padding:5px;border-radius:4px;border:1px solid #1a4a6a;background:#1a4a7a;color:#4ab0df;font-size:10px;cursor:pointer">Usar en nuevo registro</button>
+        </div>`;
+      }).join('');
+
+    // Marcar todos los cruces en el mapa
+    cruces.forEach((c,i)=>{
+      const mk=L.circleMarker([c.lat,c.lon],{radius:9,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.9,weight:2}).addTo(map);
+      mk.bindTooltip(`Cruce ${i+1}: ${c.nombre}`,{direction:'top'});
+      mk._ixResult=true;ixLayers.push(mk);
+    });
+    if(cruces.length===1)map.flyTo([cruces[0].lat,cruces[0].lon],16,{duration:1});
+    else{
+      const bb=L.latLngBounds(cruces.map(c=>[c.lat,c.lon]));
+      map.fitBounds(bb,{padding:[60,60],maxZoom:16});
+    }
+  }catch(err){
+    loading.style.display='none';
+    results.innerHTML=`<div style="font-size:10px;color:#8a2020;padding:6px">Error: ${err.message}</div>`;
+  }
+}
+
+function usarOsmCruce(lat,lon,gkx,gky){
+  ixLastResult={lat,lon,gkx,gky};
+  usarIxEnForm('osm');
 }
 
 save();render();initMap();
