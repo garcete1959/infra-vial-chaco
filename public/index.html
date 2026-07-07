@@ -133,7 +133,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
 .fg input,.fg select,.fg textarea{width:100%;padding:9px 11px;border-radius:7px;border:1.5px solid #c0d0c0;background:#f8fbf8;color:#1a2a1a;font-size:14px;font-family:inherit;outline:none;transition:border .15s}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#2a5a2a;background:#fff}
 .fg textarea{resize:vertical;min-height:60px}
-.frow {display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .mact{display:flex;gap:8px;margin-top:16px}
 .bsave{flex:1;padding:11px;border-radius:8px;border:none;background:#2a6a2a;color:#fff;font-size:15px;font-weight:800;cursor:pointer}
 .bsave:hover{background:#1a5a1a}
@@ -205,7 +205,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
 .ix-res-title{font-size:12px;font-weight:800;color:#2a6a2a;margin-bottom:6px;text-transform:uppercase}
 .ix-coord{font-size:12px;color:#1a3a1a;line-height:1.9;font-family:monospace;margin-bottom:7px}
 .draw-hint{font-size:12px;color:#5a7a5a;padding:6px 8px;background:#f5f8f5;border-radius:5px;line-height:1.6}
-.map-toolbar{position:absolute;top:100px;right:12px;width:260px;background:#fff;border:2px solid #b0c8b0;border-radius:11px;padding:12px;z-index:940;display:none;box-shadow:0 4px 166px rgba(0,0,0,.12)}
+.map-toolbar{position:absolute;top:100px;right:12px;width:260px;background:#fff;border:2px solid #b0c8b0;border-radius:11px;padding:12px;z-index:940;display:none;box-shadow:0 4px 16px rgba(0,0,0,.12)}
 .map-toolbar.open{display:block}
 .tb-title{font-size:14px;font-weight:800;color:#1a3a1a;margin-bottom:8px}
 .tb-btn{width:100%;padding:8px 10px;border-radius:7px;border:1.5px solid #c0d0c0;background:#f5f8f5;color:#5a7a5a;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:5px;text-align:left;transition:all .15s}
@@ -220,14 +220,14 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
 </head>
 <body>
 <div class="hdr">
-  <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACMAeIDASIAAhEBAxEB/8QAHQABAAIDAQEBAQAAAAAAAAAAAAECBgcIBQQDCf/EAFEQAAEDBAAEAwQFBQwGCAcAAAECAwQABQYRBxIhMRNBUQgUImEVMnGBkRdCUmKhFiMkN0NWcnWCkrPSNXSVlrLBMzQ2U1WisdRjc3ajtMLD/8QAGwEAAgMBAQEAAAAAAAAAAAAAAAIBAwUEBgf/xAA7EQABAwMCAgcGBAYBBQAAAAABAAIDBBEhBTESQQYTIlFhcZEUgaGxwfAVMtHhFiMzQN/V0tLLw/8QAGwEAAgMBAQEAAAAAAAAAAAAAAAIBAwUEBgf/xAA7EQABAwMCAgcGBAYBBQAAAAABAAIDBBEhBTESQQYTIlFhcZEUgaGxwfAVMtHhFiMzQN/V0tLLw/8QAGwEAAgMBAQEAAAAAAAAAAAAAAAIBAwUEBgf/xAA7EQABAwMCAgcGBAYBBQAAAAABAAIDBBEhBTESQQYTIlFhcZEUgaGxwfAVMtHhFiMzQN/V0tLLw/8QAGwEAAg" alt="DVP" style="height:36px;border-radius:6px;flex-shrink:0">
+  <img src="data:image/png;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCACMAeIDASIAAhEBAxEB/8QAHQABAAIDAQEBAQAAAAAAAAAAAAECBgcIBQQDCf/EAFEQAAEDBAAEAwQFBQwGCAcAAAECAwQABQYRBxIhMRNBUQgUImEVMnGBkRdCUmKhFiMkN0NWcnWCkrPSNXSVlrLBMzQ2U1WisdRjc3ajtMLD/8QAGwEAAgMBAQEAAAAAAAAAAAAAAAIBAwUEBgf/xAA7EQABAwMCAgcGBAYBBQAAAAABAAIDBBEhBTESQQYTIlFhcZEUgaGxwfAVMtHhFiMzQlLxQ3KCkrLC/9oADAMBAAIRAxEAPwDqClKV8cXoEpSlCEpSlCFFRSlKhKUpQhKg1NQe9QhKUpUFSoNRUmopSpUUpUGkKFFQamoPelKYKD2qKk1FVFSFU96hVTVVVW5MFB7VU1JqpqopgoNVNWPeqmqXJwqmq1Y9qqe1UuTBVNVNWNUNUuThRUGpqtUuTBQe9VNWNVNUuTBVNRUmqmqinCioPepqKrKYKDVak1FVlSlVqTUUikJUHvU1WlUpSlKhCUNKg1ClKUpSoSlKUISlKUISlKUISlKUISlKUIWZ0pSvpqwUpSlCEoaUNCFWvmulwg2uA7PuUxiHEZTzOPPuBCED1JPQVg3GXivYeG9vQiQk3C9SR/A7a0rS3OoHMo6PKnZ9Nk9AD11pbN+HHE7NMBuvEfibdl2luIz4tusaWyPD2tKQVo3pA0d9drOupFbWmaHNWDrHdlnf3+X6rnlqGx4G6zjKvaQx9ueLRg1luOW3JZ5UBhpSGyfl8JWr7k6+dfP43tT5YlLtux204pFc+r7wWw4B+sFlah/dFbP4GzMXx5KcH/c3b8WvrSCQ2yNtXRKR1eZdV8TnqpCiVo8+mids166i0fT2xh8bQ4Hmc3+nwXDLUS3scLlv8j3tHzUeJM4swIy1HmKGXnRo/wBltP4DpVXeGftPWfb9u4h2m7KH8m659bXlpxrX7a6mpWiaKnIsYx6BU9a/vXKMzPuPuCsBzN+Grd2hNgFyZbzvSfMqLRWkfekCsx4dcdMBzJ1qG3cDarmvp7pPAbJV6JX9VR+WwT6Vv2ta8VOCPD/iG049dLSiFdCkhFxggNPA+RVr4XPsUD8tVl1fR2jnHZbwnw/TZXMq5G75XtnvUGucXpnE/wBnmYxDyZLuWYGVcjU9lJ54wJ6DZJKD6IUSk9kkVvrGMgs2T2Vm8WK4MToTw+FxpW9HQJSod0qG+oPUV4jUtJnoHdvLTsfvYrSinbKML06g1NQe1ZBVyioqarSFMENRQ1B7VWUwUVVVWqp71UVIVTVT3qx71U96qKcKtVNWqpqlyYKpqDUmqmqXJwqmqmrHtVTVLkwUHtVT2qTUGqHJlU9qqasaqe9VOThVPeoNTUHvVRTBQe1RUmoNVuTBUNKGlVlSoNRQ96UpTIarUmopUJSlKUqQhqKk1FQhKUpUISlKUISlKUISlKUISlKUISlKUIWZ0pSvpqwUpSlCErX/ABy4kwuG+JmaW0yrtLJZt0TfVxzX1lAdeRPTeu+wO5rO5smPChvTJbyGI7DanHXFnSUJSNlRPkABWguBVle4z8YrlxZyBjxMesr/ALrYozg6KWg8yFEfqg853+esfo1taJpnts13/kbv4+C56ibq243WV+zpwZlxZ35TeJfNcsvuGn2WZIChBBA0SOwd1oa7IHQdd1lHGK9jLDO4Z2MId8RKU36eeqIDR+INo8lvq0NJ7JB5leQPocR8zuEm6O4VhclCLsEj6TuYSHG7S2QCBo9FPrH1EeX1ldNA+bj9nt9htLVstjKm47ZUolaytbi1HanFqPVS1EklR6kmvRa5rbKFnUQfn/8AUfr3D3+fPSUhmPG/b5quQWW3323iHcGlkIWHGHm1lD0d0fVdaWOqFjyUP/SvpxTO7hjcuPj+fyUuxnlpYtuQ8oS2+T0S3KA6NPHyV0Qvy5T8NfRX5TY0abDehzI7UiM+gtutOpCkLSe4IPcV4/StYm05+MsO4/TuK06ilZOM7962lStL2G+XfhuUx5Jl3nC06Sk9XZdmQB96n2B960D9IDpt+1z4V0t0e422WxMhyWw4y+ysLQ4k9iCOhFfTKKuhrY+shNx8R5rBlhfE7hcvppSldaqXzXSBButuft1yiMTIchBbeYfQFocSe4IPQiuSs0x68ezfnbeTWH3qdw7uz4bmQ/EKjEWo70B22An4FHuByE9ievq83KLHbMlx6fYLzGTJt89lTL7Z80nzB8iO4PkQDVM8DJ4zHILgpmPLDcLFLNcoN5tMS622QiTClspeYdT2WhQ2D8vsr6zWgeBUy58N+Jt54KZC846wlxcuxyHOniNn4tAeikgq0OykuDzrfxr5TqlA6hqDEdtwe8LbhkEjeJRX4yn2IsZ2TJebZYZQXHHHFBKUJA2VEnoAB13X7GsZ4p/xY5V/Usz/AAV1nxs43tb3lXE2F1U8QME3/wBs8e/2k1/mq7edYS6QG8wx9RJ0ALi11P8Aer+d0VgyJTMdPKFOuJbBPYFRA/51vK4ey5mzEZbsW8WKY4kEhrmcbKvkCU6/HVeuqujlBTECactvtey4mVUj/wArbrrmJKizGQ9EksyGj2W0sKSfvFfncZsS3w3Zs+UzFisp5nXnlhCED1JPQCv5/QZ2a8L8vdaZdmWO7RVAPMKPwrT3AUnqlaD38x6V1/wtzS18XuHE1mUy2zLUyqFdYo6hCloI5k768igSR6aI663WRqnR91CGzB3FEbXI3F/X3FXw1Iku21islRnmEOOJbby+wKWtQSlIuDRJJ6AD4qyE1/N2/wBqlWO+T7NNTySoMhcdz+khRGx8jrY+2u++FWSJy3h5Zb+CC7JjJD4Hk8n4HB/eSql17QWadEyaJxc04+o+qmmqTK4tIsveny4kCG7MnSWYsZlPM488sIQgepJ6AV5VsyzF7rNRCtmR2ibKWCUsx5jbiyANnQB30Fan9svIhb8BhY808Uv3aUFOIHmy18St/wBst1jHsV4yhTl6y99rZRqBFUR27LdI/wDtj8a5Y9Fj/CnV8ziDyHfyHx+Cc1B64RNC3zNzTD4cp2JLymyR5DKyh1pyc2laFDoQQTsEelfgc8wj+eFg/wBotf5q4l4vgflWyvoP9Lyf8VVZxgnAC9ZbiNvyOLkFuiszmy4hpxhalJAUU6JB15Vqy9FtPgp2T1E5aHW5Dci6pbWyucWsbey6rg5TjNwc8KBkVolOfoMzW1q/AGvWNcMcUeFGTcPW2Jd0EWXAeX4aJcVRKQvRISoEApJAJ9Oneto+ypxLuci7pwW+SXZjTjSl215xXMtsoBUponuUlOyNnpy67EaztQ6KxtozWUUvWNGT5Dex8OYV0VaTJ1cjbFdKGoNSag14Zy0gqmqmpNVNUuThRUHvU1BqspwoNVNWNVNVFMFU96UNKQoVTSlKQplBqKk96ioQlKUpSpCGooaVBQlKUqEJSlKEJSlKEJSlKEJSlKEJSlKELM6UpX01YKUpShC0x7XuSSbRwxRYrdtU/IZSYLaE/WLfdeh8/hR/brI7a87guGWfhLg3gC/RoTartcCnnZt3P1ddUR0U+tRUUNny0pXwgb1bx0RkeXe0tiWKYq9DRcrXEMyMqZ1Zae+JwrUNHsltsgaPXVbVxzDOI9itvucSw4q4pxxT8mQ7e5CnZT6uq3nFe7/EtR6k/cNAAV7mijqqbTG+ysu9+b4xfnnwss95jfN/MNgF9+O2aDYbWi3wEuFIUVuvPL53pDh6qdcWeq1qPUqP/pXoV8P0LxT/APAcR/20/wD+3p9C8U//AAHEf9tP/wDt68y/o9qj3FzmXJ8R+q0RW04FgfgV91K8ewXC8PXW9Wi+2+DDnWp9ppfuclT7aw40lwEKUhJ3pWtar0bhMiW6C/PnyWYsRhBW686sJQhI8yTWPPTyQSmJ47Q5f6XSx7Xt4hsvoB0disdiR7zhNxdu2FsiRb33PEuGPlYS07+k7F7Bp49yn6i/PR+KtS5p7Stmgy1xMUszl45envchwstKP6qdcyh9vLXlZLxf4zY0hibfsHtlviSHQ2z4rK9LURsJCg4euhW9p2n6nSSNljs0nkSBfwtuuSeaCRpa7PlyXYeGZRZstsybpZZJcb5i28y4koejOD6zTqD1QseYP7Ro17VcVscXbhbclavl6xq5YFfylDbk9cdxyDOQOzMpspCuXvpxPMtHl02D09wt4jWjOYIQ2EQru2yl2RALoX8CugdaWOjrRPZafsISele9o6sztHG3hd3bj3EYPzHNY0sXAcG4WbUpSu1Urm/23bC/BtuOcUrRzIumPTm23FJ38TKlbTv5BYA+xxVbPx26xb7YLfeoSuaNOjtyGvXlWkEA/Mb1XqcZLE1kvCrJ7I8nfvNte5Pk4lJUg/cpKT91ae9ka7/SnBG2NE/Hb33oquvovnH/AJVivI9LaYOgZMNwbe4/uF30L+0WrbZ7VjXFP+LHKv6lmf4K6yU1jXFP+LHKv6lmf4K68JT/ANZnmPmtN35Sv562b/TMD/Wmv+MV/Ss1/NSzf6Zgf601/wAYr+laiANk6A7mvW9M/wDh/wC7/wCVx0H93u+q5r9t+yQ/o/H8jQhKZgfXCcUB1W2UlaQT+qQrX9I1g3sc3N6HxYcgJWsM3C3uoWgdipBC0k/YAob/AFvnX2+1zxCt2UXyBjdjlNy4NqUtyQ+2raHJB+HlB8wkA9R0JWfSvu9ivGZMnJ7plriCmHDjmE0oj67yylStf0Ugb/piupjXQdH3CoweE7+J7P0VZIdU9nvXke2HjJtHEhm/ND94vccLV8nmglCvxT4Z+0ms29inJC9aL1iby9qiuJmxwf0F/CsfYFJSf7ZrNPatxlN/4Ty5zbZVLszgmtFKdnkHwuD7OQlX9kVyzwdzVzAc4Zv4bW8x7u6w+yk68RKkkpH3LCD91V0gOr6GYRl7ce9uR6iwTP8A5FTxcish9qPJhkfFmayweaNaECA3r85aSS4ft51FP9kV1Vwdxo4lw2stkcaS3JbjhyUB/wB8v4l7Pnokj7AK5E4HWGTm/GC2pmq8ZKZJuU9auvMEK5zv+kspT/aruk1k9LJW01PBp8ezRc/IfUq+haXudKea/n/xf/jWyv8AreT/AIqq3Xwl454Xi3DmzY/c2buqZCZKHSzGSpBJWo9DzDfQitKcX/41sr/reT/iqrcXBjgjh+Y8ObbkN1kXdEySXQ4GJCUo+FxSRoFB8gPOvQauKE6ZF7dfg7O3fwn91y0/Wdc7q98/NY7x/wCMtvz2yxrBYrbJYgofTIeflhKXFqSCEpSlJIA6kkk77VX2ScXm3TiF+6Tw1Jt9obXtwjot5xBSlA9dJKlH00PUVt23+zpw5iSUvPN3aakfyT8zSD9vIEn9tbQslptljtjNstEFiDDZGm2WUBKU+v3n1ry9b0joKbT3UWntPaBFz47+JP34LtjpJXyiSU7L7DVTVjVTXzxy1QqmqntVjVT2qpysUVFTUVWUwVTUGpPeoNVFMq0pSqyhVpSlKUyg96ipqKgoSlKUpUhQe9KHvSoKEpSlQhKUpQhKUpQhKUpQhKUpQhKUpQhZnSlK+mrBSlKUIWjMRaS97dtzWvZMew8yN+RLTQ6f3j+2unq5ZgvG0e3fFU+oobu1nLbZJ6H95Oh+LJrqavqumG9HF/0j5LEn/qFKUpXcqlp8fxn51sgD3uF1P+pt1pNbo48cRblZjczHw7H+0ZlwpXPeJUlLp1+ZzA69BrXVRIzfjleXLFE4uT2VlDx9zjtKB0Qp2I03sfZzE1oj2Q7n7jxXMDn5W7hb3WuX9JSNLT/wqrxVRSOEtXWM/M3DfDAJPnbbuWuyQcMcR2O61xYbM+9nUDHn0EPqujcN1OvMOhKv+ddC+2TPQn9x9pQRtc5ySR6BPIgf8RrHnMeEX2zGYymgll6f9JNgDoQWS5v++DXwe1ncTK4wWuAD8MGHHTr9ZbhWf2ctdT5fbNQpnDYMLvUWVYb1cLx429F0Zm+WYtY51tseUvNtt3oraZEhrnjqKeUFKyeid8w0T0+YrTeXWJjhTxAta2JMyDiN1lExJUdR8exzPMtKP8mrfxIO0qTzAglINfj7bgB/coD2Pvf/APKvQ4mOLvfshWm5XJRdlIjwnQ4s7UVBfh736lJP41jabAaeKnma42lJaR43IBHiPvBXTO7jc9pH5cj6hdDYNn8oXKPiucojwr278MOcyOWHdf8A5RJPI7ru0TvzSVDtsauceEz0XOuCdkGQRkTkOxvAfDm9qWysoCwR1CvhBChog9Qay/HMzumDON2zNJj1yx0kIi5A71diknSW5gA+r2Af7fp6PxH0Oma42WQ0tTiQG1+Rtj3Hw9O5cNRRlresj2PwW2ZzaXoT7K/qrbUk/YRquUvYicIwjIIfxcrN2JSd9OraR/8ArXUWQTW4uNXC4pdSWmYbj4WD00EFW9+lc0exNEca4VTZzmx75dXFp2O4S22nf4g/hT9JyBp7r94+aSi/qLeprH+I8aRM4eZJEiMuPyH7TKbaabTzKWtTKgEgeZJIGqyA1iuf57jmDJgHIH5DZnuKbjJZjqdUtSQCRpIPqK+bU7JHStEbbnu8srXcQGm64aTw44hpUFJwjJAQdgi2vAg/3a9ReHcYbkDHfsWYvpUOqZCHwk/bz6Fdj2biZht4sF3vdvuinY9nQV3BtUdaHmAAT8TagFfmnXTyPpXxXXi5hdvgWSY7JnOIvjKn4CWYTji3EpIB+EDYPXtXsP4g1BzuH2bIxsd7X+WVw+zRWvxrnnAfZsy+6y2nspcZsVvCgXEJcS7IWn0SE7Sk/Mnp6GurMVsFqxiwRLHZYqY0KKjkbQO59VKPmonZJ8yax+3cUsLuOPXi9xrk6Y9mTzXBpcZxDzA8ttqAV169deRqmMcT8ayO5RYNsj3sqlgqZedtT7bJHKVb8Qp5dEDod1g6pUapqAPWsIa3kAQBi+fcumFsMX5TkrMJkdmXEeiSW0usPIU24hQ2FJI0QfkQa4KyDhXnVsvs+3R8Uvk1iNIW01IYgOrbeQFEJWkgaII0a63d40cO27gqIb24W0yfdTMTEdMUOenjcvJ38968+3WvRzDiViOK3YWm6z31T/B8dUeLFcfWhv8ASUEJPKOnnU6TU6jpbyxkJPHmxB5c/jn3KZ2RTC5dstY+yLglxx+Feb/frXKt9wkuJiMNSmFNuJaSApStKAOlKIH9it8nvWJL4lYf9HWC4NXQvxsgkiLb3G2VkLd5uXlUNbTo9DvVfJkvFjCMfu8u13C4yC/B5ffDHhuvNxubWgtaUlKeh9f29KzNQZX6lVOldEeI8gDi2PnjzV0RiiZwhy5a4p4Hm03iVksyHiN9kRn7pIcadagOKQtJcJCgQNEEV0v7OttuNo4Q2eBdYMmDLbU/zsSGy2tO3lkbSeo2CDXuX7iBidluFjh3C6oQb6Abe6lJU04Dy6POOgB506J6da9O3362z7/dbHGdWqdagyZaCggJ8VJUjR7HYB7V0atq1ZW0TIJIeFrbG+dh2fmbeaWCCOOQuDrk/wC16JqD3rCso4pYhjmQvWG5yZomsNJeeSzCddCEEbCiUJPTVfvd+I+I23EIWWOXMv2ic8liO/HaU4VrPN8PKBsH4FAgjoRqvPHTKwhhETrO2wc3yLe5dfXR57QwssNVNY5imbWjJpzsO3xbwy4034ijMtr0dJGwOilpAJ69u/4V9FqyqzXPI7tj0Z9YuNp5DLacbKNBY2lQJ+sNeY9RXLLQ1MZc1zCC0XONh3p2ysNiDuvZPaqntWL2jiBjF3k2SPBlvOLviZCreSwpIdSwSFq6joOh1vvUyM8xhjO2sJcnkXp1AUlnwlcvVJWAVa0DyjevspH6bVhxYYzcAk4OwNifIHBTCaMi91k1VryY+S2l/L5WKtPLN0ixUy3W/DISG1HQPN2J2R0r55WX2ONlTuMvSHE3JqEZykeEopDI7nm1rfTtVAoqhzuEMN7cW3Lv8vFP1rBm/gvdNQawKx8YMDvEyHFj3R9lc1fhxlSIjjSHVE6CQsp5d76d+9ezlmc41i93tlqvVw93lXNfJHTyFQ+sE7UR0SNqA2fn6Gpk0muZKInQu4jcgWNyBv6IE8RbxBwssiNKxbMs+xzE7nFtt3elCVLbLjLbEVbxUkHRPwg19+I5TYsst7k6wz0y2mnC06ORSFtrH5qkqAUk/aK536fVMgFQ6M8B/usbeqYSsLuC+V7FKwzIOJuKWPIZNhmvTlToqUKfQxBddCApIUCSkHppQqs7ilhcWzWy7i5OyYtzdWzFMeM44pa06CklIHMDsjoRvrVjdHr3hrmwuIdtg5xfHuz5INRELguGFmh71FYxjGfYtkTs1mBcFNvwW/FlMymVx1tN/pkLA+EeZHQdN9xXw2HinhN7usS2wbo7401SkxFvRHWm3ynuELUkJJ+/5d6U6RXjiHUu7OTg45/LPkj2iLHaGVmtKxu35xjk7GLnkbEtz3C1LebmqWypK2lNDawUkb3rX41+MbiBjL82fDRKfD9vtqbnJQqOscjBQlYPbqeVQ6d+tV/hdbdw6p3ZwcHG2/qPUJhPHjtDKyk0rEWuJGIPYkzlLVyK7Y7JEULS0oqS6TrlUnW0nz6+RB8xTKOI2J45d3LTcZz6prTPjvNRorj5ZQRsFfIk8vTr18tHsRUt0iue/q2wu4s4seVr+lx6hBqIgLlwssupWNt5xjTrmPpYuHjjIef6OW22opc5BtWzr4ddtHXXpS45vjdvzKHiMueEXeYgKaa5CU9ebQKuwJ5ToH5eoqsaZWE26p17E7HZpsT7jg+Knro/8h/tZJSvITkdqVl68UDy/pREP30t+GeXwuYJ3zdt7I6V69c0sEkVusaRcXF+YOx8k7XB2xSlKVUpSlKUISlKUISlKUIWZ0pSvpqwUpSlCFz97UOsUz/h9xPS2VN2y4JjS9ebfNzgf3fG/EV1RGfZkxmpMdxLrLqAttaTsKSRsEfIitU8Y8QRnPDm747pv3l5rniLX2Q+j4kHfkCRon0Jry/Y8zpzJuGwxq7KLd+xlXuEllzo54SejSiD6AFB+aPnX0Ho3VCWl6s7tx7uX6e5ZdYyz7963dSlK9EuNct+0fAduFm4soZBUph+3SSB+i3HZUr9gJ+6uWeGV3VYeImP3cEgR7g1z/NClcqv/Ko13HcIca45/wAQrfNaDsaU7FZeQfzkKhNgj8DXD3EvELjguYS7FLDnK2ouQnyOj7JPwLB9fI+hBrztJPHJVVNI7cm/mC0ArvewtjjkH3ldhXjGQ7x1sOTpaJSxZpbDi9dOcLQEffp1f4Vy7x4uP0nx2vLoVtDE5mKn7GwhJ/aDXYeC3hF+w2yXzYImQWnln9YpHN+0GuDLnNXcsxk3Fw7XKuanif6Tu/8AnWP0aa907y/eNvD8SfouquIDRbmbrtXinw7xzOHrZNyaZIYh2nxVFCHUtIcC+XfOs9QPh8iPPrWi/aU4k2O72qHgmHuMu2mEtCpD7A0yooGm2m/VKe5PYkDW9V7fttOOBWLNBxYbWJRUgKPKogt62OxrSfDTD5+cZfDsEFKkocVzyntfCwyPrrP3dB6kgVbodCwU0dZUSXa25A5NybnxKWqlPGY2DJ+K639myG9C4K4+h9JSp5Dr6Qf0VuqKT940fvrYa0IdbU04hLiFgpUhQ2FA9CCPMV+cGLHgwmIURpLUaO0lppA7JQkaA/AV5Ea23XN8quWOxri7abFa0M/SMqKoiVJdcBX7u2v+SSEcpUsfF8YA13rzMNPLqta4RYLiT5C67nvbTxDi5YWpuMGZScCwjIMWxOa5PsE5pdvkx+q27I+7s+G292AUjn/g/Uo+sOUdDtngTj72McI8etMlstyUxfGfQU6KVuKLhSfmObX3VqriPAtGe8dLDwoxWI1FxPEOaRc22E6bU8CC4CfzlfVb5js8y19e9dGeVbnSOUwQRUZeXEZJO/cPqs+lAc4yAWUVpj2jot0/dNw8vMCx3a7MWm8GVLRb4in3EoSW1dk+Z5Treq3PXmXy+2axttOXm6Q4CXlFLZkOhHOQNkDffpXmqKZ0E4e1vEc48wR9V2SNDm2JstDzLHkeUXjiPnaMZutniTseXbIUCTHKJc1zkH74psbPTlAHmdjXY15kfEsnkSODbLcK+WtcOC+3LlsRDzwVHtz86SlBP6w7broOXlONRbSzdpF+tjVvfX4bUlUlHhrV1+EK3onoenyNfvbL5Zbpb3LhbrtBlxGt+I8y+lSEaGzzEHQ0OvXyrS/F6hjcRWAwN8dnhtnf3qrqGE7/AHe657gYtfW8C4sxrvZ7zcMtkKUyLi5HWoXKOP8AovB0NHoDtKe3w/ID1eE7lx+jouNyfymsyZNoVA1c7YEW+G54WuZK+UEBJTpOz5itywMrxifFkyoWQWyQxFHNIcblIKWh6qO+g+Z6V6MuVGihsyX2mQ4rkRzqA5laKtD1OgT9gNVz6vOWujfFYk38iGgYFtsXspbA3BBXPWHSr5jvCdnhtP4VXa9XdmQtlTUiGDbXwXysOl7tygEdfUDr5j1kM3fh/wAbckySbjd9vVtvUFkRXrTE948JSAkFpQ6FOuXQ8ta38txx73ZpD8Nli6wnXZzJfiIQ+kl9saJWgb+JPUdRX6PXG3tJlqdnRm0wxuUVupAYHKFfGSfh+Eg9fKueTVXlz7w4ffiFzm5GR3ZH07k7YBYdrbZaBv1lvk2Pw5nMYB9ABOVidJgQGCsR2udGnHuVOkKITs+Q+3YEtNX3DfylY/JxDIbw7kMuQ/bpcCGXmXkvoICVr/NKebrv0Py3u2FlONzrfJuES/W1+JF/6w8iQkpa/pHfT76+2VOhRpMWNIlsNPy1FEdtbgCnlBJUQkHuQAT08hUO1mZv8qSHHd2r4dx7745+CkU7TkO+7WWgGOFc2VEwHD8lhPvx2bHcWpsppBWiG64pC2wF9gpJIA66PKdbFZB7Pdry+3ZNmQzCNI97R7lFbmKaUluYhlDiEuIUeitp5CSPXr13W3rlNh26E7OnymYsVlPM488sJQgepJ6CvitGQWK8rW3abxAnLQnmUhh9K1JHbZAOwPnXPU63V1VNIxzLtO5scHi4j5XwCPAJ2U7GPBBz+1lqG6zrni3tC37IV4nkl2gy7QzGYXbbep5KnByHRV0SB8JB69Kw2+YRlUDgqz4lluCJs/Lk3Y26AyXnoLJQsAAJB0RoH0G0g9a6DTmWJruAtyMjtaphe8AMiSgr8TfLy633301XrRZcWYhxUSQ0+lp1TSy2sK5VpOlJOuxB6EVLdcqKQMPU2sGgk3yGAgeSDTMkv2u/4rAOE11ckS50F0Z88SgOh7I4CWUJ0dcraglOyebej6VifG60ZRa87ayLDrO9Oev1oeskwstKV4ClEeG8ogdNb7nppFblutxt9qhql3ObHhx0nRdfcCE78hs+fyr8I18s0qFHmRrrCejyXQyw6h5JS44d/ADvqroenfpWdBqU0VUayOK7SLEZscd4A7gfcrXQtczqy7K1lOxh6w8SuGke3QJb1qslsmx3pDbKlob/AHgJTzEDQKiOg8z2rXtzxniPLsa+ISMfjJuovf022yQ8biEJIbRHLXJrkCADre9fbqumFSI/vYieM37wW/EDXMObk3rm131vpuvyhzYc3x/c5bEj3d1TL3hOBXhuJ+shWuyhsbB61bD0kqYLP6sEgAEm+RxOJ/8AIu+CHUbHYv8Adh8rLTT93nWPjhcMqfxPKJdvuFhjtNmFbFuqQslKilXYAjRBG9g1eTDut042OZCzZLqzAl4kpKFvxFo5HFbIaV00HOvVO91tW15DYrrLciWy8QJkhoFS22JCVqAB0ToHtsjr86hjILFIuyrSxeIDs9JIVGRISXAR3HLvex12PKqzq00brins4MDTv+UWsbctt1PUNIy/F78t1zvbIGR3/grZOGDGF32NchJBfuFwhKYjRE+MpznC1dSeU60B5kDy36ubYdmOaTMxuDNoYVGSy3bYCrkXG5RTGIWXWQEaPiL3okgH7K6FNQaB0umikL4ogDcncnLnBzvWwHhne6n8Pa4Wc7w9BYLn6ZcshOX8PMzuOK5LJMS0utXBpi3LW8l7lW2dp0NbJ5hvXQ1l/CO0Xh3Nstza4WqTZYl6caRFgyQEvENp0XFpB0kk+R69T9p2eaVwVfSEzQOiZEG3HDe5PZ4i+wG2537lZHScLg4uvz99rLSqsayed7QeTzIE+62CE9AY5bgzDQtt8pQ0PDCnElOwdnp1+Gvgzrhy7Y/3BWbGkXd9tm+KkTLg234rrS1qb28ohJSnWumxr4eu63waiiPpRVRPjLQOFjQ21hmzS0Em1zvexuFJoWOBvuTf43WhouF36fdeIlououkm+zIXu9svchJSw/FPKoM7ACArmACtep1rR388uNf8txXB8Jj4nfLNMtUqM5OnSYvhsxksIKSpC+yiruNeeq6ANRVw6WTXDjGCW2LdwAQ3gvba1s8OwPml9gbtfz9b/ZWhsnxXIEcUbpi8C0y14tlUyJPnyEtqLTQbJW+kr7JKyjqN76j1r7rxY7urinxHls2maYsvF1MRXUx1cjzngtgIQdaUrYI0OvSt10qn+KZ7NuwYbwnxN29o+NmNCYULc553+ePiVzNlmAZHZ8ex9/HrVLegXdm3rvFvRHKlx5jSUnxeXW0BQ5grp0O99xrM7d9LYHxJzWdPxi+XuJfVtyIci3xfHCtBW2ldfh1za6+Sa3MairJul01Qzq54w4EEHJBNy0jIzccIF+Y3UN09rDdpt9/utLLs92XkHC6YMQTZW2JU5+XEgtFTMILQOXnKRpJPp067FYxkWL57erPec1YsTKJbt4TdYSHg6m5NtsHkabDfLrXKN8u9ne+p1XSFKIOmE8Ba5kTbjGSTguLiMm+SRkk7Idp7XYLj9iy0vMu8+28ZmMxexPJpECbjLTPLEtq3VtOqcC+RY6aI5SCO4Oq3BbZQm26NNDD8cSGkuhp9HI43zAHlWn81Q3ojyNfRSsXUtSZXNjHV8JYA3cnA2XRDCYic3vlKUpWUr0pSlCEpSlCEpSlCFmdKUr6asFKUpQhK534wWy7cI+J0bjPiMYu26SsM5BCQOiwtQ5lH0C9J6+SwD15jXRFfjOixp0J6HMjtSIz6C2604kKStJGiCD3BFd+nV76GcSN25jvCrljEjbFezheTWbMMZhZFYJaZUCY3ztrHQpPmlQ8lA7BHkRXsVx+9Dy/2bspkX7GmH73w9nOhU2CVkri9hvf5qh2C+xGgrro10zw4z3F+INhReMYuTcpoj99ZV8LzCv0XEd0n9h8iRX0ymqo6mMSRm4KxnxlhsVgw/jPzr/W4X/4bdeVxJwOw59Y/o29MKDjW1RZbXR2Oo+aT5g9NpPQ/trOsk4V47fcimX564ZDClzfD94EC7PR21lCAhJ5UEDfKAN18H5GMc/nBmn+8Un/NXmazo9Uy1jqqKQNJNxvcLQiro2xCNzbrTdma4hcO8OcxJWNKya3sRXmrdc7SoeKgqCikPMKO+ild0k9PWuYYeH5gzPYQrE78XW3EqKBb3dnRB/Rr+gX5GMc/nBmn+8Un/NU/kbx7Wv3RZtr/AOopP+atCi0+qpS93YJduci57/jysqZZ45LDNh5Ln7iLiuZcaLlaFOYzJw+3W/xeeRdHUrdcC+T6rSOu/h8yB171tXhtgdiwGx/RtlZUXHdKlSnershYHdXoO+kjoP21lf5GMc/nBmn+8Un/ADU/Ixjn84M0/wB4pP8AmrOn0CslhEAka2Mchfzze5KvZWxNdxlpJ71+TzrUdlyRIWG2WkFbiz2SkDZJ+4VrK/cSXOGvBpj3Eqk51m0h24woiBzOMCSrTThT13ythpCU/nKGvI68rj9K4cYTFfxq33bLsmyaWgsptSMgkutoKumnwlW9HZ+AfErt0B3Xp8EuFN1Yvh4icRXffMmeA91ikgogo0Aka7BSR8KUjogep6hKWlj6PsfNM4Oc7AA+/VEspqyGtFgFkPs9cO14HiK3ropT2Q3dQlXN1Z5lJURsNc3ny7OzvqoqPbVbLNTUV4yqqH1MrpZDkrsY0MAAUVgmfm5jOsRNoRCXL/hvKmWtSWyPCTvqkEg/dWd1+a221OJcUhJWjfKojqnffRpKebqJOO18EeoI+qZzeIWWqLvj98s94skpuXa3L3eMlcmuJLC0xGlC3PN8qUhXMfhRsq6Eq6kDtXmXpqYs5bLyJUZcyPPtYvEWLFUGVWpt3xA4kHanAQp3nJ30bWjWh13S422tSFLbQpTZ5kEjZSdEbHodEj76gNNB5TwbQHVJCVL5RzFI2QN+g2fxNdjNWc2xc25x4bOB7sCwt8UhgB2K11kLlgzHMLLbrTKiXNpcKW3dVxHkrSIDzJR4a1JPTmcLRSN7+BRHY15GPSp17t8mJPfW65iNsk2+YtYO3p3KpsO9f/go5/sk/KtrQoMKChaIUOPFStZWsMthAUo9ydDqfnVgwwkulLLaS8eZ0hIHOdAbPr0AHXyFUnUWsZ1bW4AsCTnc39QSPRT1RJuStHYfZl3qLhzEaSIc+PhrUmBK5OYx5CXG+VWvNJ2UqT+clSh51WXcXrz9M3aVCXChx8mtq79EkDYYaaZbDgX5KQlwIXzDoUgK7brd7UaOyGwyw034aPDRyIA5U/ojXYdB0oGWkqcUlpALp24QkbWda6+vQAfdTHWe0SWeWdruueXlbuOeZUinxutT8Xrnit1xjJX7U4xPuTNjKH5sVwONNsqdSUNrUk8pUSFKSDsgBR6A9a8QxeL5dbnIsVgfuEmwoZRb5aHmkpZloWiQ6nS1AkKSllB0D+ePWtos223R4i4bECK1GcJK2UMpShRPfaQNHdfuG0I5uRCU8xKjoa2T3Nc0Wqsp+HgZfhvbiPfw91u61trHN05gL73O/ctc8arhEu3Ae8XSE54sWXAbfZXr6yFKQoH8DUZPcbffcnxNjFrnb5l2h3BL8pyM4l0swvDWHgtSSeVKyUJAPdRSdfDsbAVDiGF7kYrHuvLyeD4Y5OX05e2q/OBb4FvaLUCFGiNqO1JYaSgE+ugK4466OKPhDTcFxGcdoAWOM2t71YYi43v3fBa24Z3dDKG40jMcfbZ+kJjabWpCUyQpUl0JTzl3fNsg/U67186+rhberNFRerbJu9vYnOZJcAiM5JQl1RMhQACCdkny6dazQ2Gx+9+9/Q1u948TxPF91Rz8+9829b3vruirJZjN99NogGVz+J43uyOfm3vm5tb386KvUIKgyEtI4s4tvcnuzvucqY4nNAzssZzJ6NAzzGbpeHW2rU01KabedOm2Zawjw1KUegJQHUgnXUkb2oCsbzWRabm7Ak4s6y2+7lcNL05KPFjvPhpQ5kgKAXpPKkkEdRrexW1JLDMlhbEllt5pY0ttxIUlQ9CD3r80RIrbLTCIzKWmSC0gNgJb125R5a+VUU+psgDDwniaLb4IuTkWzk7bc0z4S6+cFa5uM26Y7mU25Xm4Rbk6zj61R0sRDH5ll9IS3orXsqWUpHbvWJ3S2X20WW92GHaZtvfvtl+BKnm3FzJrI3IKfDUdOOtKPpsoPSt5Ox2HVBbjLa1DWipIJ6EEfgQD9oo6004ttbjaFqbVzIKkglJ0Rseh0SPvNXRdIOqA/lA7X5A8OW2AsAAcnBuNrbqDScX932d1gdyuuNXqBbYOKyYci8JivKsxjEH3BXu60BbiQdobGwghQ+sUjWx0x+RLtcnhJYcftj0dWQtqgtMQ0KHvMeY2tsulSeqkKRpwrJ7Dm2evXazEOHGedejxWGXHjzOrbbCVOH1UR3P21CYkREtcxEZlMlaQlTwbAWoehV3Irkj1aGHh4WuIaQ4XdfIvg4/Lnl4/5YsMDnbkZxt95++S/U1FTUV5xy7AqmoqTUUhUqDUVNRSFSEPaq1aoNKpUUpSoKAlRU0NQpUUpSlQlKUoQlKUoQlKUoQlKUoQlKUoQszpSlfTVgpSlKEJSlKEL83mm3mVsvNocacSUrQsApUD0IIPcVovMeBMq1Xs5ZwhvjuLXltJ/giFkMO+oB68oP6KgpO/IVveorpo66ejfxROt8ikfG14s5aKtPtF5tg7rFq4xYHMbIPJ9KQEgJc+fLvw1H15Vj7K2njfH/hHfUtiPmcGI64N+FPCoyk/IlYCd/YTXvSWGJTC2JLLbzSxpSHEhSVD5g96wHJOCnDG/Orel4pEYeX3chqVHP4IIT+yvV03SthFp2WPh+/7rifRf4lbVi5bispsORsmsr6D+c3OaUPxCq+S7Z/g1paU5csxsEVKep8S4NA/hzbrQ7/sucMnVEoXfGdnekS0HXy+JBr97f7M3C6I8lbka6ywNfA9MIB+3kCTXaek9EBz9FV7HIspzD2oOFNjjq+j7pJv8rqEM2+OrRPzWsJTr5gmteXDOOPHF8Ij4tZzgmOP7C5zqyHlo9Q4QFEenhpH9KtsYvw6wbGAk2TF7ZFcT2dLIcd/vr2r9tZVWXV9KyRanZbxP6D9VfHQgZcVrThLwaxbh/yzkJVdr6rmLlykp+MFXfkTshG/Xqo7OzWyak1FeSqKiWoeZJXXK7mtDRYKKUpXOUyrUGpPeoNIUwUVFTUVUVIUHvVVVY1BqtyZUPaqmrGqntVTkwVTVVVY1B7VS5OqVU9qtUGqXJgqGqmrGoNUuCcKlQe9WPeqmqXKQqmqmrmqmqinCoairGq1UUwVag96se9QarKdVNVq9UNVFSlVPerVBpVIUVBqaUpUqtKUqEJSlKVSopUmoqChKUpUISlKUISlKUISlKUISlKUIWZ0pSvpqwUpSlCEpSlCFBqKk96ilQlKUoQlDShqChRSlKhShqtWqtKVKg96UNKUoUGoPapNQe1IVIVag96mhqsplU1FSe1RVZUqh71BqyqqaqKYKtVNWPeoPeqnJ1Q1U1Y1B7VS4JlQ1U1c1U1S5OFQ1BqxqtUuCYKpqpq1RVJTBUNVPermqmqinCqairGq1WUwUVUirGoNVlMq1FTSqyhVpQ0qCmUGoqx7VWlQlKUqCgJUVNDUKVFKUpUJSlKEJSlKEJSlKEJSlKEL/9k=" alt="DVP" style="height:36px;border-radius:6px;flex-shrink:0">
   <div style="width:2px;height:32px;background:#c8d8c8;flex-shrink:0;border-radius:1px"></div>
   <div>
     <div class="hdr-title">Sistema de Cruces Vial</div>
     <div class="hdr-sub">Direccion de Tierras, Vialidad Provincial</div>
   </div>
   <div class="hdr-right">
-    <span id="save-st">Conectando a la nube...</span>
+    <span id="save-st"></span>
     <button class="hbtn" onclick="exportDB()">Exportar JSON</button>
     <button class="hbtn" onclick="openExportExcelModal()">Exportar Excel</button>
     <button class="hbtn" onclick="openImportModal()">Importar</button>
@@ -321,7 +321,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
     <div class="pbody" id="body-i" style="display:none">
       <div style="font-size:12px;font-weight:700;color:#2a6a2a;margin-bottom:10px">INSTRUCTIVO DE USO</div>
       <div class="inst-h">A — Instalar la app</div>
-      <div class="inst-s">El sistema ahora guarda directamente en la nube. Cualquier cambio o registro nuevo se sincronizará automáticamente en todas las PCs conectadas al mismo proyecto de Firebase.</div>
+      <div class="inst-s">1. Guarda el archivo <b style="color:#2a3a2a">infraestructura_vial.html</b> en tu PC<br>2. Doble clic &rarr; se abre en Chrome, Edge o Firefox<br>3. Si hay datos previos: clic en <b style="color:#2a3a2a">Importar &rarr; JSON</b> y carga el archivo<br>&nbsp;&nbsp;Necesitas internet para ver el mapa satelital</div>
       <div class="inst-h">B — Cargar un nuevo registro</div>
       <div class="inst-s">1. Clic en <b style="color:#2a3a2a">+ Nuevo registro</b> (mapa, esquina superior derecha)<br>2. Completar: Nombre, Categoria, Ruta, Km, Localidad, Estado, Empresa<br>3. Coordenadas (elegir una opcion):<br>&nbsp;&nbsp;· Ingresar Lat/Lon &rarr; X,Y GK se calcula solo<br>&nbsp;&nbsp;· Ingresar X,Y GK &rarr; Lat/Lon se calcula sola<br>&nbsp;&nbsp;· Clic en el mapa con el formulario abierto<br>4. Clic en <b style="color:#2a3a2a">Guardar registro</b></div>
       <div class="inst-h">C — Buscar registros</div>
@@ -331,7 +331,9 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
       <div class="inst-h">E — Exportar datos</div>
       <div class="inst-s"><b style="color:#2a3a2a">Exportar JSON:</b> copia de seguridad completa para Drive o pendrive.<br><b style="color:#2a3a2a">Exportar Excel:</b> genera .xlsx con el formato oficial DVP. Podes elegir exportar todas las categorias o solo una (ej: solo Gasoductos).</div>
       <div class="inst-h">F — Importar datos</div>
-      <div class="inst-s"><b style="color:#2a3a2a">JSON:</b> restaura copia completa. Sobrescribe la base en la nube.<br><b style="color:#2a3a2a">CSV/Excel:</b> agrega registros directamente a la nube. Descarga la plantilla Excel como guia.</div>
+      <div class="inst-s"><b style="color:#2a3a2a">JSON:</b> restaura copia completa. Reemplaza todos los datos actuales.<br><b style="color:#2a3a2a">CSV/Excel:</b> agrega registros sin borrar nada. Descarga la plantilla Excel como guia.</div>
+      <div class="inst-h">G — Compartir</div>
+      <div class="inst-s">1. Exportar JSON al terminar de cargar datos<br>2. Subir el .json a Google Drive de la oficina<br>3. Los demas agentes importan ese .json y tienen la base actualizada<br><b style="color:#2a3a2a">Para otra reparticion:</b> copiar .html + ultimo .json en un pendrive</div>
       <div class="inst-h">H — Estados</div>
       <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
         <div style="padding:6px 9px;border-radius:5px;background:#d8f0d8;border-left:3px solid #2a8a2a;font-size:10px"><b style="color:#2a6a2a">BUENO</b> — Funciona normalmente. Sin danos ni riesgo.</div>
@@ -364,13 +366,13 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
       <div style="background:#f0f5ff;border:1.5px solid #b0c0e0;border-radius:8px;padding:10px;margin-bottom:8px">
         <div style="font-size:11px;color:#3a5a9a;font-weight:700;margin-bottom:4px">PUNTO A</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:7px">
-          <input class="cinput" id="ix-a1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('a')">
-          <input class="cinput" id="ix-a2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('a')">
+          <input class="cinput" id="ix-a1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('a')" onchange="ixAutoConv('a')" onpaste="setTimeout(()=>ixAutoConv('a'),50)">
+          <input class="cinput" id="ix-a2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('a')" onchange="ixAutoConv('a')" onpaste="setTimeout(()=>ixAutoConv('a'),50)">
         </div>
         <div style="font-size:11px;color:#3a5a9a;font-weight:700;margin-bottom:4px">PUNTO B</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-          <input class="cinput" id="ix-b1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('b')">
-          <input class="cinput" id="ix-b2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('b')">
+          <input class="cinput" id="ix-b1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('b')" onchange="ixAutoConv('b')" onpaste="setTimeout(()=>ixAutoConv('b'),50)">
+          <input class="cinput" id="ix-b2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('b')" onchange="ixAutoConv('b')" onpaste="setTimeout(()=>ixAutoConv('b'),50)">
         </div>
       </div>
 
@@ -378,13 +380,13 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
       <div style="background:#fff8f0;border:1.5px solid #e0c0a0;border-radius:8px;padding:10px;margin-bottom:10px">
         <div style="font-size:11px;color:#7a4a1a;font-weight:700;margin-bottom:4px">PUNTO C</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:7px">
-          <input class="cinput" id="ix-c1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('c')">
-          <input class="cinput" id="ix-c2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('c')">
+          <input class="cinput" id="ix-c1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('c')" onchange="ixAutoConv('c')" onpaste="setTimeout(()=>ixAutoConv('c'),50)">
+          <input class="cinput" id="ix-c2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('c')" onchange="ixAutoConv('c')" onpaste="setTimeout(()=>ixAutoConv('c'),50)">
         </div>
         <div style="font-size:11px;color:#7a4a1a;font-weight:700;margin-bottom:4px">PUNTO D</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-          <input class="cinput" id="ix-d1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('d')">
-          <input class="cinput" id="ix-d2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('d')">
+          <input class="cinput" id="ix-d1" placeholder="Lat o GK X" style="margin:0" oninput="ixAutoConv('d')" onchange="ixAutoConv('d')" onpaste="setTimeout(()=>ixAutoConv('d'),50)">
+          <input class="cinput" id="ix-d2" placeholder="Lon o GK Y" style="margin:0" oninput="ixAutoConv('d')" onchange="ixAutoConv('d')" onpaste="setTimeout(()=>ixAutoConv('d'),50)">
         </div>
       </div>
 
@@ -466,6 +468,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
       <div class="fg"><label>Diametro / Tension / Tipo</label><input type="text" id="f-mat" placeholder="200mm - PVC - 13kV"></div>
     </div>
     <div class="frow">
+      <!-- Longitud del cruce: calculada automaticamente desde inicio/fin -->
       <div class="fg"><label>Empresa / Responsable</label><input type="text" id="f-resp" placeholder="SAMEEP - SECHEEP - Camuzzi - DVP..."></div>
     </div>
 
@@ -554,7 +557,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
       <div class="imp-tab" id="itab-csv" onclick="setImpTab('csv')">CSV / Excel</div>
     </div>
     <div class="imp-body on" id="ibody-json">
-      <div class="imp-note">El JSON debe ser una copia exportada desde esta misma app. <b>Reemplaza toda la base actual en la nube.</b></div>
+      <div class="imp-note">El JSON debe ser una copia exportada desde esta misma app. <b>Reemplaza toda la base actual.</b></div>
       <div class="drop-zone" id="dz-json" onclick="document.getElementById('f-imp-json').click()" ondragover="dzOver(event,'dz-json')" ondragleave="dzOut('dz-json')" ondrop="dzDrop(event,'json')">
         <div class="dz-icon">&#128193;</div>
         <div class="dz-lbl">Arrastra el .json aqui<br>o <b>hace clic para seleccionarlo</b></div>
@@ -600,68 +603,6 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
 
 <div class="toast" id="toast"></div>
 
-<!-- INTEGRACIÓN COMPLETA DE FIREBASE VIA CLOUD FIRESTORE -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-  import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCNal6iyZk-dJ_P4GL6hguX7OZ5aB3ikrU",
-    authDomain: "dvp-infraestructura.firebaseapp.com",
-    projectId: "dvp-infraestructura",
-    storageBucket: "dvp-infraestructura.firebasestorage.app",
-    messagingSenderId: "271549901701",
-    appId: "1:271549901701:web:9ff50e5ae5c603c2fb32ec",
-    measurementId: "G-9WHPB3R3GF"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const dbFirestore = getFirestore(app);
-  const docRef = doc(dbFirestore, "infraestructura", "cruces_viales");
-
-  window.saveToFirebase = function(dataObject) {
-    document.getElementById('save-st').textContent = 'Guardando...';
-    
-    const cleanData = {
-      categories: dataObject.categories || [],
-      records: dataObject.records || [],
-      savedAt: dataObject.savedAt || new Date().toISOString()
-    };
-
-    setDoc(docRef, cleanData)
-      .then(() => {
-        const d = new Date();
-        document.getElementById('save-st').textContent = 'Sincronizado ' + d.toLocaleTimeString('es-AR', {hour: '2-digit', minute: '2-digit'});
-      })
-      .catch((error) => {
-        console.error("Error al guardar en Firestore:", error);
-        document.getElementById('save-st').textContent = 'Error al sincronizar';
-        toast("Error de conexión con la nube");
-      });
-  };
-
-  onSnapshot(docRef, (docSnap) => {
-    if (docSnap.exists()) {
-      window.db = docSnap.data();
-      if (!window.db.records) window.db.records = [];
-      if (!window.db.categories) window.db.categories = window.INIT.categories;
-    } else {
-      window.db = JSON.parse(JSON.stringify(window.INIT));
-    }
-    
-    if (window.map) {
-      window.refreshMarkers();
-      window.render();
-      window.renderLegend();
-    }
-    const d = new Date();
-    document.getElementById('save-st').textContent = 'Nube al día ' + d.toLocaleTimeString('es-AR', {hour: '2-digit', minute: '2-digit'});
-  }, (error) => {
-    console.error("Error leyendo de Firestore:", error);
-    document.getElementById('save-st').textContent = 'Error de lectura';
-  });
-</script>
-
 <script>
 // ===== PROYECCIONES POSGAR 2007 / WGS84 =====
 const GKP={
@@ -676,7 +617,7 @@ const GKP={
 function gkToLL(faja,x,y){try{const r=proj4(GKP[faja],'EPSG:4326',[x,y]);return(!r||isNaN(r[0]))?null:{lat:r[1],lon:r[0]};}catch(e){return null;}}
 function llToGK(faja,lat,lon){try{const r=proj4('EPSG:4326',GKP[faja],[lon,lat]);return(!r||isNaN(r[0]))?null:{x:r[0],y:r[1]};}catch(e){return null;}}
 
-// ===== PARSECOORD =====
+// ===== PARSECOORD: acepta todos los formatos =====
 function parseCoord(raw){
   if(!raw||!raw.trim())return NaN;
   raw=raw.trim();
@@ -690,10 +631,12 @@ function parseCoord(raw){
   return isNeg?-dec:dec;
 }
 
+// ===== PALETA COLORES =====
 const PAL=['#1565c0','#1a8a5a','#c0392b','#b35900','#7b4fcf','#00838f','#ad1457','#2e7d32','#6d4c41','#00695c','#4527a0','#c62828'];
 let selCol=PAL[0];
 
-window.INIT={
+// ===== DATOS =====
+const INIT={
   categories:[
     {id:'c1',name:'Cruce de ruta',color:'#1565c0'},
     {id:'c2',name:'Tuberia de agua / Acueducto',color:'#1a8a5a'},
@@ -709,7 +652,6 @@ window.INIT={
 };
 
 function enrichRecs(recs){
-  if(!recs) return [];
   return recs.map(r=>{
     if(r.lat&&r.lon&&!r.gkx){
       const gk=llToGK(5,r.lat,r.lon);
@@ -719,7 +661,10 @@ function enrichRecs(recs){
   });
 }
 
-window.db = JSON.parse(JSON.stringify(window.INIT));
+// Base siempre limpia — el usuario carga sus datos desde Excel
+localStorage.removeItem('infra_chaco');
+let db=JSON.parse(JSON.stringify(INIT));
+db.records=enrichRecs(db.records);
 let selCat='all',selAlpha='all',selRec=null,editId=null,markers={},tmpMark=null,map;
 
 function uid(){return 'id'+Date.now()+Math.random().toString(36).slice(2,5);}
@@ -731,11 +676,12 @@ const ET={Bueno:'#6aaf6a',Regular:'#c8a050',Critico:'#c07070','Sin datos':'#3a5a
 
 function save(){
   db.savedAt=new Date().toISOString();
-  if(window.saveToFirebase) {
-    window.saveToFirebase(db);
-  }
+  localStorage.setItem('infra_chaco',JSON.stringify(db));
+  const d=new Date(db.savedAt);
+  document.getElementById('save-st').textContent='Guardado '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
 }
 
+// Calcula distancia en metros entre dos puntos lat/lon (formula Haversine)
 function haversineM(lat1,lon1,lat2,lon2){
   const R=6371000;
   const toRad=x=>x*Math.PI/180;
@@ -743,6 +689,7 @@ function haversineM(lat1,lon1,lat2,lon2){
   const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
+// Calcula la longitud del cruce si hay inicio y fin, devuelve string formateado
 function calcLongcruce(r){
   if(r.lat1!=null&&r.lon1!=null&&r.lat2!=null&&r.lon2!=null){
     const m=haversineM(r.lat1,r.lon1,r.lat2,r.lon2);
@@ -755,21 +702,34 @@ function calcLongcruce(r){
 function initMap(){
   map=L.map('map',{center:[-26.5,-60.5],zoom:8});
 
-  const googleHyb=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',{attribution:'Google Hybrid',maxZoom:21,minZoom:1});
-  const googleSat=L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{attribution:'Google Satellite',maxZoom:21,minZoom:1});
-  const esriSat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Esri World Imagery',maxZoom:19,minZoom:4});
-  const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'OpenStreetMap contributors',maxZoom:19,minZoom:1});
+  // Google Hibrido (satelite + nombres de rutas y localidades)
+  const googleHyb=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+    {attribution:'Google Hybrid',maxZoom:21,minZoom:1});
+  // Google Satelite puro (maxima resolucion, sin texto)
+  const googleSat=L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+    {attribution:'Google Satellite',maxZoom:21,minZoom:1});
+  // Esri Satelite (alternativa si Google no carga)
+  const esriSat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    {attribution:'Esri World Imagery',maxZoom:19,minZoom:4});
+  // OpenStreetMap (calles, siempre disponible)
+  const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    {attribution:'OpenStreetMap contributors',maxZoom:19,minZoom:1});
 
+  // Capa por defecto: Google Hibrido
   googleHyb.addTo(map);
 
-  L.control.layers({
+  L.control.layers(
+    {
       'Google Hibrido (recomendado)': googleHyb,
       'Google Satelite':              googleSat,
       'Esri Satelite':                esriSat,
       'OpenStreetMap (calles)':       osm
-  },{},{position:'topleft', collapsed:true}).addTo(map);
-  
+    },
+    {},
+    {position:'topleft', collapsed:true}
+  ).addTo(map);
   map.on('click',function(e){
+    // Modo interseccion activo: capturar puntos para calcular cruce
     if(_ixDrawing){ixMapClick(e);return;}
     if(document.getElementById('rm').classList.contains('open')){
       document.getElementById('f-lat').value=e.latlng.lat.toFixed(6);
@@ -781,7 +741,6 @@ function initMap(){
     }
     closeDet();
   });
-  window.map = map;
   refreshMarkers();renderLegend();
 }
 
@@ -789,6 +748,11 @@ function mkIcon(color){
   const s='<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30"><path d="M11 0C4.9 0 0 4.9 0 11c0 8.25 11 19 11 19s11-10.75 11-19C22 4.9 17.1 0 11 0z" fill="'+color+'" stroke="rgba(255,255,255,0.6)" stroke-width="1.2"/><circle cx="11" cy="11" r="4.5" fill="#fff" opacity=".85"/></svg>';
   return L.divIcon({html:s,className:'',iconSize:[22,30],iconAnchor:[11,30],popupAnchor:[0,-30]});
 }
+// Devuelve el mejor punto representativo de un registro (para centrar el mapa / fly):
+// 1) Punto central si existe
+// 2) Si hay inicio y fin, el punto medio entre ambos
+// 3) Si solo hay inicio, el inicio
+// 4) Si solo hay fin, el fin
 function getMapPoint(r){
   if(r.lat!=null&&r.lon!=null)return{lat:r.lat,lon:r.lon};
   const hasIni=r.lat1!=null&&r.lon1!=null;
@@ -799,11 +763,10 @@ function getMapPoint(r){
   return null;
 }
 
+// markers[id] ahora guarda un ARRAY de capas Leaflet (1 o 2 marcadores + linea opcional)
 function refreshMarkers(){
-  if(!window.map) return;
   Object.values(markers).forEach(arr=>arr.forEach(l=>map.removeLayer(l)));
   markers={};
-  if(!db.records) db.records = [];
   db.records.forEach(r=>{
     const cat=getCat(r.catId);
     const layers=[];
@@ -812,6 +775,7 @@ function refreshMarkers(){
     const hasCen=r.lat!=null&&r.lon!=null;
     const onClick=()=>{
       selRec=r.id;showDet(r.id);renderList();
+      // Mover el mapa al registro
       const hasIni=r.lat1!=null&&r.lon1!=null;
       const hasFin=r.lat2!=null&&r.lon2!=null;
       if(hasIni&&hasFin){
@@ -822,6 +786,7 @@ function refreshMarkers(){
     };
 
     if(hasIni&&hasFin){
+      // Tramo completo: dos marcadores + linea conectora
       const mIni=L.marker([r.lat1,r.lon1],{icon:mkIcon(cat.color)}).addTo(map);
       const mFin=L.marker([r.lat2,r.lon2],{icon:mkIcon(cat.color)}).addTo(map);
       mIni.on('click',onClick);mFin.on('click',onClick);
@@ -831,6 +796,7 @@ function refreshMarkers(){
       line.on('click',onClick);
       layers.push(mIni,mFin,line);
     }else if(hasIni||hasFin||hasCen){
+      // Un solo punto disponible
       const p=hasCen?{lat:r.lat,lon:r.lon}:hasIni?{lat:r.lat1,lon:r.lon1}:{lat:r.lat2,lon:r.lon2};
       const m=L.marker([p.lat,p.lon],{icon:mkIcon(cat.color)}).addTo(map);
       m.on('click',onClick);
@@ -839,7 +805,7 @@ function refreshMarkers(){
     if(layers.length)markers[r.id]=layers;
   });
 }
-function fly(lat,lon,z){if(map) map.flyTo([lat,lon],z||15,{duration:1.2});}
+function fly(lat,lon,z){map.flyTo([lat,lon],z||15,{duration:1.2});}
 function renderLegend(){document.getElementById('legend').innerHTML=db.categories.map(c=>'<div class="li"><div class="ldot" style="background:'+c.color+'"></div><span>'+c.name+'</span></div>').join('');}
 
 // ===== TABS =====
@@ -853,16 +819,10 @@ function setTab(t){
 }
 
 // ===== BUSCAR =====
-function getLetters(){
-  if(!db.records) return [];
-  const base=selCat==='all'?db.records:db.records.filter(r=>r.catId===selCat);
-  return[...new Set(base.map(r=>r.name?r.name[0].toUpperCase():''))].sort();
-}
+function getLetters(){const base=selCat==='all'?db.records:db.records.filter(r=>r.catId===selCat);return[...new Set(base.map(r=>r.name[0].toUpperCase()))].sort();}
 function getFiltered(){
-  if(!db.records) return [];
   const q=document.getElementById('q').value.toLowerCase();
   return db.records.filter(r=>{
-    if(!r.name) return false;
     if(selCat!=='all'&&r.catId!==selCat)return false;
     if(selAlpha!=='all'&&!r.name.toUpperCase().startsWith(selAlpha))return false;
     if(q&&!(r.name+' '+(r.ruta||'')+' '+(r.km||'')+' '+(r.loc||'')+' '+(r.obs||'')+' '+(r.resp||'')).toLowerCase().includes(q))return false;
@@ -879,10 +839,9 @@ function renderAlpha(){
   document.getElementById('abar').innerHTML=t+bs;
 }
 function renderCats(){
-  const recordsCount = db.records ? db.records.length : 0;
-  const all=`<button class="ccat ${selCat==='all'?'on':''}" onclick="selCat='all';selAlpha='all';render()"><span class="cdot" style="background:#4a8a4a"></span>Todas las categorias<span class="ccnt">${recordsCount}</span></button>`;
+  const all=`<button class="ccat ${selCat==='all'?'on':''}" onclick="selCat='all';selAlpha='all';render()"><span class="cdot" style="background:#4a8a4a"></span>Todas las categorias<span class="ccnt">${db.records.length}</span></button>`;
   const cats=db.categories.map(c=>{
-    const cnt=db.records ? db.records.filter(r=>r.catId===c.id).length : 0;
+    const cnt=db.records.filter(r=>r.catId===c.id).length;
     return `<button class="ccat ${selCat===c.id?'on':''}" onclick="selCat='${c.id}';selAlpha='all';render()"><span class="cdot" style="background:${c.color}"></span>${c.name}<span class="ccnt">${cnt}</span></button>`;
   }).join('');
   document.getElementById('clist').innerHTML=all+cats+'<button class="add-cat" onclick="openCatModal()">+ Nueva categoria</button>';
@@ -908,7 +867,6 @@ function render(){renderCats();renderAlpha();renderList();}
 
 // ===== LOCALIDAD =====
 function renderLocs(){
-  if(!db.records) return;
   const q=(document.getElementById('qloc').value||'').toLowerCase();
   const locs=[...new Set(db.records.map(r=>r.loc).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
   const f=q?locs.filter(l=>l.toLowerCase().includes(q)):locs;
@@ -929,7 +887,7 @@ function selectLoc(loc){
     if(r.lat2!=null&&r.lon2!=null)pts.push({lat:r.lat2,lon:r.lon2});
     if(r.lat!=null&&r.lon!=null)pts.push({lat:r.lat,lon:r.lon});
   });
-  if(pts.length && map){
+  if(pts.length){
     const lats=pts.map(p=>p.lat),lons=pts.map(p=>p.lon);
     map.fitBounds([[Math.min(...lats),Math.min(...lons)],[Math.max(...lats),Math.max(...lons)]],{padding:[50,50],maxZoom:15});
   }
@@ -981,8 +939,8 @@ function goLL(){
   const gk=llToGK(faja,lat,lon);
   if(gk){document.getElementById('gk-x').value=gk.x.toFixed(2);document.getElementById('gk-y').value=gk.y.toFixed(2);}
   fly(lat,lon);
-  if(tmpMark && map)map.removeLayer(tmpMark);
-  if(map) tmpMark=L.circleMarker([lat,lon],{radius:9,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.4,weight:2}).addTo(map);
+  if(tmpMark)map.removeLayer(tmpMark);
+  tmpMark=L.circleMarker([lat,lon],{radius:9,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.4,weight:2}).addTo(map);
   const res=document.getElementById('r-ll');
   const xR=gk?parseFloat(gk.x.toFixed(2)):null;
   const yR=gk?parseFloat(gk.y.toFixed(2)):null;
@@ -1004,8 +962,8 @@ function goGK(){
   document.getElementById('c-lat').value=ll.lat.toFixed(6);
   document.getElementById('c-lon').value=ll.lon.toFixed(6);
   fly(ll.lat,ll.lon);
-  if(tmpMark && map)map.removeLayer(tmpMark);
-  if(map) tmpMark=L.circleMarker([ll.lat,ll.lon],{radius:9,color:'#c8a050',fillColor:'#c8a050',fillOpacity:.4,weight:2}).addTo(map);
+  if(tmpMark)map.removeLayer(tmpMark);
+  tmpMark=L.circleMarker([ll.lat,ll.lon],{radius:9,color:'#c8a050',fillColor:'#c8a050',fillOpacity:.4,weight:2}).addTo(map);
   const res=document.getElementById('r-gk');
   res.innerHTML=
     `<b>Lat:</b> ${ll.lat.toFixed(6)} <button class="copy-btn" onclick="copyVal(${ll.lat.toFixed(6)})">copiar</button><br>`+
@@ -1016,6 +974,7 @@ function goGK(){
 function showDet(id){
   const r=db.records.find(x=>x.id===id);if(!r)return;
   const cat=getCat(r.catId);
+  // Mostrar campo solo si tiene valor
   const row=(label,val)=>{
     if(!val&&val!==0)return'';
     return `<div class="det-f"><label>${label}</label><span>${val}</span></div>`;
@@ -1024,6 +983,7 @@ function showDet(id){
     if(!val&&val!==0)return'';
     return `<div class="det-f full"><label>${label}</label><span>${val}</span></div>`;
   };
+  // Bloque de coordenadas
   const coordBlock=(label,lat,lon,gkx,gky)=>{
     if(!lat&&!lon&&!gkx&&!gky)return'';
     const latV=lat!=null?lat.toFixed(6):'';
@@ -1038,6 +998,7 @@ function showDet(id){
       </div>
     </div>`;
   };
+  // Lógica de coordenadas: inicio/fin primero, punto central solo si no hay inicio/fin
   const hasIni=r.lat1||r.gkx1;
   const hasFin=r.lat2||r.gkx2;
   const hasCen=r.lat||r.gkx;
@@ -1084,7 +1045,7 @@ function closeDet(){document.getElementById('det').classList.remove('show');selR
 function clickRec(id){
   selRec=id;showDet(id);
   const r=db.records.find(x=>x.id===id);
-  if(r && map){
+  if(r){
     const hasIni=r.lat1!=null&&r.lon1!=null;
     const hasFin=r.lat2!=null&&r.lon2!=null;
     if(hasIni&&hasFin){
@@ -1121,9 +1082,9 @@ function _syncGK(gkxId,gkyId,latId,lonId){
 let _fLL=null,_fGK=null,_fLL1=null,_fGK1=null,_fLL2=null,_fGK2=null;
 function fConvLL() {clearTimeout(_fLL); _fLL=setTimeout(()=>_syncLL('f-lat','f-lon','f-gkx','f-gky'),300);}
 function fConvGK() {clearTimeout(_fGK); _fGK=setTimeout(()=>_syncGK('f-gkx','f-gky','f-lat','f-lon'),300);}
-function fConvLL1()){clearTimeout(_fLL1);_fLL1=setTimeout(()=>_syncLL('f-lat1','f-lon1','f-gkx1','f-gky1'),300);}
+function fConvLL1(){clearTimeout(_fLL1);_fLL1=setTimeout(()=>_syncLL('f-lat1','f-lon1','f-gkx1','f-gky1'),300);}
 function fConvGK1(){clearTimeout(_fGK1);_fGK1=setTimeout(()=>_syncGK('f-gkx1','f-gky1','f-lat1','f-lon1'),300);}
-function fConvLL2()){clearTimeout(_fLL2);_fLL2=setTimeout(()=>_syncLL('f-lat2','f-lon2','f-gkx2','f-gky2'),300);}
+function fConvLL2(){clearTimeout(_fLL2);_fLL2=setTimeout(()=>_syncLL('f-lat2','f-lon2','f-gkx2','f-gky2'),300);}
 function fConvGK2(){clearTimeout(_fGK2);_fGK2=setTimeout(()=>_syncGK('f-gkx2','f-gky2','f-lat2','f-lon2'),300);}
 
 // ===== MODAL REGISTRO =====
@@ -1131,18 +1092,21 @@ function openRecordModal(){
   editId=null;document.getElementById('mtitle').textContent='Nuevo registro';
   ['fecha','tramite','name','ruta','km','loc','prof','mat','resp','obs'].forEach(f=>document.getElementById('f-'+f).value='');
   document.getElementById('f-est').value='Sin datos';
+  // Limpiar todos los campos de coordenadas
   ['f-lat','f-lon','f-gkx','f-gky','f-lat1','f-lon1','f-gkx1','f-gky1','f-lat2','f-lon2','f-gkx2','f-gky2'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-cat').innerHTML=db.categories.map(c=>`<option value="${c.id}" ${c.id===(selCat!=='all'?selCat:db.categories[0].id)?'selected':''}>${c.name}</option>`).join('');
-  if(tmpMark && map){map.removeLayer(tmpMark);tmpMark=null;}
+  if(tmpMark){map.removeLayer(tmpMark);tmpMark=null;}
   document.getElementById('rm').classList.add('open');
   toast('Con el formulario abierto podes hacer clic en el mapa');
 }
+// Funcion auxiliar: setear par LL + calcular GK
 function _setCoord(latId,lonId,gkxId,gkyId,lat,lon){
   document.getElementById(latId).value=lat;
   document.getElementById(lonId).value=lon;
   const gk=llToGK(5,parseFloat(lat),parseFloat(lon));
   if(gk){document.getElementById(gkxId).value=gk.x.toFixed(2);document.getElementById(gkyId).value=gk.y.toFixed(2);}
 }
+// Funcion auxiliar: setear par GK + calcular LL
 function _setGK(latId,lonId,gkxId,gkyId,x,y){
   document.getElementById(gkxId).value=x;
   document.getElementById(gkyId).value=y;
@@ -1161,26 +1125,33 @@ function openEditModal(id){
   document.getElementById('f-est').value=r.estado||'Sin datos';
   document.getElementById('f-prof').value=r.prof||'';
   document.getElementById('f-mat').value=r.mat||'';
+
   document.getElementById('f-resp').value=r.resp||'';
   document.getElementById('f-obs').value=r.obs||'';
+  // Coordenadas centrales
   ['f-lat','f-lon','f-gkx','f-gky','f-lat1','f-lon1','f-gkx1','f-gky1','f-lat2','f-lon2','f-gkx2','f-gky2'].forEach(i=>document.getElementById(i).value='');
   if(r.lat&&r.lon)_setCoord('f-lat','f-lon','f-gkx','f-gky',r.lat.toFixed(6),r.lon.toFixed(6));
+  // Coordenadas inicio
   if(r.lat1&&r.lon1)_setCoord('f-lat1','f-lon1','f-gkx1','f-gky1',r.lat1.toFixed(6),r.lon1.toFixed(6));
   else if(r.gkx1&&r.gky1)_setGK('f-lat1','f-lon1','f-gkx1','f-gky1',r.gkx1,r.gky1);
+  // Coordenadas fin
   if(r.lat2&&r.lon2)_setCoord('f-lat2','f-lon2','f-gkx2','f-gky2',r.lat2.toFixed(6),r.lon2.toFixed(6));
   else if(r.gkx2&&r.gky2)_setGK('f-lat2','f-lon2','f-gkx2','f-gky2',r.gkx2,r.gky2);
   document.getElementById('f-cat').innerHTML=db.categories.map(c=>`<option value="${c.id}" ${r.catId===c.id?'selected':''}>${c.name}</option>`).join('');
   document.getElementById('rm').classList.add('open');
 }
+// Funcion aux: leer coord de formulario (LL o GK) y devolver {lat,lon,gkx,gky}
 function _readCoords(latId,lonId,gkxId,gkyId){
   let lat=parseCoord(document.getElementById(latId).value);
   let lon=parseCoord(document.getElementById(lonId).value);
   let gkx=null,gky=null;
+  // Si hay LL valido
   if(!isNaN(lat)&&!isNaN(lon)){
     const gk=llToGK(5,lat,lon);
     if(gk){gkx=parseFloat(gk.x.toFixed(2));gky=parseFloat(gk.y.toFixed(2));}
     return{lat,lon,gkx,gky};
   }
+  // Si no hay LL, intentar desde GK
   const x=parseFloat(document.getElementById(gkxId).value);
   const y=parseFloat(document.getElementById(gkyId).value);
   if(!isNaN(x)&&!isNaN(y)){
@@ -1192,6 +1163,7 @@ function _readCoords(latId,lonId,gkxId,gkyId){
 function saveRecord(){
   const name=document.getElementById('f-name').value.trim();
   if(!name){alert('El nombre es obligatorio.');return;}
+  // Leer las tres coordenadas (central, inicio, fin)
   const cen=_readCoords('f-lat','f-lon','f-gkx','f-gky');
   const ini=_readCoords('f-lat1','f-lon1','f-gkx1','f-gky1');
   const fin=_readCoords('f-lat2','f-lon2','f-gkx2','f-gky2');
@@ -1206,15 +1178,18 @@ function saveRecord(){
     estado:document.getElementById('f-est').value,
     prof:document.getElementById('f-prof').value.trim(),
     mat:document.getElementById('f-mat').value.trim(),
-    longcruce:null,
+    longcruce:null, // se calcula en showDet via calcLongcruce()
     resp:document.getElementById('f-resp').value.trim(),
     obs:document.getElementById('f-obs').value.trim(),
+    // Punto central
     lat:cen.lat,lon:cen.lon,gkx:cen.gkx,gky:cen.gky,
+    // Inicio
     lat1:ini.lat,lon1:ini.lon,gkx1:ini.gkx,gky1:ini.gky,
+    // Fin
     lat2:fin.lat,lon2:fin.lon,gkx2:fin.gkx,gky2:fin.gky
   };
   if(editId)db.records=db.records.map(r=>r.id===editId?rec:r);else db.records.push(rec);
-  save();if(tmpMark && map){map.removeLayer(tmpMark);tmpMark=null;}closeModal('rm');
+  save();if(tmpMark){map.removeLayer(tmpMark);tmpMark=null;}closeModal('rm');
   refreshMarkers();
   const recP=getMapPoint(rec);
   if(recP)fly(recP.lat,recP.lon);
@@ -1242,7 +1217,7 @@ function exportDB(){
   a.download='infraestructura_chaco_'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('JSON exportado');
 }
 
-// ===== EXPORT EXCEL =====
+// ===== EXPORT EXCEL con filtro categoria =====
 function openExportExcelModal(){
   const sel=document.getElementById('exp-cat');
   sel.innerHTML='<option value="all">Todas las categorias ('+db.records.length+' registros)</option>';
@@ -1258,6 +1233,9 @@ function updateExpCount(){
   document.getElementById('exp-count').textContent=cnt+' registro'+(cnt!==1?'s':'')+' se exportaran al archivo Excel.';
 }
 
+// Estructura del Excel DVP con coordenadas central + inicio + fin
+// Fila 1: grupos de columnas (merged donde corresponde)
+// Fila 2: sub-columnas de cada grupo
 function buildExcelRows(records){
   const h1=['Fecha','N Tramite','Autorizo DVP?','Nombre / Denominacion','Categoria','Ruta / Calle','Progresiva (Km)','Localidad','Estado','Profundidad / Altura','Diametro / Tension / Tipo','Empresa / Responsable','Coordenadas INICIO','','','','Coordenadas FIN','','','','Observaciones'];
   const h2=['',    '',          '',             '',                     '',         '',            '',               '',         '',      '',                   '',                         '',                    'LATITUD','LONGITUD','GK X Faja 5','GK Y Faja 5','LATITUD','LONGITUD','GK X Faja 5','GK Y Faja 5',''];
@@ -1268,9 +1246,11 @@ function buildExcelRows(records){
       r.fecha||'', r.tramite||'', r.autorizo||'',
       r.name||'', cat.name, r.ruta||'', r.km||'', r.loc||'', r.estado||'',
       r.prof||'', r.mat||'', r.resp||'',
+      // Inicio
       r.lat1!=null?parseFloat(r.lat1.toFixed(6)):'',
       r.lon1!=null?parseFloat(r.lon1.toFixed(6)):'',
       r.gkx1||'', r.gky1||'',
+      // Fin
       r.lat2!=null?parseFloat(r.lat2.toFixed(6)):'',
       r.lon2!=null?parseFloat(r.lon2.toFixed(6)):'',
       r.gkx2||'', r.gky2||'',
@@ -1282,14 +1262,14 @@ function buildExcelRows(records){
 
 function applyExcelStyle(ws,nDataRows){
   ws['!cols']=[
-    {wch:12},{wch:12},{wch:13},
-    {wch:30},{wch:20},
-    {wch:20},{wch:14},{wch:16},
-    {wch:12},{wch:16},{wch:22},
-    {wch:20},
-    {wch:13},{wch:13},{wch:16},{wch:16},
-    {wch:13},{wch:13},{wch:16},{wch:16},
-    {wch:30}
+    {wch:12},{wch:12},{wch:13},          // fecha, tramite, autorizo
+    {wch:30},{wch:20},                   // nombre, categoria
+    {wch:20},{wch:14},{wch:16},          // ruta, km, localidad
+    {wch:12},{wch:16},{wch:22},          // estado, profundidad, diametro
+    {wch:20},                            // empresa
+    {wch:13},{wch:13},{wch:16},{wch:16}, // inicio lat,lon,gkx,gky
+    {wch:13},{wch:13},{wch:16},{wch:16}, // fin lat,lon,gkx,gky
+    {wch:30}                             // observaciones
   ];
   ws['!merges']=[
     {s:{r:0,c:0},e:{r:1,c:0}},{s:{r:0,c:1},e:{r:1,c:1}},{s:{r:0,c:2},e:{r:1,c:2}},
@@ -1297,8 +1277,8 @@ function applyExcelStyle(ws,nDataRows){
     {s:{r:0,c:6},e:{r:1,c:6}},{s:{r:0,c:7},e:{r:1,c:7}},{s:{r:0,c:8},e:{r:1,c:8}},
     {s:{r:0,c:9},e:{r:1,c:9}},{s:{r:0,c:10},e:{r:1,c:10}},{s:{r:0,c:11},e:{r:1,c:11}},
     {s:{r:0,c:20},e:{r:1,c:20}},
-    {s:{r:0,c:12},e:{r:0,c:15}},
-    {s:{r:0,c:16},e:{r:0,c:19}},
+    {s:{r:0,c:12},e:{r:0,c:15}}, // Inicio
+    {s:{r:0,c:16},e:{r:0,c:19}}, // Fin
   ];
 }
 
@@ -1336,7 +1316,7 @@ function downloadExcelTemplate(){
     'Ejemplo con Lat/Lon — la app calcula GK automaticamente'
   ];
   const exRow3=[
-    '01/01/2025','002','Si',
+    '01/01/2025','003','Si',
     'Cruce Ruta 89 - Pinedo','Cruce de ruta','Ruta Nacional 89','','Pinedo','Bueno',
     '','\u00d8125mm','BTU-esuco',
     '','',5373823.91,6976403.04,
@@ -1345,12 +1325,41 @@ function downloadExcelTemplate(){
   ];
   const ws=XLSX.utils.aoa_to_sheet([h1,h2,exRow,exRow2,exRow3]);
   applyExcelStyle(ws,3);
+  const guia=[
+    ['GUIA PARA COMPLETAR EL EXCEL DVP — CRUCES VIAL'],[''],
+    ['COLUMNAS PRINCIPALES:'],
+    ['  Fecha, N Tramite, Autorizo DVP: datos administrativos (opcionales)'],
+    ['  Nombre / Denominacion: OBLIGATORIO. Ej: Cruce Ruta 11 Km 50'],
+    ['  Categoria: nombre de la categoria (ver lista abajo)'],
+    ['  Ruta / Calle, Km / Progresiva, Localidad, Estado, etc.'],[''],
+    ['COORDENADAS — INGRESAR EN CUALQUIERA DE LOS DOS SISTEMAS:'],
+    ['  Opcion A — Lat/Lon decimal:'],
+    ['    Latitud: numero negativo (ej: -27.4510)  — la S se pone como negativo'],
+    ['    Longitud: numero negativo (ej: -58.9870) — la O/W se pone como negativo'],
+    ['  Opcion B — Gauss-Kruger Faja 5 (POSGAR 2007):'],
+    ['    GK X Faja 5: coordenada Este (ej: 5487230)'],
+    ['    GK Y Faja 5: coordenada Norte (ej: 6956780)'],
+    ['  >>> La app convierte automaticamente entre sistemas al importar <<<'],
+    ['  >>> Podes mezclar: algunas filas con Lat/Lon y otras con GK <<<'],[''],
+    ['DOS GRUPOS DE COORDENADAS — INICIO Y FIN DEL CRUCE:'],
+    ['  Coordenadas INICIO: primer extremo del cruce sobre la ruta'],
+    ['  Coordenadas FIN: segundo extremo del cruce sobre la ruta'],[''],
+    ['SI EL CRUCE TIENE UN SOLO PUNTO (sin tramo):'],
+    ['  Completar solo las columnas de INICIO y dejar FIN vacio.'],
+    ['  La app lo va a tomar como punto unico del cruce.'],[''],
+    ['CATEGORIAS DISPONIBLES:'],
+    ...db.categories.map(c=>['  - '+c.name]),[''],
+    ['ESTADOS VALIDOS:'],
+    ['  Bueno / Regular / Critico / Sin datos'],
+  ];
+  const wsG=XLSX.utils.aoa_to_sheet(guia);
+  wsG['!cols']=[{wch:80}];
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,'Registros');
+  XLSX.utils.book_append_sheet(wb,wsG,'Guia');
   XLSX.writeFile(wb,'Plantilla_DVP_Infraestructura.xlsx');
   toast('Plantilla Excel descargada');
 }
-
 // ===== IMPORT MODAL =====
 function openImportModal(){
   setImpTab('json');
@@ -1385,20 +1394,19 @@ function processJSONFile(f){
   r.readAsText(f);
 }
 function confirmImportJSON(jsonStr){
-  if(!confirm('Reemplazar toda la base de datos en la nube?'))return;
-  try {
-    const p=JSON.parse(jsonStr);
-    db=p;
-    db.records=enrichRecs(db.records);
+  if(!confirm('Reemplazar toda la base de datos?'))return;
+  try{
+    const p=JSON.parse(jsonStr);db=p;db.records=enrichRecs(db.records);
     save();selRec=null;selCat='all';selAlpha='all';
-    closeDet();closeModal('im');
-    toast('Base importada a la nube');
+    closeDet();refreshMarkers();renderLegend();render();closeModal('im');
+    toast('Base importada: '+db.records.length+' registros');
   }catch(e){alert('Error al importar.');}
 }
 
 // ===== IMPORT CSV/EXCEL =====
 let _csvParsed=null;
 
+// Normalizar header de columna Excel/CSV
 function normH(h){
   return String(h||'').trim().toLowerCase()
     .replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i')
@@ -1406,6 +1414,7 @@ function normH(h){
     .replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,'_').replace(/^_+|_+$/g,'');
 }
 
+// Mapa de campos internos -> aliases de columna aceptados
 const CSV_FIELDS={
   fecha:   ['fecha','date','fecha_tramite'],
   tramite: ['tramite','n_tramite','n_de_tramite','numero_tramite','expediente'],
@@ -1420,14 +1429,17 @@ const CSV_FIELDS={
   mat:     ['diametro','tipo','material','tension','mat','diam','diametro_tipo','diametro_tension_tipo','diametro___tension___tipo'],
   longcruce:['longitud_cruce','long_cruce','longcruce','largo_cruce','longitud_del_cruce'],
   resp:    ['empresa','responsable','resp','empresa_responsable','empresa___responsable'],
+  // Punto central
   lat:     ['latitud','lat','latitude','latitud_central','lat_central'],
   lon:     ['longitud','lon','longitude','lng','longitud_central','lon_central'],
   gkx:     ['gk_x','gkx','x_gk','x_este','este','gauss_kruger_faja_5_x','gk_x_central','x_central'],
   gky:     ['gk_y','gky','y_gk','y_norte','norte','gauss_kruger_faja_5_y','gk_y_central','y_central'],
+  // Inicio
   lat1:    ['latitud_inicio','lat_inicio','lat1'],
   lon1:    ['longitud_inicio','lon_inicio','lon1'],
   gkx1:    ['gk_x_inicio','x_inicio','gkx1','x_este_inicio'],
   gky1:    ['gk_y_inicio','y_inicio','gky1','y_norte_inicio'],
+  // Fin
   lat2:    ['latitud_fin','lat_fin','lat2'],
   lon2:    ['longitud_fin','lon_fin','lon2'],
   gkx2:    ['gk_x_fin','x_fin','gkx2','x_este_fin'],
@@ -1435,22 +1447,30 @@ const CSV_FIELDS={
   obs:     ['observaciones','obs','notas','comentarios']
 };
 
+// Resolver headers de Excel con doble fila (como el formato DVP)
 function resolveHeaders(row1, row2){
-  let lastGroup='';
+  // Grupos de columnas merged en fila1 (texto variable) y su sufijo segun keyword
+  // Cuando fila2 repite "LATITUD"/"LONGITUD"/"GK X..."/"GK Y..." para INICIO y FIN,
+  // hay que usar el contexto del grupo (fila1) para diferenciarlos.
+  let lastGroup=''; // arrastra el ultimo grupo merged visto (INICIO/FIN/CENTRAL/etc)
   return row1.map((h,i)=>{
     const n1raw=String(h||'').trim().toLowerCase();
     const n2=normH(row2[i]||'');
+    // Detectar si fila1 tiene texto que indique grupo de coordenadas
     if(n1raw){
       if(n1raw.includes('inicio'))lastGroup='inicio';
       else if(n1raw.includes('fin'))lastGroup='fin';
       else if(n1raw.includes('central')||n1raw==='coordenadas')lastGroup='central';
-      else if(!n1raw.match(/latitud|longitud|gauss|gk/)) lastGroup='';
+      else if(!n1raw.match(/latitud|longitud|gauss|gk/)) lastGroup=''; // columna normal, resetea grupo
     }
     const n1=normH(h);
     if(n1&&!MERGE_KEYWORDS.some(k=>n1.includes(k))){
+      // Columna normal con texto propio (ej: "fecha", "nombre_denominacion")
       return n1;
     }
+    // Es una sub-columna de coordenadas (lat/lon/gk) o celda vacia bajo un merge
     if(n2&&lastGroup){
+      // Sufijar segun el grupo para que coincida con los aliases (lat1, lat2, etc)
       if(n2==='latitud')return lastGroup==='inicio'?'latitud_inicio':lastGroup==='fin'?'latitud_fin':'latitud';
       if(n2==='longitud')return lastGroup==='inicio'?'longitud_inicio':lastGroup==='fin'?'longitud_fin':'longitud';
       if(n2.includes('gk_x')||n2.includes('gauss_kruger_faja_5_x')||n2==='x')return lastGroup==='inicio'?'gk_x_inicio':lastGroup==='fin'?'gk_x_fin':'gk_x';
@@ -1462,6 +1482,7 @@ function resolveHeaders(row1, row2){
 }
 const MERGE_KEYWORDS=['coordenadas','latitud','longitud','gauss','gk_x','gk_y'];
 
+// Mapear array de headers normalizado a campos internos
 function mapHeaders(headers){
   const colMap={};
   headers.forEach((h,i)=>{
@@ -1481,12 +1502,14 @@ function processImportFile(f){
         const wb=XLSX.read(ev.target.result,{type:'array'});
         const ws=wb.Sheets[wb.SheetNames[0]];
         const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        // Buscar fila de encabezado (la que tiene "nombre")
         let headerRow=0;
         for(let i=0;i<Math.min(4,rows.length);i++){
           if(rows[i].some(c=>normH(c).includes('nombre'))){headerRow=i;break;}
         }
         const row1=rows[headerRow]||[];
         const row2=rows[headerRow+1]||[];
+        // Detectar si hay doble fila de encabezado
         const hasDoubleHeader=row2.some(c=>c&&String(c).toLowerCase().match(/latitud|longitud|gauss|inicio|fin/));
         const headers=resolveHeaders(row1,row2);
         const colMap=mapHeaders(headers);
@@ -1569,24 +1592,31 @@ function updMap(sel){
   if(ci!==null)_csvParsed.colMap[ci]=f;
 }
 
+// Verificar si un valor es una coordenada valida (numero en rango geografico)
 function _isValidCoord(val){
   const n=parseFloat(String(val||'').replace(',','.'));
   return !isNaN(n)&&isFinite(n);
 }
+// Verificar si un valor parece latitud argentina (-60 a -20)
 function _isValidLat(val){const n=parseFloat(String(val||'').replace(',','.'));return !isNaN(n)&&n>=-60&&n<=-15;}
+// Verificar si un valor parece longitud argentina (-75 a -50)
 function _isValidLon(val){const n=parseFloat(String(val||'').replace(',','.'));return !isNaN(n)&&n>=-75&&n<=-45;}
+// Verificar si un valor parece coordenada GK Faja 5 (X: ~5.3M-5.8M, Y: ~6.5M-7.5M)
 function _isValidGKX(val){const n=parseFloat(String(val||'').replace(',','.'));return !isNaN(n)&&n>=5000000&&n<=6000000;}
 function _isValidGKY(val){const n=parseFloat(String(val||'').replace(',','.'));return !isNaN(n)&&n>=6500000&&n<=8000000;}
 
+// Resolver coordenadas: acepta LL o GK, convierte automaticamente entre sistemas
 function _resolveRowCoords(g,latF,lonF,gkxF,gkyF){
   const latRaw=g(latF);const lonRaw=g(lonF);
   const gkxRaw=g(gkxF);const gkyRaw=g(gkyF);
+  // Intentar desde Lat/Lon valido
   if(_isValidLat(latRaw)&&_isValidLon(lonRaw)){
     const lat=parseFloat(String(latRaw).replace(',','.'));
     const lon=parseFloat(String(lonRaw).replace(',','.'));
     const gk=llToGK(5,lat,lon);
     if(gk)return{lat,lon,gkx:parseFloat(gk.x.toFixed(2)),gky:parseFloat(gk.y.toFixed(2))};
   }
+  // Intentar desde GK valido
   if(_isValidGKX(gkxRaw)&&_isValidGKY(gkyRaw)){
     const x=parseFloat(String(gkxRaw).replace(',','.'));
     const y=parseFloat(String(gkyRaw).replace(',','.'));
@@ -1602,28 +1632,35 @@ function doImportCSV(){
   const eMap={bueno:'Bueno',regular:'Regular',critico:'Critico',malo:'Critico','sin datos':'Sin datos','sin_datos':'Sin datos',''   :'Sin datos'};
   const normStr=s=>String(s||'').replace(/[áàä]/g,'a').replace(/[éèë]/g,'e').replace(/[íìï]/g,'i').replace(/[óòö]/g,'o').replace(/[úùü]/g,'u').toLowerCase().trim();
   let ok=0,skip=0;
-  if (!db.records) db.records = [];
   _csvParsed.rows.forEach(row=>{
     const g=f=>String(row[f]||'').trim();
     const name=g('nombre');if(!name){skip++;return;}
+    // Categoría: buscar por nombre normalizado
     let catId=db.categories[0].id;
     const cr=normStr(g('catId'));
     if(cr){
       const found=db.categories.find(c=>{const nc=normStr(c.name);return nc===cr||nc.includes(cr)||cr.includes(nc);});
       if(found)catId=found.id;
     }
+    // Longitud del cruce: puede venir del campo longcruce O
+    // del campo lon si contiene texto como "6.70m" (no es coordenada)
     let longcruce=g('longcruce');
     const lonRaw=g('lon');
     if(!longcruce&&lonRaw&&!_isValidLon(lonRaw)){
+      // El valor en columna longitud no es coordenada -> es longitud fisica del cruce
       longcruce=lonRaw;
     }
+    // Coordenadas: inicio y fin — convierte GK<->LL automaticamente
     const ini=_resolveRowCoords(g,'lat1','lon1','gkx1','gky1');
     const fin=_resolveRowCoords(g,'lat2','lon2','gkx2','gky2');
+    // Tambien soportar formato viejo con punto central (compatibilidad)
     const cenLegacy=_resolveRowCoords(g,'lat','lon','gkx','gky');
 
     const hasIni=ini.lat!=null||ini.gkx!=null;
     const hasFin=fin.lat!=null||fin.gkx!=null;
 
+    // Si solo hay INICIO (sin FIN) -> es un cruce de punto unico:
+    // se guarda tambien como "punto central" para que el detalle lo muestre como tal
     let cen={lat:null,lon:null,gkx:null,gky:null};
     let recIni=ini, recFin=fin;
     if(hasIni&&!hasFin){
@@ -1631,6 +1668,7 @@ function doImportCSV(){
       recIni={lat:null,lon:null,gkx:null,gky:null};
       recFin={lat:null,lon:null,gkx:null,gky:null};
     }else if(cenLegacy.lat!=null||cenLegacy.gkx!=null){
+      // Compatibilidad con excel viejo que solo tenia punto central
       cen=cenLegacy;
     }
 
@@ -1646,25 +1684,29 @@ function doImportCSV(){
     });
     ok++;
   });
-  save();closeModal('im');_csvParsed=null;
-  toast('Importados y subidos a la nube: '+ok+' registros');
+  save();refreshMarkers();render();closeModal('im');_csvParsed=null;
+  toast('Importados: '+ok+' registros'+(skip?' ('+skip+' omitidos)':''));
 }
-
 // ===== INTERSECCION DE TRAMOS =====
+// Variable global para el resultado de la interseccion calculada
 let _ixResult=null;
+// Capas de dibujo sobre el mapa para la herramienta OSM
 let _ixDrawLayers=[];
 let _ixDrawMode=false;
 let _ixDrawPoints=[];
 let _ixOsmLayers=[];
 
+// Detecta si un par de valores es GK (X~5M-6M, Y~6.5M-8M) o Lat/Lon
 function ixParsePoint(rawLat, rawLon){
   const a=parseFloat(String(rawLat).replace(',','.'));
   const b=parseFloat(String(rawLon).replace(',','.'));
   if(isNaN(a)||isNaN(b))return null;
+  // Detectar si son GK (X e Y grandes)
   if(a>=5000000&&a<=6000000&&b>=6000000&&b<=8000000){
     const ll=gkToLL(5,a,b);
     return ll?{lat:ll.lat,lon:ll.lon,gkx:a,gky:b}:null;
   }
+  // Si el primer campo parece Lat (pequeño negativo) y el segundo Lon
   const lat=parseCoord(String(rawLat));
   const lon=parseCoord(String(rawLon));
   if(isNaN(lat)||isNaN(lon))return null;
@@ -1672,6 +1714,7 @@ function ixParsePoint(rawLat, rawLon){
   return{lat,lon,gkx:gk?parseFloat(gk.x.toFixed(2)):null,gky:gk?parseFloat(gk.y.toFixed(2)):null};
 }
 
+// Conversion en vivo para los campos de interseccion
 function ixLiveConv(pt){
   const lat=document.getElementById('ix-'+pt+'-lat').value;
   const lon=document.getElementById('ix-'+pt+'-lon').value;
@@ -1683,13 +1726,17 @@ function ixLiveConv(pt){
   }
 }
 
+// Calcula la interseccion matematica de dos segmentos (A-B y C-D) en Lat/Lon
+// Usa algebra lineal sobre coordenadas planas (valido para distancias cortas ~Chaco)
 function segmentIntersect(a,b,c,d){
   const dx1=b.lon-a.lon, dy1=b.lat-a.lat;
   const dx2=d.lon-c.lon, dy2=d.lat-c.lat;
   const denom=dx1*dy2-dy1*dx2;
-  if(Math.abs(denom)<1e-12)return null;
+  if(Math.abs(denom)<1e-12)return null; // paralelas
   const t=((c.lon-a.lon)*dy2-(c.lat-a.lat)*dx2)/denom;
   const u=((c.lon-a.lon)*dy1-(c.lat-a.lat)*dx1)/denom;
+  // Solo si la interseccion ocurre dentro de ambos segmentos (t y u entre 0 y 1)
+  // Para extrapolacion de lineas infinitas no verificamos esto
   return{
     lat:a.lat+t*dy1,
     lon:a.lon+t*dx1,
@@ -1698,11 +1745,15 @@ function segmentIntersect(a,b,c,d){
   };
 }
 
+// Opcion A: calcular desde los 4 vertices ingresados manualmente
 // ===== HERRAMIENTA DE POLILINEA + CRUCES OSM =====
-let _polyPts = [];
-let _polyMapLayers = [];
-let _polyResults = [];
 
+// Estado de la herramienta
+let _polyPts = [];          // [{lat,lon,gkx,gky}, ...]
+let _polyMapLayers = [];    // capas Leaflet dibujadas (linea + marcadores + cruces)
+let _polyResults = [];      // cruces encontrados [{lat,lon,gkx,gky,nombre,tipo}, ...]
+
+// ── Inicializar con 2 filas vacías ──────────────────────────────────────────
 function polyInit(){
   _polyPts=[];_polyMapLayers=[];_polyResults=[];
   document.getElementById('poly-pts-list').innerHTML='';
@@ -1711,10 +1762,11 @@ function polyInit(){
   polyAddPt();polyAddPt();
 }
 
+// ── Agregar fila de vértice ─────────────────────────────────────────────────
 function polyAddPt(){
   const idx=_polyPts.length;
   _polyPts.push({lat:null,lon:null,gkx:null,gky:null});
-  const label=String.fromCharCode(65+idx);
+  const label=String.fromCharCode(65+idx); // A, B, C ...
   const row=document.createElement('div');
   row.id='poly-row-'+idx;
   row.style.cssText='margin-bottom:6px;background:#ffffff;border:1px solid #b0d0b0;border-radius:6px;padding:7px 8px';
@@ -1731,6 +1783,7 @@ function polyAddPt(){
   document.getElementById('poly-pts-list').appendChild(row);
 }
 
+// ── Convertir automáticamente al tipear ────────────────────────────────────
 function polyConvPt(idx){
   const rawA=document.getElementById('poly-lat-'+idx).value.trim();
   const rawB=document.getElementById('poly-lon-'+idx).value.trim();
@@ -1743,6 +1796,7 @@ function polyConvPt(idx){
   const numA=parseFloat(rawA.replace(',','.'));
   const numB=parseFloat(rawB.replace(',','.'));
 
+  // Detectar si son GK (X ~5M-6M, Y ~6.5M-8M)
   if(!isNaN(numA)&&!isNaN(numB)&&_isValidGKX(numA)&&_isValidGKY(numB)){
     const ll=gkToLL(5,numA,numB);
     if(ll){
@@ -1753,6 +1807,7 @@ function polyConvPt(idx){
       return;
     }
   }
+  // Intentar como Lat/Lon en cualquier formato (decimal, GMS, con S/O/W)
   const lat=parseCoord(rawA);
   const lon=parseCoord(rawB);
   if(!isNaN(lat)&&!isNaN(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){
@@ -1772,34 +1827,44 @@ function polyConvPt(idx){
   }
 }
 
+// ── Limpiar todo ────────────────────────────────────────────────────────────
 function polyClear(){
-  if(!map) return;
   _polyMapLayers.forEach(l=>map.removeLayer(l));
   _polyMapLayers=[];_polyResults=[];
   polyInit();
 }
 
+// ── Dibujar polilínea en el mapa y buscar cruces OSM ────────────────────────
 async function polyCalcOSM(){
   const err=document.getElementById('err-poly');
   const resList=document.getElementById('r-poly-list');
   err.classList.remove('show');
   resList.innerHTML='';
 
+  // Releer todos los campos del DOM en este momento (por si se pegaron con mouse)
+  for(let i=0;i<_polyPts.length;i++){
+    const el1=document.getElementById('poly-lat-'+i);
+    const el2=document.getElementById('poly-lon-'+i);
+    if(el1&&el2&&(el1.value.trim()||el2.value.trim()))polyConvPt(i);
+  }
+
+  // Reunir vértices válidos
   const pts=_polyPts.filter(p=>p.lat!=null&&p.lon!=null);
   if(pts.length<2){
     err.textContent='Necesitas al menos 2 vertices con coordenadas validas.';
     err.classList.add('show');return;
   }
 
-  if(map) {
-    _polyMapLayers.forEach(l=>map.removeLayer(l));
-  }
+  // Limpiar capas anteriores
+  _polyMapLayers.forEach(l=>map.removeLayer(l));
   _polyMapLayers=[];
 
+  // Dibujar la polilínea
   const latlngs=pts.map(p=>[p.lat,p.lon]);
   const poly=L.polyline(latlngs,{color:'#ffcc00',weight:3,opacity:.9,dashArray:'6,4'}).addTo(map);
   _polyMapLayers.push(poly);
 
+  // Marcadores de vértices
   pts.forEach((p,i)=>{
     const lbl=String.fromCharCode(65+i);
     const m=L.circleMarker([p.lat,p.lon],{radius:6,color:'#ffcc00',fillColor:'#ffcc00',fillOpacity:1,weight:2}).addTo(map);
@@ -1807,14 +1872,19 @@ async function polyCalcOSM(){
     _polyMapLayers.push(m);
   });
 
+  // Ajustar vista al bounding box de la polilínea
   map.fitBounds(poly.getBounds(),{padding:[40,40]});
+
+  // Mostrar estado de búsqueda
   resList.innerHTML='<div style="font-size:10px;color:#1a4a8a;padding:6px 0">&#9881; Consultando caminos de OpenStreetMap...</div>';
 
+  // Calcular bbox para la query OSM (con margen)
   const lats=pts.map(p=>p.lat), lons=pts.map(p=>p.lon);
   const margin=0.002;
   const minLat=Math.min(...lats)-margin, maxLat=Math.max(...lats)+margin;
   const minLon=Math.min(...lons)-margin, maxLon=Math.max(...lons)+margin;
 
+  // Query Overpass API — buscar todos los caminos en el área
   const query=`[out:json][timeout:25];
 (
   way["highway"](${minLat},${minLon},${maxLat},${maxLon});
@@ -1830,6 +1900,7 @@ out geom;`;
     if(!resp.ok)throw new Error('Error al conectar con OpenStreetMap');
     const data=await resp.json();
 
+    // Para cada segmento de la polilínea, buscar intersecciones con los caminos OSM
     const cruces=[];
     for(let i=0;i<pts.length-1;i++){
       const A={lat:pts[i].lat,lon:pts[i].lon};
@@ -1843,6 +1914,7 @@ out geom;`;
           const D={lat:way.geometry[j+1].lat,lon:way.geometry[j+1].lon};
           const ix=segIntersect(A,B,C,D);
           if(ix){
+            // Evitar duplicados muy cercanos (mismo cruce detectado 2 veces)
             const dup=cruces.some(c=>haversineM(c.lat,c.lon,ix.lat,ix.lon)<5);
             if(!dup){
               const gk=llToGK(5,ix.lat,ix.lon);
@@ -1866,12 +1938,15 @@ out geom;`;
       return;
     }
 
+    // Marcar cada cruce en el mapa y mostrar resultados
     resList.innerHTML='<div style="font-size:14px;font-weight:800;color:#1a5a1a;margin-bottom:8px">'+cruces.length+' cruce'+(cruces.length!==1?'s':'')+' encontrado'+(cruces.length!==1?'s':'')+' con OSM:</div>';
     cruces.forEach((c,n)=>{
+      // Marcador en el mapa
       const mk=L.circleMarker([c.lat,c.lon],{radius:8,color:'#ff4444',fillColor:'#ff2222',fillOpacity:.85,weight:2}).addTo(map);
       mk.bindTooltip('<b>'+(n+1)+'.</b> '+c.nombre,{direction:'top',offset:[0,-10],permanent:false});
       _polyMapLayers.push(mk);
 
+      // Tarjeta de resultado
       const card=document.createElement('div');
       card.style.cssText='background:#f0f8f0;border:1.5px solid #4a8a4a;border-radius:8px;padding:10px 12px;margin-bottom:7px;font-size:13px';
       card.innerHTML=`
@@ -1897,6 +1972,7 @@ out geom;`;
   }
 }
 
+// ── Etiqueta legible para tipo de camino OSM ───────────────────────────────
 function tipoLabel(t){
   const m={primary:'Ruta principal',secondary:'Ruta secundaria',tertiary:'Camino terciario',
     unclassified:'Camino vecinal',residential:'Calle',track:'Huella/Camino rural',
@@ -1905,10 +1981,28 @@ function tipoLabel(t){
   return m[t]||t;
 }
 
+// ── Intersección geométrica de dos segmentos ──────────────────────────────
+function segIntersect(A,B,C,D){
+  // Usando lat/lon como plano (válido para distancias cortas)
+  const r={lat:B.lat-A.lat,lon:B.lon-A.lon};
+  const s={lat:D.lat-C.lat,lon:D.lon-C.lon};
+  const denom=r.lat*s.lon-r.lon*s.lat;
+  if(Math.abs(denom)<1e-12)return null; // paralelos
+  const dx=C.lat-A.lat, dy=C.lon-A.lon;
+  const t=(dx*s.lon-dy*s.lat)/denom;
+  const u=(dx*r.lon-dy*r.lat)/denom;
+  if(t>=0&&t<=1&&u>=0&&u<=1){
+    return{lat:A.lat+t*r.lat,lon:A.lon+t*r.lon};
+  }
+  return null;
+}
+
+// ── Usar un cruce como coordenada de inicio en nuevo registro ─────────────
 function polyUsarCruce(n){
   const c=_polyResults[n];
   if(!c)return;
   openRecordModal();
+  // Poner coordenadas en el bloque de inicio
   setTimeout(()=>{
     document.getElementById('f-lat1').value=c.lat.toFixed(6);
     document.getElementById('f-lon1').value=c.lon.toFixed(6);
@@ -1921,20 +2015,27 @@ function polyUsarCruce(n){
   },300);
 }
 
+// Inicializar con 2 vértices al arrancar la pestaña COORD
 function initPolyTool(){
   if(document.getElementById('poly-pts-list').children.length===0)polyInit();
 }
 
-// ===== PANEL IX =====
+
+
+// ===== PANEL IX: Conversión automática y cálculo de intersección =====
+
+// Convierte un par de campos al tipear: acepta Lat/Lon decimal, GMS o GK
 function ixAutoConv(pt){
   const v1=document.getElementById('ix-'+pt+'1').value.trim();
   const v2=document.getElementById('ix-'+pt+'2').value.trim();
   if(!v1||!v2)return;
   const n1=parseFloat(v1.replace(',','.'));
   const n2=parseFloat(v2.replace(',','.'));
+  // Si parecen GK (X ~5M-6M, Y ~6.5M-8M)
   if(!isNaN(n1)&&!isNaN(n2)&&_isValidGKX(n1)&&_isValidGKY(n2)){
     const ll=gkToLL(5,n1,n2);
     if(ll){
+      // Mostrar lat/lon convertidos debajo de los campos
       document.getElementById('ix-'+pt+'1').title='Lat: '+ll.lat.toFixed(6);
       document.getElementById('ix-'+pt+'2').title='Lon: '+ll.lon.toFixed(6);
       document.getElementById('ix-'+pt+'1').style.borderColor='#4a8a4a';
@@ -1942,6 +2043,7 @@ function ixAutoConv(pt){
     }
     return;
   }
+  // Si parecen Lat/Lon en cualquier formato
   const lat=parseCoord(v1);
   const lon=parseCoord(v2);
   if(!isNaN(lat)&&!isNaN(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){
@@ -1958,16 +2060,19 @@ function ixAutoConv(pt){
   }
 }
 
+// Leer punto del panel ix (acepta Lat/Lon o GK)
 function ixReadPt(pt){
   const v1=document.getElementById('ix-'+pt+'1').value.trim();
   const v2=document.getElementById('ix-'+pt+'2').value.trim();
   if(!v1||!v2)return null;
   const n1=parseFloat(v1.replace(',','.'));
   const n2=parseFloat(v2.replace(',','.'));
+  // GK?
   if(!isNaN(n1)&&!isNaN(n2)&&_isValidGKX(n1)&&_isValidGKY(n2)){
     const ll=gkToLL(5,n1,n2);
     if(ll)return{lat:ll.lat,lon:ll.lon,gkx:parseFloat(n1.toFixed(2)),gky:parseFloat(n2.toFixed(2))};
   }
+  // Lat/Lon en cualquier formato
   const lat=parseCoord(v1);
   const lon=parseCoord(v2);
   if(!isNaN(lat)&&!isNaN(lon)&&Math.abs(lat)<=90&&Math.abs(lon)<=180){
@@ -1977,10 +2082,14 @@ function ixReadPt(pt){
   return null;
 }
 
+// Calcular intersección con los 4 puntos del panel ix
 function calcIxPanel(){
   const err=document.getElementById('err-ix-panel');
   const res=document.getElementById('r-ix-panel');
   err.classList.remove('show');res.innerHTML='';
+
+  // Releer campos (por si se pegaron valores con mouse)
+  ['a','b','c','d'].forEach(pt=>ixAutoConv(pt));
 
   const A=ixReadPt('a'),B=ixReadPt('b'),C=ixReadPt('c'),D=ixReadPt('d');
   if(!A||!B||!C||!D){
@@ -1988,30 +2097,42 @@ function calcIxPanel(){
     err.classList.add('show');return;
   }
 
+  // Calcular intersección en espacio lat/lon
   const ix=segIntersect(A,B,C,D);
   if(!ix){
+    // Los segmentos no se cruzan exactamente — calcular intersección de las rectas proyectadas
     const ix2=lineIntersect(A,B,C,D);
     if(!ix2){
       err.textContent='Los dos tramos no se intersectan (son paralelos).';
       err.classList.add('show');return;
     }
+    // Mostrar igual con advertencia
     showIxPanelResult(ix2.lat,ix2.lon,res,'Los tramos no se cruzan físicamente pero sus prolongaciones se intersectan en:');
   }else{
     showIxPanelResult(ix.lat,ix.lon,res,'Punto de intersección calculado:');
   }
 
-  if(tmpMark && map){map.removeLayer(tmpMark);tmpMark=null;}
-  if(map) {
-    const linesLayer=L.layerGroup().addTo(map);
-    L.polyline([[A.lat,A.lon],[B.lat,B.lon]],{color:'#1565c0',weight:3}).addTo(linesLayer);
-    L.polyline([[C.lat,C.lon],[D.lat,D.lon]],{color:'#b35900',weight:3}).addTo(linesLayer);
-    ['A','B','C','D'].forEach((name,i)=>{
-      const pt=[A,B,C,D][i];
-      L.circleMarker([pt.lat,pt.lon],{radius:6,color:i<2?'#1565c0':'#b35900',fillColor:i<2?'#1565c0':'#b35900',fillOpacity:.9,weight:2})
-        .bindTooltip('Punto '+name,{direction:'top'}).addTo(linesLayer);
-    });
-    window._ixPanelLayers=linesLayer;
-  }
+  // Limpiar marcadores anteriores y dibujar los 4 puntos + líneas + intersección
+  if(tmpMark){map.removeLayer(tmpMark);tmpMark=null;}
+  const linesLayer=L.layerGroup().addTo(map);
+  L.polyline([[A.lat,A.lon],[B.lat,B.lon]],{color:'#1565c0',weight:3}).addTo(linesLayer);
+  L.polyline([[C.lat,C.lon],[D.lat,D.lon]],{color:'#b35900',weight:3}).addTo(linesLayer);
+  ['A','B','C','D'].forEach((name,i)=>{
+    const pt=[A,B,C,D][i];
+    L.circleMarker([pt.lat,pt.lon],{radius:6,color:i<2?'#1565c0':'#b35900',fillColor:i<2?'#1565c0':'#b35900',fillOpacity:.9,weight:2})
+      .bindTooltip('Punto '+name,{direction:'top'}).addTo(linesLayer);
+  });
+  // Guardar layers para poder limpiarlos
+  window._ixPanelLayers=linesLayer;
+}
+
+// Intersección de dos segmentos finitos en lat/lon
+function lineIntersect(A,B,C,D){
+  // Ecuaciones paramétricas: P=A+t(B-A), Q=C+s(D-C)
+  const denom=(B.lon-A.lon)*(D.lat-C.lat)-(B.lat-A.lat)*(D.lon-C.lon);
+  if(Math.abs(denom)<1e-12)return null;
+  const t=((C.lon-A.lon)*(D.lat-C.lat)-(C.lat-A.lat)*(D.lon-C.lon))/denom;
+  return{lat:A.lat+t*(B.lat-A.lat),lon:A.lon+t*(B.lon-A.lon)};
 }
 
 function showIxPanelResult(lat,lon,container,label){
@@ -2019,12 +2140,11 @@ function showIxPanelResult(lat,lon,container,label){
   const gkx=gk?gk.x.toFixed(2):'—';
   const gky=gk?gk.y.toFixed(2):'—';
 
-  if(window._ixPanelLayers && map){try{map.removeLayer(window._ixPanelLayers);}catch(e){}}
-  if(map) {
-    const mk=L.circleMarker([lat,lon],{radius:12,color:'#cc0000',fillColor:'#ff4444',fillOpacity:.85,weight:3}).addTo(map);
-    mk.bindTooltip('Intersección: '+lat.toFixed(6)+', '+lon.toFixed(6),{permanent:false,direction:'top'});
-    map.flyTo([lat,lon],17,{duration:1.5});
-  }
+  // Marcar en el mapa
+  if(window._ixPanelLayers){try{map.removeLayer(window._ixPanelLayers);}catch(e){}}
+  const mk=L.circleMarker([lat,lon],{radius:12,color:'#cc0000',fillColor:'#ff4444',fillOpacity:.85,weight:3}).addTo(map);
+  mk.bindTooltip('Intersección: '+lat.toFixed(6)+', '+lon.toFixed(6),{permanent:false,direction:'top'});
+  map.flyTo([lat,lon],17,{duration:1.5});
 
   container.innerHTML=`
     <div style="background:#f0f8f0;border:2px solid #4a8a4a;border-radius:9px;padding:12px">
@@ -2066,13 +2186,45 @@ function usarIxEnFormPanel(lat,lon,gkx,gky){
   toggleIxPanel();
 }
 
-let _ixMode='manual';
-let _ixStep=0;
-let _ixPts=[];
-let _ixLayers=[];
+// ===== RESET =====
+function confirmReset(){
+  if(confirm('Limpiar toda la base de datos?')&&confirm('Segunda confirmacion: borrar todo?')){
+    db=JSON.parse(JSON.stringify(INIT));db.records=enrichRecs(db.records);
+    save();selRec=null;selCat='all';selAlpha='all';
+    closeDet();refreshMarkers();renderLegend();render();toast('Base reiniciada');
+  }
+}
+
+
+// ═══════════════════════════════════════════════════════════════════
+// CALCULADORA DE INTERSECCION DE TRAMOS
+// ═══════════════════════════════════════════════════════════════════
+
+// --- parseCoordFull: acepta decimal, GMS (27°20'7.9"S), GK detectado por rango
+function parseCoordFull(raw){
+  if(!raw||!String(raw).trim())return NaN;
+  raw=String(raw).trim();
+  // Numero puro
+  if(/^-?\d+(\.\d+)?$/.test(raw))return parseFloat(raw);
+  const up=raw.toUpperCase();
+  const isNeg=/[SOW]/.test(up);
+  // Extraer todos los numeros (con punto decimal)
+  const parts=[];const re=/\d+(\.\d+)?/g;let m;
+  while((m=re.exec(raw))!==null)parts.push(parseFloat(m[0]));
+  if(!parts.length)return NaN;
+  const dec=parts[0]+(parts[1]||0)/60+(parts[2]||0)/3600;
+  return isNeg?-dec:dec;
+}
+
+// --- Estado del modo de interseccion ---
+let _ixMode='manual';   // 'manual' | 'osm'
+let _ixStep=0;          // 0=inicio, 1=tramo1, 2=tramo2
+let _ixPts=[];          // puntos dibujados [[lat,lon],...]
+let _ixLayers=[];       // capas Leaflet temporales
 let _ixDrawing=false;
 
 function toggleIxPanel(){
+  // Usar ix-panel (el panel flotante)
   const p=document.getElementById('ix-panel');
   if(!p)return;
   const isOpen=p.classList.toggle('open');
@@ -2085,22 +2237,53 @@ function setIxMode(mode){
   document.getElementById('btn-ix-manual').classList.toggle('on',mode==='manual');
   document.getElementById('btn-ix-osm').classList.toggle('on',mode==='osm');
   ixLimpiar();
+  if(mode==='manual'){
+    document.getElementById('ix-instruc').innerHTML=
+      'Vas a hacer clic en el mapa para marcar 2 puntos del <b style="color:#2a6a2a">Tramo 1</b> (ruta) y luego 2 puntos del <b style="color:#8a5500">Tramo 2</b> (camino vecinal).';
+    document.getElementById('btn-ix-start').style.display='';
+    document.getElementById('btn-ix-next').style.display='none';
+    document.getElementById('btn-ix-calc').style.display='none';
+    document.getElementById('btn-ix-clear').style.display='none';
+  }else{
+    document.getElementById('ix-instruc').innerHTML=
+      'Hace clic en el mapa para marcar los puntos de tu polilinea. El sistema va a buscar en OpenStreetMap los caminos que cruza y calcular los puntos de interseccion.';
+    document.getElementById('btn-ix-start').style.display='';
+    document.getElementById('btn-ix-next').style.display='none';
+    document.getElementById('btn-ix-calc').style.display='none';
+    document.getElementById('btn-ix-clear').style.display='none';
+  }
+  document.getElementById('ix-result').classList.remove('show');
 }
 
 function ixStartDraw(){
   _ixStep=1;
   _ixPts=[];
   _ixDrawing=true;
+  if(_ixMode==='manual'){
+    document.getElementById('ix-instruc').innerHTML=
+      '<b style="color:#2a6a2a">TRAMO 1 — Ruta:</b> hace clic en 2 puntos del tramo principal (los 2 vertices de la ruta en ese tramo).';
+  }else{
+    document.getElementById('ix-instruc').innerHTML=
+      '<b style="color:#2a6a2a">POLILINEA:</b> hace clic en todos los puntos de tu camino sobre el mapa. Cuando termines, hace clic en "Buscar cruces".';
+  }
+  document.getElementById('btn-ix-start').style.display='none';
+  document.getElementById('btn-ix-clear').style.display='';
+  if(_ixMode==='osm'){
+    document.getElementById('btn-ix-calc').textContent='Buscar cruces con OSM';
+    document.getElementById('btn-ix-calc').style.display='none';
+  }
   map.getContainer().style.cursor='crosshair';
   toast('Hace clic en el mapa para marcar los puntos');
 }
 
+// Handler de clic del mapa para interseccion
 function ixMapClick(e){
   if(!_ixDrawing)return;
   const lat=e.latlng.lat,lon=e.latlng.lng;
   _ixPts.push([lat,lon]);
 
   if(_ixMode==='manual'){
+    // Colores: tramo1=azul (pts 0-1), tramo2=naranja (pts 2-3)
     const color=_ixStep===1?'#4a8aff':'#ff8a2a';
     const lbl=_ixPts.length===1?'A':_ixPts.length===2?'B':_ixPts.length===3?'C':'D';
     const circle=L.circleMarker([lat,lon],{radius:7,color,fillColor:color,fillOpacity:.8,weight:2})
@@ -2108,16 +2291,26 @@ function ixMapClick(e){
     _ixLayers.push(circle);
 
     if(_ixStep===1&&_ixPts.length===2){
+      // Dibujar linea del tramo 1
       const line=L.polyline(_ixPts.slice(0,2),{color:'#4a8aff',weight:2,dashArray:'6,4',opacity:.8}).addTo(map);
       _ixLayers.push(line);
+      document.getElementById('ix-instruc').innerHTML=
+        '<b style="color:#8a5500">TRAMO 2 — Camino vecinal:</b> hace clic en 2 puntos del camino que intersecta.';
+      document.getElementById('btn-ix-next').style.display='';
       _ixStep=2;
     }else if(_ixStep===2&&_ixPts.length===4){
+      // Dibujar linea del tramo 2
       const line=L.polyline(_ixPts.slice(2,4),{color:'#ff8a2a',weight:2,dashArray:'6,4',opacity:.8}).addTo(map);
       _ixLayers.push(line);
+      document.getElementById('ix-instruc').innerHTML='Listo. Hace clic en <b>Calcular interseccion</b>.';
+      document.getElementById('btn-ix-next').style.display='none';
+      document.getElementById('btn-ix-calc').textContent='Calcular interseccion';
+      document.getElementById('btn-ix-calc').style.display='';
       map.getContainer().style.cursor='';
       _ixDrawing=false;
     }
   }else{
+    // Modo OSM: acumular puntos de la polilinea
     const circle=L.circleMarker([lat,lon],{radius:5,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:.8,weight:2}).addTo(map);
     _ixLayers.push(circle);
     if(_ixPts.length>1){
@@ -2125,34 +2318,164 @@ function ixMapClick(e){
       const line=L.polyline([last,[lat,lon]],{color:'#6aaf6a',weight:2,opacity:.8}).addTo(map);
       _ixLayers.push(line);
     }
+    if(_ixPts.length>=2){
+      document.getElementById('btn-ix-calc').style.display='';
+    }
+    document.getElementById('ix-instruc').innerHTML=
+      '<b style="color:#2a6a2a">POLILINEA:</b> '+_ixPts.length+' punto'+(_ixPts.length!==1?'s':'')+' marcado'+(_ixPts.length!==1?'s':'')+'. Seguí haciendo clic o presioná "Buscar cruces con OSM".';
   }
 }
 
+function ixNextStep(){
+  // Solo informativo en modo manual, ya manejado en ixMapClick
+}
+
 function ixLimpiar(){
-  if(map) {
-    _ixLayers.forEach(l=>map.removeLayer(l));
-  }
+  _ixLayers.forEach(l=>map.removeLayer(l));
   _ixLayers=[];_ixPts=[];_ixStep=0;_ixDrawing=false;_ixResult=null;
-  if(map) map.getContainer().style.cursor='';
+  map.getContainer().style.cursor='';
+  document.getElementById('btn-ix-start').style.display='';
+  document.getElementById('btn-ix-next').style.display='none';
+  document.getElementById('btn-ix-calc').style.display='none';
+  document.getElementById('btn-ix-clear').style.display='none';
+  document.getElementById('ix-result').classList.remove('show');
+  if(_ixMode==='manual'){
+    document.getElementById('ix-instruc').innerHTML=
+      'Vas a hacer clic en el mapa para marcar 2 puntos del <b style="color:#2a6a2a">Tramo 1</b> (ruta) y luego 2 puntos del <b style="color:#8a5500">Tramo 2</b> (camino vecinal).';
+  }else{
+    document.getElementById('ix-instruc').innerHTML=
+      'Hace clic en el mapa para marcar los puntos de tu polilinea.';
+  }
+}
+
+// --- Interseccion geometrica de dos segmentos (coordenadas planas, precision local OK) ---
+function segmentsIntersect(p1,p2,p3,p4){
+  // p = [lat,lon]
+  const d1=[p2[0]-p1[0],p2[1]-p1[1]];
+  const d2=[p4[0]-p3[0],p4[1]-p3[1]];
+  const cross=d1[0]*d2[1]-d1[1]*d2[0];
+  if(Math.abs(cross)<1e-12)return null; // paralelas
+  const dx=p3[0]-p1[0],dy=p3[1]-p1[1];
+  const t=(dx*d2[1]-dy*d2[0])/cross;
+  const u=(dx*d1[1]-dy*d1[0])/cross;
+  // Interseccion dentro de ambos segmentos (con tolerancia para lineas que se prolongan)
+  if(t>=-0.01&&t<=1.01&&u>=-0.01&&u<=1.01){
+    return[p1[0]+t*d1[0],p1[1]+t*d1[1]];
+  }
+  return null;
 }
 
 function ixCalcular(){
   if(_ixMode==='manual'){
     if(_ixPts.length<4){toast('Faltan puntos. Marca 2 puntos por cada tramo.');return;}
     const pt=segmentsIntersect(_ixPts[0],_ixPts[1],_ixPts[2],_ixPts[3]);
-    if(!pt) return;
+    if(!pt){
+      document.getElementById('ix-instruc').innerHTML='<span style="color:#8a2020">Los tramos no se intersectan o son paralelos. Verifica los puntos marcados.</span>';
+      return;
+    }
     ixMostrarResultado(pt[0],pt[1]);
+  }else{
+    ixBuscarOSM();
   }
 }
 
 function ixMostrarResultado(lat,lon){
   _ixResult={lat,lon};
   const gk=llToGK(5,lat,lon);
-  if(map) {
-    const star=L.circleMarker([lat,lon],{radius:10,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.9,weight:3})
-      .addTo(map).bindTooltip('CRUCE',{permanent:true,direction:'top',offset:[0,-12]});
-    _ixLayers.push(star);
-    map.flyTo([lat,lon],17,{duration:1});
+  // Marcador de interseccion
+  const star=L.circleMarker([lat,lon],{radius:10,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.9,weight:3})
+    .addTo(map).bindTooltip('CRUCE',{permanent:true,direction:'top',offset:[0,-12]});
+  _ixLayers.push(star);
+  map.flyTo([lat,lon],17,{duration:1});
+
+  const gkX=gk?gk.x.toFixed(2):'--';
+  const gkY=gk?gk.y.toFixed(2):'--';
+  document.getElementById('ix-result-val').innerHTML=
+    '<b>Lat:</b> '+lat.toFixed(6)+'<br>'+
+    '<b>Lon:</b> '+lon.toFixed(6)+'<br>'+
+    '<b>GK X Faja 5:</b> '+gkX+'<br>'+
+    '<b>GK Y Faja 5:</b> '+gkY;
+  document.getElementById('ix-result').classList.add('show');
+  document.getElementById('ix-instruc').innerHTML='<span style="color:#2a6a2a">Interseccion calculada. Podes usarla en un nuevo registro.</span>';
+}
+
+// --- Modo OSM: consultar Overpass API para caminos cercanos ---
+async function ixBuscarOSM(){
+  if(_ixPts.length<2){toast('Marca al menos 2 puntos de la polilinea.');return;}
+  document.getElementById('ix-instruc').innerHTML='<span style="color:#8a5500">Consultando OpenStreetMap...</span>';
+  document.getElementById('btn-ix-calc').disabled=true;
+
+  // Bounding box de la polilinea con margen
+  const lats=_ixPts.map(p=>p[0]),lons=_ixPts.map(p=>p[1]);
+  const margin=0.002;
+  const bbox=[Math.min(...lats)-margin,Math.min(...lons)-margin,
+              Math.max(...lats)+margin,Math.max(...lons)+margin].join(',');
+
+  const query=`[out:json][timeout:15];(way["highway"](${bbox});way["route"](${bbox}););out geom;`;
+  const url='https://overpass-api.de/api/interpreter?data='+encodeURIComponent(query);
+
+  try{
+    const resp=await fetch(url);
+    if(!resp.ok)throw new Error('Error consultando OSM: '+resp.status);
+    const data=await resp.json();
+    const ways=data.elements||[];
+
+    const intersections=[];
+    // Para cada segmento de mi polilinea
+    for(let i=0;i<_ixPts.length-1;i++){
+      const pA=_ixPts[i],pB=_ixPts[i+1];
+      // Para cada camino de OSM
+      for(const way of ways){
+        if(!way.geometry)continue;
+        const geom=way.geometry;
+        for(let j=0;j<geom.length-1;j++){
+          const pC=[geom[j].lat,geom[j].lon];
+          const pD=[geom[j+1].lat,geom[j+1].lon];
+          const pt=segmentsIntersect(pA,pB,pC,pD);
+          if(pt){
+            const nombre=way.tags&&(way.tags.name||way.tags.ref||way.tags.highway)||'camino';
+            intersections.push({lat:pt[0],lon:pt[1],nombre});
+          }
+        }
+      }
+    }
+
+    document.getElementById('btn-ix-calc').disabled=false;
+
+    if(!intersections.length){
+      document.getElementById('ix-instruc').innerHTML=
+        '<span style="color:#8a2020">No se encontraron cruces con caminos de OSM en esa zona. Proba con el modo manual o verifica que los caminos esten en OSM.</span>';
+      return;
+    }
+
+    // Mostrar todos los cruces encontrados
+    intersections.forEach((ix,idx)=>{
+      const c=L.circleMarker([ix.lat,ix.lon],{radius:9,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.9,weight:3})
+        .addTo(map)
+        .bindTooltip((idx+1)+'. '+ix.nombre,{permanent:true,direction:'top',offset:[0,-11]});
+      _ixLayers.push(c);
+    });
+
+    if(intersections.length===1){
+      ixMostrarResultado(intersections[0].lat,intersections[0].lon);
+    }else{
+      // Multiples cruces: mostrar lista para elegir
+      const lista=intersections.map((ix,idx)=>
+        `<div style="padding:4px 0;border-bottom:1px solid #d0ddd0;cursor:pointer" onclick="ixSeleccionarOSM(${idx})" onmouseover="this.style.color='#6aaf6a'" onmouseout="this.style.color='#a0d0a0'">
+          <span style="color:#2a6a2a;font-weight:700">${idx+1}.</span> ${ix.nombre}
+          <div style="font-size:9px;font-family:monospace;color:#2a5a2a">${ix.lat.toFixed(6)}, ${ix.lon.toFixed(6)}</div>
+        </div>`
+      ).join('');
+      document.getElementById('ix-result-val').innerHTML=
+        '<div style="font-size:10px;color:#8a5500;margin-bottom:5px">Se encontraron '+intersections.length+' cruces. Hace clic en uno:</div>'+lista;
+      document.getElementById('ix-result').classList.add('show');
+      document.getElementById('ix-instruc').innerHTML='<span style="color:#2a6a2a">Selecciona el cruce que corresponde.</span>';
+      // Guardar para uso posterior
+      window._ixOSMResults=intersections;
+    }
+  }catch(err){
+    document.getElementById('btn-ix-calc').disabled=false;
+    document.getElementById('ix-instruc').innerHTML='<span style="color:#8a2020">Error: '+err.message+'. Verifica tu conexion a internet.</span>';
   }
 }
 
@@ -2161,8 +2484,10 @@ function ixSeleccionarOSM(idx){
   ixMostrarResultado(ix.lat,ix.lon);
 }
 
+// Usar el resultado en el formulario de nuevo registro
 function ixUsarEnForm(){
   if(!_ixResult)return;
+  // Abrir formulario y precargar coordenadas como punto de inicio
   openRecordModal();
   setTimeout(()=>{
     document.getElementById('f-lat1').value=_ixResult.lat.toFixed(6);
@@ -2170,15 +2495,18 @@ function ixUsarEnForm(){
     fConvLL1();
     toast('Coordenadas del cruce cargadas como INICIO del registro');
   },200);
+  // Cerrar toolbar
+  document.getElementById('ix-toolbar').classList.remove('show');
 }
 
 // ===== CALCULADORA DE INTERSECCION =====
-let ixDrawMode=null;
-let ixTramo1=[],ixTramo2=[];
-let ixPolyline=[];
-let ixLayers=[];
-let ixClickHandler=null;
-let ixLastResult=null;
+let ixDrawMode=null; // 'tramo1' | 'tramo2' | 'polyline' | null
+let ixTramo1=[],ixTramo2=[];       // [{lat,lon}] cada tramo tiene 2 puntos
+let ixPolyline=[];                  // [{lat,lon}] puntos de la polilinea OSM
+let ixLayers=[];                    // capas Leaflet temporales del dibujo
+let ixClickHandler=null;            // handler de clic del mapa para dibujo
+let ixLastResult=null;              // ultimo resultado calculado
+
 
 function setIxTab(t){
   ['draw','osm'].forEach(x=>{
@@ -2188,12 +2516,10 @@ function setIxTab(t){
   clearAllIxDraw();
 }
 
+// ── Limpieza ──────────────────────────────────────────────────────────────────
 function clearAllIxDraw(){
   stopIxDraw();
-  if(map) {
-    ixLayers.forEach(l=>map.removeLayer(l));
-  }
-  ixLayers=[];
+  ixLayers.forEach(l=>map.removeLayer(l));ixLayers=[];
   ixTramo1=[];ixTramo2=[];ixPolyline=[];
   document.getElementById('ix-res-draw').classList.remove('show');
   const oRes=document.getElementById('osm-results');if(oRes)oRes.innerHTML='';
@@ -2203,14 +2529,15 @@ function clearDrawTramos(){clearAllIxDraw();}
 function clearPolyline(){clearAllIxDraw();}
 
 function stopIxDraw(){
-  if(ixClickHandler && map){map.off('click',ixClickHandler);ixClickHandler=null;}
+  if(ixClickHandler){map.off('click',ixClickHandler);ixClickHandler=null;}
   ixDrawMode=null;
   ['btn-draw-t1','btn-draw-t2','btn-draw-poly'].forEach(id=>{
     const el=document.getElementById(id);if(el)el.style.opacity='1';
   });
-  if(map) map.getContainer().style.cursor='';
+  map.getContainer().style.cursor='';
 }
 
+// ── Actualizar hint de estado ──────────────────────────────────────────────────
 function updDrawStatus(){
   const s=document.getElementById('draw-status');
   const h=document.getElementById('draw-hint');
@@ -2224,21 +2551,25 @@ function updDrawStatus(){
   if(h)h.style.display=(t1ok&&t2ok)?'none':'block';
 }
 
+// ── Dibujar tramos A/B ────────────────────────────────────────────────────────
 function startDrawTramo(n){
   stopIxDraw();
   ixDrawMode='tramo'+n;
-  if(n===1){if(map){ixLayers.filter(l=>l._ixT===1).forEach(l=>{map.removeLayer(l);});}ixTramo1=[];ixLayers=ixLayers.filter(l=>l._ixT!==1);}
-  else{if(map){ixLayers.filter(l=>l._ixT===2).forEach(l=>{map.removeLayer(l);});}ixTramo2=[];ixLayers=ixLayers.filter(l=>l._ixT!==2);}
+  const arr=n===1?ixTramo1:ixTramo2;
+  // Resetear el tramo que se va a redibujar
+  if(n===1){ixTramo1=[];ixLayers.filter(l=>l._ixT===1).forEach(l=>{map.removeLayer(l);});ixLayers=ixLayers.filter(l=>l._ixT!==1);}
+  else{ixTramo2=[];ixLayers.filter(l=>l._ixT===2).forEach(l=>{map.removeLayer(l);});ixLayers=ixLayers.filter(l=>l._ixT!==2);}
   const color=n===1?'#1565c0':'#b35900';
   const btnId='btn-draw-t'+(n===1?'1':'2');
   document.getElementById(btnId).style.opacity='0.5';
-  if(map) map.getContainer().style.cursor='crosshair';
+  map.getContainer().style.cursor='crosshair';
   document.getElementById('draw-hint').textContent=`Haz clic en el PRIMER punto del Tramo ${n}...`;
   document.getElementById('draw-hint').style.display='block';
 
   const pts=n===1?ixTramo1:ixTramo2;
   ixClickHandler=function(e){
     pts.push({lat:e.latlng.lat,lon:e.latlng.lng});
+    // Marcador del punto
     const ci=L.circleMarker([e.latlng.lat,e.latlng.lng],{radius:6,color:color,fillColor:color,fillOpacity:1,weight:2}).addTo(map);
     ci._ixT=n;ixLayers.push(ci);
     const lbl=L.marker([e.latlng.lat,e.latlng.lng],{icon:L.divIcon({html:`<div style="font-size:10px;font-weight:700;color:${color};background:#ffffff;padding:1px 4px;border-radius:3px;border:1px solid ${color}">${pts.length===1?'A':'B'}${n===2?String.fromCharCode(65+pts.length-1):''}${n===1?(pts.length===1?'A':'B'):(pts.length===1?'C':'D')}</div>`,className:'',iconAnchor:[8,8]})}).addTo(map);
@@ -2247,18 +2578,23 @@ function startDrawTramo(n){
     if(pts.length===1){
       document.getElementById('draw-hint').textContent=`Haz clic en el SEGUNDO punto del Tramo ${n}...`;
     } else if(pts.length===2){
+      // Dibujar la linea del tramo
       const ln=L.polyline([[pts[0].lat,pts[0].lon],[pts[1].lat,pts[1].lon]],{color:color,weight:3,dashArray:'6,4'}).addTo(map);
       ln._ixT=n;ixLayers.push(ln);
       stopIxDraw();
       updDrawStatus();
     }
   };
-  if(map) map.on('click',ixClickHandler);
+  map.on('click',ixClickHandler);
 }
+
+// ── Calcular interseccion geometrica de dos segmentos ─────────────────────────
+
 
 function showIxResult(lat,lon,containerId,coordsId){
   const gk=llToGK(5,lat,lon);
-  const gkxS=gk?gk.x.toFixed(2):'--';const gkyS=gk?gk.y.toFixed(2):'--';
+  const gkxS=gk?gk.x.toFixed(2):'--';
+  const gkyS=gk?gk.y.toFixed(2):'--';
   ixLastResult={lat,lon,gkx:gk?gk.x:null,gky:gk?gk.y:null};
   document.getElementById(coordsId).innerHTML=`
     <div class="ix-coord-cell"><label>LATITUD</label><span>${lat.toFixed(6)}</span></div>
@@ -2266,15 +2602,16 @@ function showIxResult(lat,lon,containerId,coordsId){
     <div class="ix-coord-cell"><label>GK X FAJA 5</label><span>${gkxS}</span></div>
     <div class="ix-coord-cell"><label>GK Y FAJA 5</label><span>${gkyS}</span></div>`;
   document.getElementById(containerId).classList.add('show');
-  if(map) {
-    ixLayers.filter(l=>l._ixResult).forEach(l=>map.removeLayer(l));
-    const mk=L.circleMarker([lat,lon],{radius:10,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.8,weight:3}).addTo(map);
-    mk._ixResult=true;ixLayers.push(mk);
-    map.flyTo([lat,lon],16,{duration:1});
-  }
+  // Marcador en el punto de cruce
+  ixLayers.filter(l=>l._ixResult).forEach(l=>map.removeLayer(l));
+  const mk=L.circleMarker([lat,lon],{radius:10,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.8,weight:3}).addTo(map);
+  mk._ixResult=true;ixLayers.push(mk);
+  const pp=L.popup().setLatLng([lat,lon]).setContent(`<div style="font-size:11px;color:#0d170d;font-weight:700">Punto de cruce<br>${lat.toFixed(6)}, ${lon.toFixed(6)}</div>`).openOn(map);
+  map.flyTo([lat,lon],16,{duration:1});
 }
 
 function calcInterseccionDraw(){
+  const errEl=document.getElementById('err-ix');
   if(ixTramo1.length<2||ixTramo2.length<2){
     toast('Dibuja los dos tramos antes de calcular.');return;
   }
@@ -2287,10 +2624,12 @@ function calcInterseccionDraw(){
   toast('Interseccion calculada');
 }
 
+// ── Usar resultado en formulario de nuevo registro ─────────────────────────────
 function usarIxEnForm(from){
   if(!ixLastResult){toast('Primero calcula la interseccion.');return;}
   openRecordModal();
   setTimeout(()=>{
+    // Poner coordenadas en el campo INICIO del formulario
     document.getElementById('f-lat1').value=ixLastResult.lat.toFixed(6);
     document.getElementById('f-lon1').value=ixLastResult.lon.toFixed(6);
     if(ixLastResult.gkx){
@@ -2301,48 +2640,48 @@ function usarIxEnForm(from){
   },300);
 }
 
+// ── Dibujar polilínea para OSM ────────────────────────────────────────────────
 let ixPolyLayer=null,ixPolyPoints=[];
 
 function startDrawPolyline(){
   stopIxDraw();
   ixPolyPoints=[];
-  if(ixPolyLayer && map){map.removeLayer(ixPolyLayer);ixPolyLayer=null;}
+  if(ixPolyLayer){map.removeLayer(ixPolyLayer);ixPolyLayer=null;}
   ixDrawMode='polyline';
-  if(map) map.getContainer().style.cursor='crosshair';
+  map.getContainer().style.cursor='crosshair';
   document.getElementById('btn-draw-poly').style.opacity='0.5';
   document.getElementById('draw-hint-osm').textContent='Haz clic para agregar puntos. Doble clic para terminar la polilinea.';
   let lastMk=null;
   ixClickHandler=function(e){
-    if(e.originalEvent&&e.originalEvent.detail>=2)return;
+    if(e.originalEvent&&e.originalEvent.detail>=2)return; // ignorar dblclick en este handler
     ixPolyPoints.push([e.latlng.lat,e.latlng.lng]);
-    if(lastMk && map)map.removeLayer(lastMk);
-    if(ixPolyLayer && map)map.removeLayer(ixPolyLayer);
-    if(map) {
-      ixPolyLayer=L.polyline(ixPolyPoints,{color:'#6aaf6a',weight:3}).addTo(map);
-      lastMk=L.circleMarker([e.latlng.lat,e.latlng.lng],{radius:5,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:1}).addTo(map);
-    }
+    if(lastMk)map.removeLayer(lastMk);
+    if(ixPolyLayer)map.removeLayer(ixPolyLayer);
+    ixPolyLayer=L.polyline(ixPolyPoints,{color:'#6aaf6a',weight:3}).addTo(map);
+    lastMk=L.circleMarker([e.latlng.lat,e.latlng.lng],{radius:5,color:'#6aaf6a',fillColor:'#6aaf6a',fillOpacity:1}).addTo(map);
     document.getElementById('draw-hint-osm').textContent=`${ixPolyPoints.length} punto(s) — Doble clic para terminar.`;
   };
-  if(map) {
-    map.on('click',ixClickHandler);
-    map.once('dblclick',function(){
-      stopIxDraw();
-      document.getElementById('draw-hint-osm').textContent=`Polilinea lista con ${ixPolyPoints.length} puntos. Ahora busca cruces OSM.`;
-      toast('Polilinea dibujada — ahora buscá los cruces OSM');
-    });
-  }
+  map.on('click',ixClickHandler);
+  map.once('dblclick',function(){
+    stopIxDraw();
+    document.getElementById('draw-hint-osm').textContent=`Polilinea lista con ${ixPolyPoints.length} puntos. Ahora busca cruces OSM.`;
+    toast('Polilinea dibujada — ahora buscá los cruces OSM');
+  });
 }
 
+// ── Detectar cruces con OpenStreetMap (Overpass API) ──────────────────────────
 async function detectarCrucesOSM(){
   if(ixPolyPoints.length<2){toast('Dibuja la polilinea primero.');return;}
   const loading=document.getElementById('osm-loading');
   const results=document.getElementById('osm-results');
   loading.style.display='block';results.innerHTML='';
 
+  // Bounding box de la polilinea
   const lats=ixPolyPoints.map(p=>p[0]),lons=ixPolyPoints.map(p=>p[1]);
-  const buf=0.005;
+  const buf=0.005; // ~500m de margen
   const bbox=`${Math.min(...lats)-buf},${Math.min(...lons)-buf},${Math.max(...lats)+buf},${Math.max(...lons)+buf}`;
 
+  // Consulta Overpass: obtener todos los caminos (highway) en la zona
   const query=`[out:json][timeout:25];(way["highway"](${bbox}););out geom;`;
   try{
     const resp=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(query));
@@ -2350,6 +2689,7 @@ async function detectarCrucesOSM(){
     const data=await resp.json();
     loading.style.display='none';
 
+    // Calcular intersecciones entre cada segmento de la polilinea y cada segmento de cada camino OSM
     const cruces=[];
     const mySeg=[];
     for(let i=0;i<ixPolyPoints.length-1;i++){
@@ -2364,6 +2704,7 @@ async function detectarCrucesOSM(){
         mySeg.forEach(ms=>{
           const ix=segIntersect(ms.p1,ms.p2,c1,c2);
           if(ix){
+            // Evitar duplicados muy cercanos (< 5m)
             const dup=cruces.some(c=>haversineM(c.lat,c.lon,ix.lat,ix.lon)<5);
             if(!dup)cruces.push({lat:ix.lat,lon:ix.lon,nombre});
           }
@@ -2372,10 +2713,11 @@ async function detectarCrucesOSM(){
     });
 
     if(!cruces.length){
-      results.innerHTML='<div style="font-size:10px;color:#8a2020;padding:6px">No se encontraron cruces con caminos OSM in esta zona. Probá acercarte mas al lugar y redibujar.</div>';
+      results.innerHTML='<div style="font-size:10px;color:#8a2020;padding:6px">No se encontraron cruces con caminos OSM en esta zona. Probá acercarte mas al lugar y redibujar.</div>';
       return;
     }
 
+    // Mostrar resultados
     results.innerHTML=`<div style="font-size:14px;font-weight:800;color:#1a5a1a;margin-bottom:8px">${cruces.length} cruce(s) encontrado(s):</div>`+
       cruces.map((c,i)=>{
         const gk=llToGK(5,c.lat,c.lon);
@@ -2392,17 +2734,16 @@ async function detectarCrucesOSM(){
         </div>`;
       }).join('');
 
-    if(map) {
-      cruces.forEach((c,i)=>{
-        const mk=L.circleMarker([c.lat,c.lon],{radius:9,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.9,weight:2}).addTo(map);
-        mk.bindTooltip(`Cruce ${i+1}: ${c.nombre}`,{direction:'top'});
-        mk._ixResult=true;ixLayers.push(mk);
-      });
-      if(cruces.length===1)map.flyTo([cruces[0].lat,cruces[0].lon],16,{duration:1});
-      else{
-        const bb=L.latLngBounds(cruces.map(c=>[c.lat,c.lon]));
-        map.fitBounds(bb,{padding:[60,60],maxZoom:16});
-      }
+    // Marcar todos los cruces en el mapa
+    cruces.forEach((c,i)=>{
+      const mk=L.circleMarker([c.lat,c.lon],{radius:9,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.9,weight:2}).addTo(map);
+      mk.bindTooltip(`Cruce ${i+1}: ${c.nombre}`,{direction:'top'});
+      mk._ixResult=true;ixLayers.push(mk);
+    });
+    if(cruces.length===1)map.flyTo([cruces[0].lat,cruces[0].lon],16,{duration:1});
+    else{
+      const bb=L.latLngBounds(cruces.map(c=>[c.lat,c.lon]));
+      map.fitBounds(bb,{padding:[60,60],maxZoom:16});
     }
   }catch(err){
     loading.style.display='none';
@@ -2415,17 +2756,7 @@ function usarOsmCruce(lat,lon,gkx,gky){
   usarIxEnForm('osm');
 }
 
-function confirmReset(){
-  if(confirm('¿Seguro que deseas limpiar la base de datos completa de la nube? Esto borrará todo.')){
-    db = JSON.parse(JSON.stringify(window.INIT));
-    save();
-    toast('Base de datos reiniciada');
-  }
-}
-
-// Iniciar aplicación localmente en espera de Firestore
-render();
-initMap();
+save();render();initMap();
 </script>
 </body>
 </html>
