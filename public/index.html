@@ -1851,9 +1851,12 @@ async function polyCalcOSM(){
   // Reunir vértices válidos
   const pts=_polyPts.filter(p=>p.lat!=null&&p.lon!=null);
   if(pts.length<2){
-    err.textContent='Necesitas al menos 2 vertices con coordenadas validas.';
+    err.innerHTML='<b>Necesitás al menos 2 vértices válidos.</b><br>Ingresá Lat/Lon decimal (ej: -27.451), GMS (ej: 27 20 07 S, 61 16 29 O) o GK Faja 5 (ej: 5373823.91 / 6976403.04).';
     err.classList.add('show');return;
   }
+
+  // Indicador de carga mientras consulta OSM
+  resList.innerHTML='<div style="text-align:center;padding:16px;color:#3a6a3a;font-size:14px;font-weight:600">&#8987; Consultando OpenStreetMap... un momento.</div>';
 
   // Limpiar capas anteriores
   _polyMapLayers.forEach(l=>map.removeLayer(l));
@@ -1876,7 +1879,7 @@ async function polyCalcOSM(){
   map.fitBounds(poly.getBounds(),{padding:[40,40]});
 
   // Mostrar estado de búsqueda
-  resList.innerHTML='<div style="font-size:10px;color:#1a4a8a;padding:6px 0">&#9881; Consultando caminos de OpenStreetMap...</div>';
+  // (carga ya mostrada arriba)
 
   // Calcular bbox para la query OSM (con margen)
   const lats=pts.map(p=>p.lat), lons=pts.map(p=>p.lon);
@@ -1939,7 +1942,7 @@ out geom;`;
     }
 
     // Marcar cada cruce en el mapa y mostrar resultados
-    resList.innerHTML='<div style="font-size:14px;font-weight:800;color:#1a5a1a;margin-bottom:8px">'+cruces.length+' cruce'+(cruces.length!==1?'s':'')+' encontrado'+(cruces.length!==1?'s':'')+' con OSM:</div>';
+    resList.innerHTML='<div style="font-size:15px;font-weight:800;color:#1a4a1a;margin-bottom:10px;padding:8px 10px;background:#e8f5e8;border-radius:7px;border-left:4px solid #2a8a2a">&#10003; '+cruces.length+' cruce'+(cruces.length!==1?'s':'')+' encontrado'+(cruces.length!==1?'s':'')+' con rutas/caminos</div>';
     cruces.forEach((c,n)=>{
       // Marcador en el mapa
       const mk=L.circleMarker([c.lat,c.lon],{radius:8,color:'#ff4444',fillColor:'#ff2222',fillOpacity:.85,weight:2}).addTo(map);
@@ -1948,7 +1951,7 @@ out geom;`;
 
       // Tarjeta de resultado
       const card=document.createElement('div');
-      card.style.cssText='background:#f0f8f0;border:1.5px solid #4a8a4a;border-radius:8px;padding:10px 12px;margin-bottom:7px;font-size:13px';
+      card.style.cssText='background:#ffffff;border:2px solid #4a8a4a;border-radius:10px;padding:13px 15px;margin-bottom:10px;box-shadow:0 2px 8px rgba(42,106,42,.12)';
       card.innerHTML=`
         <div style="color:#1a4a1a;font-weight:800;margin-bottom:5px;font-size:14px">${n+1}. ${c.nombre} <span style="font-weight:500;color:#5a7a5a">(${tipoLabel(c.tipo)})</span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:5px">
@@ -1957,10 +1960,10 @@ out geom;`;
           ${c.gkx?'<div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK X</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">'+c.gkx+'</div></div>':''}
           ${c.gky?'<div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK Y</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">'+c.gky+'</div></div>':''}
         </div>
-        <div style="display:flex;gap:4px">
-          <button class="copy-btn" onclick="navigator.clipboard.writeText('${c.lat.toFixed(6)}, ${c.lon.toFixed(6)}').then(()=>toast('Lat/Lon copiado'))">Copiar Lat/Lon</button>
-          <button class="copy-btn" onclick="navigator.clipboard.writeText('${c.gkx||''}, ${c.gky||''}').then(()=>toast('GK copiado'))">Copiar GK</button>
-          <button class="copy-btn" style="background:#e8f5e8;color:#2a6a2a;border:1.5px solid #a0c8a0" onclick="polyUsarCruce(${n})">Usar en registro</button>
+        <div style="display:flex;gap:5px;margin-top:4px">
+          <button class="cbtn" style="flex:1;margin:0;font-size:12px;padding:7px" onclick="navigator.clipboard.writeText('${c.lat.toFixed(6)}, ${c.lon.toFixed(6)}').then(()=>toast('Lat/Lon copiado'))">Copiar Lat/Lon</button>
+          <button class="cbtn" style="flex:1;margin:0;font-size:12px;padding:7px;background:#1a4a7a" onclick="navigator.clipboard.writeText('${c.gkx||''}, ${c.gky||''}').then(()=>toast('GK copiado'))">Copiar GK</button>
+          <button class="cbtn" style="flex:1;margin:0;font-size:12px;padding:7px;background:#1a5a1a" onclick="polyUsarCruce(${n})">Usar en registro</button>
         </div>`;
       resList.appendChild(card);
     });
