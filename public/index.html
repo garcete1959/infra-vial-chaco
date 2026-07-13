@@ -296,7 +296,8 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
       <div class="csec" style="margin-bottom:0">
         <div class="clabel">&#9678; Cruces de polilinea con caminos</div>
         <div class="cnote" style="margin-bottom:10px;color:#6a9a6a;line-height:1.6">
-          Ingresa los vertices de tu polilinea (2 o mas puntos). La app la dibuja en el mapa y detecta automaticamente donde cruza rutas, caminos vecinales, alambrados y cunetas usando OpenStreetMap.
+          Ingresa los vértices de tu polilínea (2 o más puntos). Al presionar el botón, la app la dibuja en el mapa y <b style="color:#cc4444">detecta automáticamente los puntos de ENTRADA y SALIDA</b> de cada cruce con calles, rutas y caminos vecinales (OpenStreetMap).<br><br>
+          Cada cruce tiene su <b>longitud única</b> calculada según el ancho real de la calle y el ángulo de cruce de tu polilínea (cruces en diagonal son más largos que los perpendiculares). No se asume un mismo ancho para todos.
         </div>
 
         <!-- Lista dinamica de vertices -->
@@ -306,7 +307,7 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
         <button class="cbtn" onclick="polyAddPt()" style="background:#e8f5e8;color:#2a6a2a;border:1.5px solid #a0c8a0;margin-bottom:6px">+ Agregar vertice</button>
 
         <div style="display:flex;gap:5px;margin-bottom:6px">
-          <button class="cbtn" id="btn-poly-calc" onclick="polyCalcOSM()" style="flex:1;margin:0">Dibujar y buscar cruces</button>
+          <button class="cbtn" id="btn-poly-calc" onclick="polyCalcOSM()" style="flex:1;margin:0">Dibujar y detectar cruces</button>
           <button class="cbtn" onclick="polyClear()" style="flex:0 0 70px;margin:0;background:#fff0f0;color:#8a2020">Limpiar</button>
         </div>
 
@@ -425,12 +426,13 @@ body{font-family:system-ui,-apple-system,sans-serif;background:#f0f2f5;color:#1a
       <!-- OPCION B: Detectar caminos OSM -->
       <div class="ix-body" id="ixbody-osm">
         <div class="ix-step">
-          Dibuja tu polilinea sobre el mapa. El sistema consulta los caminos de OpenStreetMap en esa zona y calcula automaticamente todos los puntos donde tu linea los cruza.<br><br>
+          Dibuja tu polilínea sobre el mapa haciendo clic en cada punto. Al terminar con <b>doble clic</b>, el sistema <b style="color:#cc4444">detecta automáticamente</b> los puntos de <b>ENTRADA y SALIDA</b> de cada cruce con calles de OpenStreetMap.<br><br>
+          Cada calle cruzada genera <b>2 puntos rojos</b> (entrada + salida) con sus coordenadas Lat/Lon. La longitud de cada cruce se calcula automáticamente según el <b>ancho real de la calle</b> (tag `width` de OSM, o `lanes`×3.5m, o estimado por tipo de vía) y el <b>ángulo de cruce</b> de tu polilínea — no se asume un mismo ancho para todos.<br><br>
           <b>Requiere internet.</b> Funciona mejor a zoom alto (acercate a la zona primero).
         </div>
         <button class="ix-btn ix-btn-calc" id="btn-draw-poly" onclick="startDrawPolyline()">&#9644; Dibujar mi polilinea</button>
-        <div class="draw-hint" id="draw-hint-osm" style="margin-top:5px">Activa el dibujo y traza tu linea sobre el mapa haciendo clic en cada punto. Doble clic para terminar.</div>
-        <button class="ix-btn ix-btn-calc" onclick="detectarCrucesOSM()" style="margin-top:4px">Buscar cruces con caminos OSM</button>
+        <div class="draw-hint" id="draw-hint-osm" style="margin-top:5px">Activa el dibujo y traza tu línea sobre el mapa haciendo clic en cada punto. Al <b>doble clic</b>, el sistema detecta automáticamente los cruces.</div>
+        <button class="ix-btn ix-btn-calc" onclick="detectarCrucesOSM()" style="margin-top:4px;background:#fff5e0;color:#8a5500">Volver a detectar cruces (opcional)</button>
         <button class="ix-btn ix-btn-clear" onclick="clearPolyline()" style="margin-top:4px">Limpiar polilinea</button>
         <div id="osm-loading" style="display:none;font-size:10px;color:#2a6a2a;margin-top:6px;text-align:center">Consultando OpenStreetMap...</div>
         <div id="osm-results" style="margin-top:6px"></div>
@@ -618,6 +620,11 @@ function gkToLL(faja,x,y){try{const r=proj4(GKP[faja],'EPSG:4326',[x,y]);return(
 function llToGK(faja,lat,lon){try{const r=proj4('EPSG:4326',GKP[faja],[lon,lat]);return(!r||isNaN(r[0]))?null:{x:r[0],y:r[1]};}catch(e){return null;}}
 
 // ===== PARSECOORD: acepta todos los formatos =====
+// Acepta:
+//   - Decimal: -27.4510
+//   - GMS con símbolos: 27°27'3.6"S  ó  27 27 3.6 S
+//   - GMS con O/W: 61°16'29.4"O
+//   - GMS sin símbolos: 27 27 3.6
 function parseCoord(raw){
   if(!raw||!raw.trim())return NaN;
   raw=raw.trim();
@@ -629,6 +636,35 @@ function parseCoord(raw){
   if(!parts.length)return NaN;
   const dec=parts[0]+(parts[1]||0)/60+(parts[2]||0)/3600;
   return isNeg?-dec:dec;
+}
+
+// ===== DECIMAL TO GMS: convierte un valor decimal a grados/minutos/segundos =====
+// Devuelve un string formateado: "27°27'03.6\"S"
+function decimalToGMS(dec, isLat){
+  if(isNaN(dec))return '';
+  const hemi = isLat ? (dec>=0?'N':'S') : (dec>=0?'E':'O');
+  const abs = Math.abs(dec);
+  const g = Math.floor(abs);
+  const mFull = (abs - g) * 60;
+  const m = Math.floor(mFull);
+  const s = (mFull - m) * 60;
+  const gStr = String(g);
+  const mStr = String(m).padStart(2,'0');
+  const sStr = s.toFixed(2).padStart(5,'0');
+  return `${gStr}°${mStr}'${sStr}"${hemi}`;
+}
+
+// ===== FORMATO COMPLETO: devuelve un objeto con decimal, GMS y GK =====
+function formatAllCoords(lat, lon, faja){
+  if(isNaN(lat)||isNaN(lon))return null;
+  faja = faja || 5;
+  const gk = llToGK(faja, lat, lon);
+  return {
+    decimal: {lat: lat.toFixed(6), lon: lon.toFixed(6)},
+    gms: {lat: decimalToGMS(lat, true), lon: decimalToGMS(lon, false)},
+    gk: gk ? {x: gk.x.toFixed(2), y: gk.y.toFixed(2)} : null,
+    faja: faja
+  };
 }
 
 // ===== PALETA COLORES =====
@@ -786,15 +822,20 @@ function refreshMarkers(){
     };
 
     if(hasIni&&hasFin){
-      // Tramo completo: dos marcadores + linea conectora
+      // Tramo completo: dos marcadores + línea conectora (más visible)
       const mIni=L.marker([r.lat1,r.lon1],{icon:mkIcon(cat.color)}).addTo(map);
       const mFin=L.marker([r.lat2,r.lon2],{icon:mkIcon(cat.color)}).addTo(map);
       mIni.on('click',onClick);mFin.on('click',onClick);
       mIni.bindTooltip(r.name+' (inicio)',{direction:'top',offset:[0,-26]});
       mFin.bindTooltip(r.name+' (fin)',{direction:'top',offset:[0,-26]});
-      const line=L.polyline([[r.lat1,r.lon1],[r.lat2,r.lon2]],{color:cat.color,weight:3,opacity:.75,dashArray:'5,5'}).addTo(map);
+      // Línea principal del trazo (sólida, más gruesa)
+      const line=L.polyline([[r.lat1,r.lon1],[r.lat2,r.lon2]],{color:cat.color,weight:4,opacity:.85}).addTo(map);
       line.on('click',onClick);
-      layers.push(mIni,mFin,line);
+      // Circulitos en los extremos para mayor visibilidad
+      const dotIni=L.circleMarker([r.lat1,r.lon1],{radius:5,color:cat.color,fillColor:cat.color,fillOpacity:1,weight:2}).addTo(map);
+      const dotFin=L.circleMarker([r.lat2,r.lon2],{radius:5,color:cat.color,fillColor:cat.color,fillOpacity:1,weight:2}).addTo(map);
+      dotIni.on('click',onClick);dotFin.on('click',onClick);
+      layers.push(mIni,mFin,line,dotIni,dotFin);
     }else if(hasIni||hasFin||hasCen){
       // Un solo punto disponible
       const p=hasCen?{lat:r.lat,lon:r.lon}:hasIni?{lat:r.lat1,lon:r.lon1}:{lat:r.lat2,lon:r.lon2};
@@ -907,7 +948,22 @@ function liveConvLL(){
     if(gk){
       document.getElementById('gk-x').value=gk.x.toFixed(2);
       document.getElementById('gk-y').value=gk.y.toFixed(2);
-      document.getElementById('r-ll').innerHTML='<b>X GK Faja '+faja+':</b> '+gk.x.toFixed(2)+'<br><b>Y GK Faja '+faja+':</b> '+gk.y.toFixed(2);
+      document.getElementById('r-ll').innerHTML=
+        '<div style="font-size:10px;font-weight:700;color:#2a6a2a;text-transform:uppercase;margin-bottom:5px;letter-spacing:.05em">Coordenadas equivalentes</div>'+
+        '<div style="display:grid;gap:5px">'+
+          '<div style="background:#f8fbf8;border:1px solid #b0d0b0;border-radius:5px;padding:6px 8px">'+
+            '<div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase">Lat/Lon Decimal</div>'+
+            '<div style="font-family:monospace;font-size:12px;color:#1a3a1a;font-weight:700">'+lat.toFixed(6)+', '+lon.toFixed(6)+'</div>'+
+          '</div>'+
+          '<div style="background:#f8fbf8;border:1px solid #b0d0b0;border-radius:5px;padding:6px 8px">'+
+            '<div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase">Lat/Lon GMS</div>'+
+            '<div style="font-family:monospace;font-size:12px;color:#1a3a1a;font-weight:700">'+decimalToGMS(lat,true)+'<br>'+decimalToGMS(lon,false)+'</div>'+
+          '</div>'+
+          '<div style="background:#f8fbf8;border:1px solid #b0d0b0;border-radius:5px;padding:6px 8px">'+
+            '<div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase">Gauss-Krüger Faja '+faja+'</div>'+
+            '<div style="font-family:monospace;font-size:12px;color:#1a3a1a;font-weight:700">X: '+gk.x.toFixed(2)+'  |  Y: '+gk.y.toFixed(2)+'</div>'+
+          '</div>'+
+        '</div>';
       document.getElementById('r-ll').classList.add('show');
       document.getElementById('err-ll').classList.remove('show');
     }
@@ -923,7 +979,22 @@ function liveConvGK(){
     if(ll&&!isNaN(ll.lat)){
       document.getElementById('c-lat').value=ll.lat.toFixed(6);
       document.getElementById('c-lon').value=ll.lon.toFixed(6);
-      document.getElementById('r-gk').innerHTML='<b>Latitud:</b> '+ll.lat.toFixed(6)+'<br><b>Longitud:</b> '+ll.lon.toFixed(6);
+      document.getElementById('r-gk').innerHTML=
+        '<div style="font-size:10px;font-weight:700;color:#2a6a2a;text-transform:uppercase;margin-bottom:5px;letter-spacing:.05em">Coordenadas equivalentes</div>'+
+        '<div style="display:grid;gap:5px">'+
+          '<div style="background:#f8fbf8;border:1px solid #b0d0b0;border-radius:5px;padding:6px 8px">'+
+            '<div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase">Lat/Lon Decimal</div>'+
+            '<div style="font-family:monospace;font-size:12px;color:#1a3a1a;font-weight:700">'+ll.lat.toFixed(6)+', '+ll.lon.toFixed(6)+'</div>'+
+          '</div>'+
+          '<div style="background:#f8fbf8;border:1px solid #b0d0b0;border-radius:5px;padding:6px 8px">'+
+            '<div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase">Lat/Lon GMS</div>'+
+            '<div style="font-family:monospace;font-size:12px;color:#1a3a1a;font-weight:700">'+decimalToGMS(ll.lat,true)+'<br>'+decimalToGMS(ll.lon,false)+'</div>'+
+          '</div>'+
+          '<div style="background:#f8fbf8;border:1px solid #b0d0b0;border-radius:5px;padding:6px 8px">'+
+            '<div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase">Gauss-Krüger Faja '+faja+'</div>'+
+            '<div style="font-family:monospace;font-size:12px;color:#1a3a1a;font-weight:700">X: '+x.toFixed(2)+'  |  Y: '+y.toFixed(2)+'</div>'+
+          '</div>'+
+        '</div>';
       document.getElementById('r-gk').classList.add('show');
       document.getElementById('err-gk').classList.remove('show');
     }
@@ -983,18 +1054,28 @@ function showDet(id){
     if(!val&&val!==0)return'';
     return `<div class="det-f full"><label>${label}</label><span>${val}</span></div>`;
   };
-  // Bloque de coordenadas
+  // Bloque de coordenadas — muestra Decimal, GMS y GK
   const coordBlock=(label,lat,lon,gkx,gky)=>{
     if(!lat&&!lon&&!gkx&&!gky)return'';
     const latV=lat!=null?lat.toFixed(6):'';
     const lonV=lon!=null?lon.toFixed(6):'';
+    const latGMS=lat!=null?decimalToGMS(lat,true):'';
+    const lonGMS=lon!=null?decimalToGMS(lon,false):'';
     return `<div style="background:#e8f5e8;border:1px solid #b0d0b0;border-radius:7px;padding:8px 10px;margin-top:6px">
       <div style="font-size:9px;font-weight:700;color:#2a6a2a;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">${label}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
-        ${latV?`<div style="background:#f8fbf8;border-radius:4px;padding:5px 7px"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;font-weight:700;margin-bottom:2px">LATITUD</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${latV}</div></div>`:''}
-        ${lonV?`<div style="background:#f8fbf8;border-radius:4px;padding:5px 7px"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;font-weight:700;margin-bottom:2px">LONGITUD</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${lonV}</div></div>`:''}
-        ${gkx?`<div style="background:#f8fbf8;border-radius:4px;padding:5px 7px"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;font-weight:700;margin-bottom:2px">GK X FAJA 5</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${gkx}</div></div>`:''}
-        ${gky?`<div style="background:#f8fbf8;border-radius:4px;padding:5px 7px"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase;font-weight:700;margin-bottom:2px">GK Y FAJA 5</div><div style="font-family:monospace;font-size:11px;color:#a0d0a0">${gky}</div></div>`:''}
+      <div style="display:grid;gap:5px">
+        ${(latV||lonV)?`<div style="background:#f8fbf8;border-radius:5px;padding:5px 8px;border:1px solid #c0d8c0">
+          <div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase;margin-bottom:2px">Lat/Lon Decimal</div>
+          <div style="font-family:monospace;font-size:11px;color:#1a3a1a;font-weight:700">${latV}${lonV?(', '+lonV):''}</div>
+        </div>`:''}
+        ${(latGMS||lonGMS)?`<div style="background:#f8fbf8;border-radius:5px;padding:5px 8px;border:1px solid #c0d8c0">
+          <div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase;margin-bottom:2px">Lat/Lon GMS (grados/min/seg)</div>
+          <div style="font-family:monospace;font-size:11px;color:#1a3a1a;font-weight:700">${latGMS}${lonGMS?('<br>'+lonGMS):''}</div>
+        </div>`:''}
+        ${(gkx||gky)?`<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+          ${gkx?`<div style="background:#f8fbf8;border-radius:5px;padding:5px 8px;border:1px solid #c0d8c0"><div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase;margin-bottom:2px">GK X Faja 5</div><div style="font-family:monospace;font-size:11px;color:#1a3a1a;font-weight:700">${gkx}</div></div>`:''}
+          ${gky?`<div style="background:#f8fbf8;border-radius:5px;padding:5px 8px;border:1px solid #c0d8c0"><div style="font-size:9px;color:#4a7a4a;font-weight:700;text-transform:uppercase;margin-bottom:2px">GK Y Faja 5</div><div style="font-family:monospace;font-size:11px;color:#1a3a1a;font-weight:700">${gky}</div></div>`:''}
+        </div>`:''}
       </div>
     </div>`;
   };
@@ -1752,6 +1833,374 @@ function segmentIntersect(a,b,c,d){
 let _polyPts = [];          // [{lat,lon,gkx,gky}, ...]
 let _polyMapLayers = [];    // capas Leaflet dibujadas (linea + marcadores + cruces)
 let _polyResults = [];      // cruces encontrados [{lat,lon,gkx,gky,nombre,tipo}, ...]
+let _polyCrucesCompletos = []; // cruces con entrada/salida [{nombre,tipo,entry,exit,...}, ...]
+
+// ════════════════════════════════════════════════════════════════════════════
+//  FUNCIONES PARA DETECCIÓN AUTOMÁTICA DE ENTRADA/SALIDA DE CRUCES
+// ════════════════════════════════════════════════════════════════════════════
+
+// Ancho total (en metros) de cada tipo de calle según clasificación OSM "highway".
+// Se usa SOLO como fallback cuando el way no tiene tag 'width' ni 'lanes'.
+function streetWidth(highwayType){
+  const W={
+    motorway:36, motorway_link:18, trunk:30, trunk_link:18,
+    primary:24, primary_link:14, secondary:20, secondary_link:12,
+    tertiary:16, tertiary_link:10, unclassified:14, residential:12,
+    service:8, track:6, road:14,
+    living_street:10, pedestrian:8, busway:14,
+    footway:3, path:3, cycleway:4, bridleway:4
+  };
+  return W[highwayType]||12;
+}
+
+// Obtiene el ancho real de un way OSM (en metros):
+//  1. tag 'width' (si existe)
+//  2. tag 'lanes' * 3.5m (ancho estándar de carril)
+//  3. null (para usar fallback streetWidth)
+function getWayWidth(way){
+  if(way&&way.tags){
+    const w=way.tags.width;
+    if(w){
+      const n=parseFloat(String(w).replace(',','.'));
+      if(!isNaN(n)&&n>0)return n;
+    }
+    const lanes=way.tags.lanes;
+    if(lanes){
+      const n=parseInt(lanes,10);
+      if(!isNaN(n)&&n>0)return n*3.5;
+    }
+  }
+  return null;
+}
+
+// Calcula el ángulo AGUDO (0-90°) entre dos segmentos A-B y C-D.
+// Usa proyección local en metros para precisión.
+function angleBetweenDeg(A,B,C,D){
+  const lat0=(A.lat+B.lat+C.lat+D.lat)/4;
+  const cosLat=Math.cos(lat0*Math.PI/180);
+  const v1x=(B.lon-A.lon)*111000*cosLat;
+  const v1y=(B.lat-A.lat)*111000;
+  const v2x=(D.lon-C.lon)*111000*cosLat;
+  const v2y=(D.lat-C.lat)*111000;
+  const dot=v1x*v2x+v1y*v2y;
+  const m1=Math.sqrt(v1x*v1x+v1y*v1y);
+  const m2=Math.sqrt(v2x*v2x+v2y*v2y);
+  if(m1<1e-6||m2<1e-6)return 90;
+  const cosAng=Math.max(-1,Math.min(1,dot/(m1*m2)));
+  let angDeg=Math.acos(cosAng)*180/Math.PI;
+  if(angDeg>90)angDeg=180-angDeg;
+  return angDeg;
+}
+
+// Distancia (en metros) a lo largo de la polilínea hasta el punto target.
+function distAlongPoly(pts,target){
+  let acc=0,best=Infinity,bestDist=0;
+  const norm = p => Array.isArray(p) ? {lat:p[0],lon:p[1]} : p;
+  const t = norm(target);
+  for(let i=0;i<pts.length-1;i++){
+    const A=norm(pts[i]), B=norm(pts[i+1]);
+    const segLen=haversineM(A.lat,A.lon,B.lat,B.lon);
+    if(segLen<1e-6){acc+=segLen;continue;}
+    const cosLat=Math.cos(A.lat*Math.PI/180);
+    const dAx_m=(t.lat-A.lat)*111000;
+    const dAy_m=(t.lon-A.lon)*111000*cosLat;
+    const dBx_m=(B.lat-A.lat)*111000;
+    const dBy_m=(B.lon-A.lon)*111000*cosLat;
+    const segLen_m=Math.sqrt(dBx_m*dBx_m+dBy_m*dBy_m);
+    if(segLen_m<1e-6){acc+=segLen;continue;}
+    const tProj=(dAx_m*dBx_m+dAy_m*dBy_m)/(segLen_m*segLen_m);
+    const tClamped=Math.max(0,Math.min(1,tProj));
+    const projLat=A.lat+tClamped*(B.lat-A.lat);
+    const projLon=A.lon+tClamped*(B.lon-A.lon);
+    const d=haversineM(t.lat,t.lon,projLat,projLon);
+    if(d<best){best=d;bestDist=acc+tClamped*segLen;}
+    acc+=segLen;
+  }
+  return bestDist;
+}
+
+// Devuelve el punto {lat,lon} que está a `distance` metros desde el inicio de la polilínea.
+function pointAtDistance(pts,distance){
+  let acc=0;
+  const norm = p => Array.isArray(p) ? {lat:p[0],lon:p[1]} : p;
+  for(let i=0;i<pts.length-1;i++){
+    const A=norm(pts[i]), B=norm(pts[i+1]);
+    const segLen=haversineM(A.lat,A.lon,B.lat,B.lon);
+    if(acc+segLen>=distance){
+      const t=segLen>0?(distance-acc)/segLen:0;
+      return {lat:A.lat+t*(B.lat-A.lat), lon:A.lon+t*(B.lon-A.lon)};
+    }
+    acc+=segLen;
+  }
+  return norm(pts[pts.length-1]);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+//  CÁLCULO DE CRUCES COMPLETOS (entrada + salida por cada calle cruzada)
+// ════════════════════════════════════════════════════════════════════════════
+// pts: [{lat,lon}] o [[lat,lon]] puntos de la polilínea del usuario
+// ways: array de elementos OSM (con .geometry y .tags)
+// Devuelve: [{nombre,tipo,entry,exit,mid,anchoCalle,anchoReal,angle,length,...}, ...]
+//
+// Para cada cruce:
+//  1. Obtiene el ancho real de la calle (tag 'width' de OSM, o 'lanes'*3.5, o estimado por tipo)
+//  2. Calcula el ángulo entre la polilínea y la calle en el punto de cruce
+//  3. Longitud del cruce a lo largo de la polilínea = ancho / |sin(ángulo)|
+//  4. Entrada/Salida = punto_cruce ± longitud/2 a lo largo de la polilínea
+//
+// Cada cruce tiene su longitud ÚNICA basada en la geometría real.
+function calcularCrucesCompletos(pts,ways){
+  const norm = p => Array.isArray(p) ? {lat:p[0],lon:p[1]} : p;
+  const normPts = pts.map(norm);
+  const wayMap = new Map();
+  for(const w of ways) wayMap.set(w.id, w);
+
+  // Agrupar intersecciones por wayId, guardando el segmento de la polilínea
+  // y el segmento del way que se cruzaron (para calcular el ángulo)
+  const byWay = new Map();
+
+  for(let i=0;i<normPts.length-1;i++){
+    const P1=normPts[i], P2=normPts[i+1];
+    for(const way of ways){
+      if(!way.geometry||way.geometry.length<2)continue;
+      const wayName=(way.tags&&(way.tags.name||way.tags.ref))||'Camino sin nombre';
+      const wayType=(way.tags&&way.tags.highway)||'road';
+      const wayId=way.id;
+      for(let j=0;j<way.geometry.length-1;j++){
+        const W1={lat:way.geometry[j].lat,lon:way.geometry[j].lon};
+        const W2={lat:way.geometry[j+1].lat,lon:way.geometry[j+1].lon};
+        const ix=segIntersectPt(P1,P2,W1,W2);
+        if(ix){
+          if(!byWay.has(wayId)) byWay.set(wayId,{
+            nombre:wayName, tipo:wayType, points:[], wayId:wayId
+          });
+          byWay.get(wayId).points.push({
+            lat:ix.lat, lon:ix.lon,
+            polySeg:{P1,P2},
+            waySeg :{W1,W2}
+          });
+        }
+      }
+    }
+  }
+
+  const cruces=[];
+  for(const [wayId,data] of byWay){
+    // Eliminar duplicados muy cercanos (< 3m) dentro del mismo way
+    const unique=[];
+    for(const p of data.points){
+      const dup=unique.some(u=>haversineM(p.lat,p.lon,u.lat,u.lon)<3);
+      if(!dup)unique.push(p);
+    }
+    if(unique.length===0)continue;
+
+    unique.sort((a,b)=>distAlongPoly(normPts,a)-distAlongPoly(normPts,b));
+
+    // ─── Ancho real de la calle ───
+    const way = wayMap.get(wayId);
+    const realWidth = getWayWidth(way);
+    const defaultWidth = streetWidth(data.tipo);
+    const anchoCalle = realWidth || defaultWidth;
+
+    let entry, exit, lengthCruce, angleDeg;
+
+    if(unique.length===1){
+      // ─── Calzada única ───
+      const u = unique[0];
+      angleDeg = angleBetweenDeg(u.polySeg.P1, u.polySeg.P2, u.waySeg.W1, u.waySeg.W2);
+      const sinAng = Math.sin(angleDeg*Math.PI/180);
+      const sinClamped = Math.max(0.0872, Math.abs(sinAng)); // mínimo 5°
+      lengthCruce = anchoCalle / sinClamped;
+      const halfLen = lengthCruce/2;
+      const dAlong = distAlongPoly(normPts, u);
+      entry = pointAtDistance(normPts, Math.max(0, dAlong-halfLen));
+      exit  = pointAtDistance(normPts, dAlong+halfLen);
+    } else {
+      // ─── Múltiples intersecciones (calzadas dobles, colectoras, etc.) ───
+      const midIdx = Math.floor(unique.length/2);
+      const uMid = unique[midIdx];
+      angleDeg = angleBetweenDeg(uMid.polySeg.P1, uMid.polySeg.P2, uMid.waySeg.W1, uMid.waySeg.W2);
+      entry = unique[0];
+      exit  = unique[unique.length-1];
+      lengthCruce = haversineM(entry.lat, entry.lon, exit.lat, exit.lon);
+    }
+
+    cruces.push({
+      nombre: data.nombre,
+      tipo: data.tipo,
+      entry: {lat:entry.lat, lon:entry.lon},
+      exit : {lat:exit.lat,  lon:exit.lon},
+      mid  : {lat:(entry.lat+exit.lat)/2, lon:(entry.lon+exit.lon)/2},
+      anchoCalle: anchoCalle,
+      anchoReal: !!realWidth,
+      angle: angleDeg,
+      length: lengthCruce,
+      wayId: wayId,
+      ptCount: unique.length,
+      _uniquePoints: unique,
+      _polyPtsRef: normPts
+    });
+  }
+
+  cruces.sort((a,b)=>distAlongPoly(normPts,a.entry)-distAlongPoly(normPts,b.entry));
+  return cruces;
+}
+
+// Crea el HTML de las tarjetas de resultado (entrada + salida por cruce).
+// Muestra para cada cruce: nombre, tipo, ancho de la calle (real/estimado),
+// ángulo de cruce, longitud del cruce, y coordenadas Lat/Lon/GK de ENTRADA/SALIDA.
+function renderCrucesCompletosHTML(cruces){
+  if(!cruces||cruces.length===0){
+    return '<div style="padding:12px;background:#fff8e8;border-radius:8px;border-left:4px solid #d4a020;font-size:14px;color:#7a4a00">No se detectaron cruces con calles en esta zona.<br><small>Verificá que la polilínea pase sobre calles del mapa OSM.</small></div>';
+  }
+
+  let html=`<div style="font-size:15px;font-weight:800;color:#1a4a1a;margin-bottom:10px;padding:8px 12px;background:#e8f5e8;border-radius:8px;border-left:4px solid #2a8a2a">
+    &#10003; ${cruces.length} cruce${cruces.length!==1?'s':''} detectado${cruces.length!==1?'s':''} — ${cruces.length*2} puntos (entrada+salida)
+  </div>`;
+
+  cruces.forEach((c,n)=>{
+    const gkE=llToGK(5,c.entry.lat,c.entry.lon);
+    const gkX=llToGK(5,c.exit.lat,c.exit.lon);
+    const gkE_x=gkE?gkE.x.toFixed(2):'—', gkE_y=gkE?gkE.y.toFixed(2):'—';
+    const gkX_x=gkX?gkX.x.toFixed(2):'—', gkX_y=gkX?gkX.y.toFixed(2):'—';
+
+    const anchoBadge = c.anchoReal
+      ? `<span style="background:#2a8a2a;color:#fff;padding:1px 5px;border-radius:8px;font-size:9px">OSM</span> ${c.anchoCalle.toFixed(1)} m`
+      : `<span style="background:#d4a020;color:#fff;padding:1px 5px;border-radius:8px;font-size:9px">EST</span> ${c.anchoCalle.toFixed(1)} m`;
+
+    html+=`
+    <div id="cruce-card-${n}" style="background:#ffffff;border:2px solid #cc4444;border-radius:10px;padding:13px 15px;margin-bottom:12px;box-shadow:0 2px 8px rgba(180,40,40,.12)">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;flex-wrap:wrap;gap:5px">
+        <div style="font-size:15px;font-weight:800;color:#1a2a1a;flex:1;min-width:120px">${n+1}. ${c.nombre}</div>
+        <div style="font-size:10px;background:#cc4444;color:#fff;padding:2px 8px;border-radius:10px;font-weight:700">Long. cruce: ${c.length.toFixed(1)} m</div>
+      </div>
+      <div style="font-size:12px;color:#6a6a6a;margin-bottom:9px;text-transform:capitalize">${c.tipo.replace(/_/g,' ')}${c.ptCount>1?' · '+c.ptCount+' intersecciones':''}</div>
+
+      <div style="background:#f5f8ff;border:1px solid #b0c4e0;border-radius:6px;padding:7px 10px;margin-bottom:9px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px">
+        <div style="text-align:center">
+          <div style="font-size:8px;color:#3a5a9a;font-weight:800;text-transform:uppercase;margin-bottom:2px">Ancho calle</div>
+          <div style="font-family:monospace;font-size:13px;font-weight:700;color:#1a3a6a">${anchoBadge}</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:8px;color:#3a5a9a;font-weight:800;text-transform:uppercase;margin-bottom:2px">Ángulo cruce</div>
+          <div style="font-family:monospace;font-size:13px;font-weight:700;color:#1a3a6a">${c.angle.toFixed(0)}°</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:8px;color:#3a5a9a;font-weight:800;text-transform:uppercase;margin-bottom:2px">Long. polilínea</div>
+          <div style="font-family:monospace;font-size:13px;font-weight:700;color:#1a3a6a">${c.length.toFixed(1)} m</div>
+        </div>
+      </div>
+
+      <div style="background:#fff0f0;border-left:3px solid #cc0000;border-radius:6px;padding:8px 10px;margin-bottom:6px">
+        <div style="font-size:10px;color:#cc0000;font-weight:800;text-transform:uppercase;margin-bottom:5px">&#9654; ENTRADA del cruce</div>
+        <div style="display:grid;gap:5px">
+          <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #e8c8c8">
+            <div style="font-size:9px;color:#4a7a4a;font-weight:800;text-transform:uppercase">Lat/Lon Decimal</div>
+            <div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a2a1a">${c.entry.lat.toFixed(6)}, ${c.entry.lon.toFixed(6)}</div>
+          </div>
+          <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #e8c8c8">
+            <div style="font-size:9px;color:#4a7a4a;font-weight:800;text-transform:uppercase">Lat/Lon GMS</div>
+            <div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a2a1a">${decimalToGMS(c.entry.lat,true)}<br>${decimalToGMS(c.entry.lon,false)}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #e8c8c8">
+              <div style="font-size:9px;color:#4a7a4a;font-weight:800;text-transform:uppercase">GK X Faja 5</div>
+              <div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a2a1a">${gkE_x}</div>
+            </div>
+            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #e8c8c8">
+              <div style="font-size:9px;color:#4a7a4a;font-weight:800;text-transform:uppercase">GK Y Faja 5</div>
+              <div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a2a1a">${gkE_y}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#fff0f0;border-left:3px solid #cc0000;border-radius:6px;padding:8px 10px;margin-bottom:9px">
+        <div style="font-size:10px;color:#cc0000;font-weight:800;text-transform:uppercase;margin-bottom:5px">&#9664; SALIDA del cruce</div>
+        <div style="display:grid;gap:5px">
+          <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #e8c8c8">
+            <div style="font-size:9px;color:#4a7a4a;font-weight:800;text-transform:uppercase">Lat/Lon Decimal</div>
+            <div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a2a1a">${c.exit.lat.toFixed(6)}, ${c.exit.lon.toFixed(6)}</div>
+          </div>
+          <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #e8c8c8">
+            <div style="font-size:9px;color:#4a7a4a;font-weight:800;text-transform:uppercase">Lat/Lon GMS</div>
+            <div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a2a1a">${decimalToGMS(c.exit.lat,true)}<br>${decimalToGMS(c.exit.lon,false)}</div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px">
+            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #e8c8c8">
+              <div style="font-size:9px;color:#4a7a4a;font-weight:800;text-transform:uppercase">GK X Faja 5</div>
+              <div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a2a1a">${gkX_x}</div>
+            </div>
+            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #e8c8c8">
+              <div style="font-size:9px;color:#4a7a4a;font-weight:800;text-transform:uppercase">GK Y Faja 5</div>
+              <div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a2a1a">${gkX_y}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="cbtn" style="flex:1;margin:0;font-size:10px;background:#cc4444;color:#fff" onclick="copyVal('CRUCE ${n+1}: ${c.nombre}\\nLONGITUD: ${c.length.toFixed(1)} m\\n\\nENTRADA:\\n  Decimal: ${c.entry.lat.toFixed(6)}, ${c.entry.lon.toFixed(6)}\\n  GMS: ${decimalToGMS(c.entry.lat,true)} ${decimalToGMS(c.entry.lon,false)}\\n  GK: ${gkE_x}, ${gkE_y}\\n\\nSALIDA:\\n  Decimal: ${c.exit.lat.toFixed(6)}, ${c.exit.lon.toFixed(6)}\\n  GMS: ${decimalToGMS(c.exit.lat,true)} ${decimalToGMS(c.exit.lon,false)}\\n  GK: ${gkX_x}, ${gkX_y}')">Copiar todo</button>
+        <button class="cbtn" style="flex:1;margin:0;font-size:10px;background:#1a5a1a" onclick="usarCruceCompletoEnForm(${n})">Usar en registro</button>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+// Dibuja en el mapa los marcadores rojos de entrada/salida para cada cruce.
+// Cada capa se etiqueta con _cruceIdx=n para poder removerla individualmente.
+function dibujarCrucesEnMapa(cruces){
+  cruces.forEach((c,n)=>{
+    const mkE=L.circleMarker([c.entry.lat,c.entry.lon],{
+      radius:8,color:'#cc0000',fillColor:'#ff3333',fillOpacity:.95,weight:3
+    }).addTo(map);
+    mkE.bindTooltip(`<b>${n+1}. ${c.nombre} — ENTRADA</b><br>${c.entry.lat.toFixed(6)}, ${c.entry.lon.toFixed(6)}`,{direction:'top'});
+    mkE.on('click',()=>{copyVal(`${c.entry.lat.toFixed(6)}, ${c.entry.lon.toFixed(6)}`);toast('Coordenadas ENTRADA copiadas');});
+    mkE._cruceIdx=n;_polyMapLayers.push(mkE);
+
+    const mkX=L.circleMarker([c.exit.lat,c.exit.lon],{
+      radius:8,color:'#990000',fillColor:'#cc3333',fillOpacity:.95,weight:3
+    }).addTo(map);
+    mkX.bindTooltip(`<b>${n+1}. ${c.nombre} — SALIDA</b><br>${c.exit.lat.toFixed(6)}, ${c.exit.lon.toFixed(6)}`,{direction:'top'});
+    mkX.on('click',()=>{copyVal(`${c.exit.lat.toFixed(6)}, ${c.exit.lon.toFixed(6)}`);toast('Coordenadas SALIDA copiadas');});
+    mkX._cruceIdx=n;_polyMapLayers.push(mkX);
+
+    const lineCruce=L.polyline([[c.entry.lat,c.entry.lon],[c.exit.lat,c.exit.lon]],{
+      color:'#cc0000',weight:5,opacity:.85
+    }).addTo(map);
+    lineCruce._cruceIdx=n;_polyMapLayers.push(lineCruce);
+
+    const lbl=L.marker([c.mid.lat,c.mid.lon],{
+      icon:L.divIcon({
+        html:`<div style="background:#cc0000;color:#fff;font-weight:800;font-size:12px;padding:2px 7px;border-radius:10px;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.4)">${n+1}</div>`,
+        className:'',iconAnchor:[12,12]
+      })
+    }).addTo(map);
+    lbl._cruceIdx=n;_polyMapLayers.push(lbl);
+  });
+}
+
+// Carga un cruce completo (entrada + salida) en el formulario de nuevo registro
+function usarCruceCompletoEnForm(n){
+  const c=_polyCrucesCompletos[n];
+  if(!c)return;
+  openRecordModal();
+  setTimeout(()=>{
+    document.getElementById('f-lat1').value=c.entry.lat.toFixed(6);
+    document.getElementById('f-lon1').value=c.entry.lon.toFixed(6);
+    fConvLL1();
+    document.getElementById('f-lat2').value=c.exit.lat.toFixed(6);
+    document.getElementById('f-lon2').value=c.exit.lon.toFixed(6);
+    fConvLL2();
+    if(c.nombre&&c.nombre!=='Camino sin nombre'){
+      const ruta=document.getElementById('f-ruta');
+      if(!ruta.value)ruta.value=c.nombre;
+    }
+    toast('Coordenadas de ENTRADA y SALIDA cargadas en el formulario');
+  },300);
+}
+
 
 // ── Inicializar con 2 filas vacías ──────────────────────────────────────────
 function polyInit(){
@@ -1834,173 +2283,89 @@ function polyClear(){
   polyInit();
 }
 
-// ── Dibujar polilínea en el mapa y buscar cruces OSM ────────────────────────
+// ── Dibujar polilínea en el mapa y buscar AUTOMÁTICAMENTE cruces OSM ──────
+// Para cada calle/avenida cruzada, calcula ENTRADA y SALIDA del cruce
+// (2 puntos por calle cruzada). La longitud de cada cruce se calcula
+// automáticamente según el ancho real de la calle y el ángulo de cruce.
 async function polyCalcOSM(){
   const err=document.getElementById('err-poly');
   const resList=document.getElementById('r-poly-list');
   err.classList.remove('show');
   resList.innerHTML='';
 
-  // Releer todos los campos del DOM en este momento (por si se pegaron con mouse)
   for(let i=0;i<_polyPts.length;i++){
-    const el1=document.getElementById('poly-lat-'+i);
-    const el2=document.getElementById('poly-lon-'+i);
-    if(el1&&el2&&(el1.value.trim()||el2.value.trim()))polyConvPt(i);
+    const e1=document.getElementById('poly-lat-'+i);
+    const e2=document.getElementById('poly-lon-'+i);
+    if(e1&&e2&&(e1.value.trim()||e2.value.trim()))polyConvPt(i);
   }
 
-  // Reunir vértices válidos
   const pts=_polyPts.filter(p=>p.lat!=null&&p.lon!=null);
   if(pts.length<2){
-    err.innerHTML='<b>Necesitás al menos 2 vértices válidos.</b><br>Ingresá Lat/Lon decimal (ej: -27.451), GMS (ej: 27 20 07 S, 61 16 29 O) o GK Faja 5 (ej: 5373823.91 / 6976403.04).';
+    err.innerHTML='<b>Necesitas al menos 2 vértices válidos.</b><br>Ingresa Lat/Lon decimal o GK Faja 5.';
     err.classList.add('show');return;
   }
 
-  // Indicador de carga mientras consulta OSM
-  resList.innerHTML='<div style="text-align:center;padding:16px;color:#3a6a3a;font-size:14px;font-weight:600">&#8987; Consultando OpenStreetMap... un momento.</div>';
-
-  // Limpiar capas anteriores
-  _polyMapLayers.forEach(l=>map.removeLayer(l));
+  _polyMapLayers.forEach(l=>{try{map.removeLayer(l);}catch(e){}});
   _polyMapLayers=[];
+  _polyResults=[];
+  _polyCrucesCompletos=[];
 
-  // Dibujar la polilínea
-  const latlngs=pts.map(p=>[p.lat,p.lon]);
-  const poly=L.polyline(latlngs,{color:'#ffcc00',weight:3,opacity:.9,dashArray:'6,4'}).addTo(map);
-  _polyMapLayers.push(poly);
+  const coords=pts.map(p=>[p.lat,p.lon]);
+  const polyLine=L.polyline(coords,{color:'#1565c0',weight:4,opacity:.85}).addTo(map);
+  _polyMapLayers.push(polyLine);
+  map.fitBounds(polyLine.getBounds(),{padding:[60,60]});
 
-  // Marcadores de vértices
-  pts.forEach((p,i)=>{
-    const lbl=String.fromCharCode(65+i);
-    const m=L.circleMarker([p.lat,p.lon],{radius:6,color:'#ffcc00',fillColor:'#ffcc00',fillOpacity:1,weight:2}).addTo(map);
-    m.bindTooltip('Vértice '+lbl,{permanent:true,direction:'top',offset:[0,-8],className:'',opacity:.9});
-    _polyMapLayers.push(m);
-  });
-
-  // Ajustar vista al bounding box de la polilínea
-  map.fitBounds(poly.getBounds(),{padding:[40,40]});
-
-  // Mostrar estado de búsqueda
-  // (carga ya mostrada arriba)
-
-  // Calcular bbox para la query OSM (con margen)
   const lats=pts.map(p=>p.lat), lons=pts.map(p=>p.lon);
-  const margin=0.002;
-  const minLat=Math.min(...lats)-margin, maxLat=Math.max(...lats)+margin;
-  const minLon=Math.min(...lons)-margin, maxLon=Math.max(...lons)+margin;
+  const pad=0.003;
+  const bbox=[Math.min(...lats)-pad, Math.min(...lons)-pad,
+              Math.max(...lats)+pad, Math.max(...lons)+pad].join(',');
 
-  // Query Overpass API — buscar todos los caminos en el área
-  const query=`[out:json][timeout:25];
-(
-  way["highway"](${minLat},${minLon},${maxLat},${maxLon});
-  way["railway"](${minLat},${minLon},${maxLat},${maxLon});
-);
-out geom;`;
+  resList.innerHTML='<div style="text-align:center;padding:14px;color:#3a6a3a;font-size:14px;font-weight:600">&#8987; Detectando cruces con calles de OpenStreetMap...</div>';
 
   try{
+    const query=`[out:json][timeout:25];(way["highway"](${bbox}););out geom;`;
     const resp=await fetch('https://overpass-api.de/api/interpreter',{
-      method:'POST',
-      body:'data='+encodeURIComponent(query)
+      method:'POST',body:'data='+encodeURIComponent(query)
     });
-    if(!resp.ok)throw new Error('Error al conectar con OpenStreetMap');
+    if(!resp.ok)throw new Error('Error OSM: '+resp.status);
     const data=await resp.json();
 
-    // Para cada segmento de la polilínea, buscar intersecciones con los caminos OSM
-    const cruces=[];
-    for(let i=0;i<pts.length-1;i++){
-      const A={lat:pts[i].lat,lon:pts[i].lon};
-      const B={lat:pts[i+1].lat,lon:pts[i+1].lon};
-      for(const way of data.elements){
-        if(!way.geometry||way.geometry.length<2)continue;
-        const nombre=way.tags&&(way.tags.name||way.tags.ref||way.tags.highway||way.tags.railway)||'Camino sin nombre';
-        const tipo=way.tags&&way.tags.highway||way.tags&&way.tags.railway||'way';
-        for(let j=0;j<way.geometry.length-1;j++){
-          const C={lat:way.geometry[j].lat,lon:way.geometry[j].lon};
-          const D={lat:way.geometry[j+1].lat,lon:way.geometry[j+1].lon};
-          const ix=segIntersect(A,B,C,D);
-          if(ix){
-            // Evitar duplicados muy cercanos (mismo cruce detectado 2 veces)
-            const dup=cruces.some(c=>haversineM(c.lat,c.lon,ix.lat,ix.lon)<5);
-            if(!dup){
-              const gk=llToGK(5,ix.lat,ix.lon);
-              cruces.push({
-                lat:ix.lat,lon:ix.lon,
-                gkx:gk?parseFloat(gk.x.toFixed(2)):null,
-                gky:gk?parseFloat(gk.y.toFixed(2)):null,
-                nombre,tipo,
-                segmento:String.fromCharCode(65+i)+'-'+String.fromCharCode(65+i+1)
-              });
-            }
-          }
-        }
-      }
-    }
-
+    // ─── Calcular cruces completos (entrada + salida por calle) ───
+    // Cada cruce calcula automáticamente su longitud según ancho de la calle
+    // y ángulo de cruce. No se asume un mismo ancho para todos.
+    const cruces=calcularCrucesCompletos(pts,data.elements||[]);
+    _polyCrucesCompletos=cruces;
     _polyResults=cruces;
 
-    if(!cruces.length){
-      resList.innerHTML='<div style="font-size:13px;color:#7a4a00;padding:8px;background:#fff8e8;border-radius:6px;border-left:3px solid #d4a020">No se encontraron cruces con caminos de OSM en esta area. Verifica que la polilinea pase por encima de caminos conocidos.</div>';
-      return;
+    dibujarCrucesEnMapa(cruces);
+    resList.innerHTML=renderCrucesCompletosHTML(cruces);
+
+    if(cruces.length>0){
+      const allPts=coords.slice();
+      cruces.forEach(c=>{allPts.push([c.entry.lat,c.entry.lon]);allPts.push([c.exit.lat,c.exit.lon]);});
+      map.fitBounds(L.latLngBounds(allPts),{padding:[60,60],maxZoom:17});
     }
-
-    // Marcar cada cruce en el mapa y mostrar resultados
-    resList.innerHTML='<div style="font-size:15px;font-weight:800;color:#1a4a1a;margin-bottom:10px;padding:8px 10px;background:#e8f5e8;border-radius:7px;border-left:4px solid #2a8a2a">&#10003; '+cruces.length+' cruce'+(cruces.length!==1?'s':'')+' encontrado'+(cruces.length!==1?'s':'')+' con rutas/caminos</div>';
-    cruces.forEach((c,n)=>{
-      // Marcador en el mapa
-      const mk=L.circleMarker([c.lat,c.lon],{radius:8,color:'#ff4444',fillColor:'#ff2222',fillOpacity:.85,weight:2}).addTo(map);
-      mk.bindTooltip('<b>'+(n+1)+'.</b> '+c.nombre,{direction:'top',offset:[0,-10],permanent:false});
-      _polyMapLayers.push(mk);
-
-      // Tarjeta de resultado
-      const card=document.createElement('div');
-      card.style.cssText='background:#ffffff;border:2px solid #4a8a4a;border-radius:10px;padding:13px 15px;margin-bottom:10px;box-shadow:0 2px 8px rgba(42,106,42,.12)';
-      card.innerHTML=`
-        <div style="color:#1a4a1a;font-weight:800;margin-bottom:5px;font-size:14px">${n+1}. ${c.nombre} <span style="font-weight:500;color:#5a7a5a">(${tipoLabel(c.tipo)})</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:5px">
-          <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">LATITUD</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${c.lat.toFixed(6)}</div></div>
-          <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">LONGITUD</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${c.lon.toFixed(6)}</div></div>
-          ${c.gkx?'<div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK X</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">'+c.gkx+'</div></div>':''}
-          ${c.gky?'<div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK Y</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">'+c.gky+'</div></div>':''}
-        </div>
-        <div style="display:flex;gap:5px;margin-top:4px">
-          <button class="cbtn" style="flex:1;margin:0;font-size:12px;padding:7px" onclick="navigator.clipboard.writeText('${c.lat.toFixed(6)}, ${c.lon.toFixed(6)}').then(()=>toast('Lat/Lon copiado'))">Copiar Lat/Lon</button>
-          <button class="cbtn" style="flex:1;margin:0;font-size:12px;padding:7px;background:#1a4a7a" onclick="navigator.clipboard.writeText('${c.gkx||''}, ${c.gky||''}').then(()=>toast('GK copiado'))">Copiar GK</button>
-          <button class="cbtn" style="flex:1;margin:0;font-size:12px;padding:7px;background:#1a5a1a" onclick="polyUsarCruce(${n})">Usar en registro</button>
-        </div>`;
-      resList.appendChild(card);
-    });
 
   }catch(e){
     resList.innerHTML='';
-    err.textContent='Error al consultar OSM: '+e.message+'. Verifica tu conexion a internet.';
+    err.innerHTML='Error consultando OSM: '+e.message+'<br><small>Verificá tu conexión a internet.</small>';
     err.classList.add('show');
   }
 }
 
-// ── Etiqueta legible para tipo de camino OSM ───────────────────────────────
-function tipoLabel(t){
-  const m={primary:'Ruta principal',secondary:'Ruta secundaria',tertiary:'Camino terciario',
-    unclassified:'Camino vecinal',residential:'Calle',track:'Huella/Camino rural',
-    path:'Sendero',footway:'Senda peatonal',railway:'Ferrocarril',primary_link:'Acceso ruta',
-    trunk:'Ruta troncal',motorway:'Autopista',road:'Camino'};
-  return m[t]||t;
+// Calcular punto exacto de interseccion de dos segmentos finitos
+// Devuelve {lat,lon} si se cruzan, null si no
+function segIntersectPt(P1,P2,P3,P4){
+  const d1lat=P2.lat-P1.lat, d1lon=P2.lon-P1.lon;
+  const d2lat=P4.lat-P3.lat, d2lon=P4.lon-P3.lon;
+  const denom=d1lon*d2lat-d1lat*d2lon;
+  if(Math.abs(denom)<1e-12)return null;
+  const t=((P3.lon-P1.lon)*d2lat-(P3.lat-P1.lat)*d2lon)/denom;
+  const s=((P3.lon-P1.lon)*d1lat-(P3.lat-P1.lat)*d1lon)/denom;
+  // Solo si ambos parametros estan en [0,1] (interseccion dentro de ambos segmentos)
+  if(t<-0.001||t>1.001||s<-0.001||s>1.001)return null;
+  return{lat:P1.lat+t*d1lat, lon:P1.lon+t*d1lon};
 }
-
-// ── Intersección geométrica de dos segmentos ──────────────────────────────
-function segIntersect(A,B,C,D){
-  // Usando lat/lon como plano (válido para distancias cortas)
-  const r={lat:B.lat-A.lat,lon:B.lon-A.lon};
-  const s={lat:D.lat-C.lat,lon:D.lon-C.lon};
-  const denom=r.lat*s.lon-r.lon*s.lat;
-  if(Math.abs(denom)<1e-12)return null; // paralelos
-  const dx=C.lat-A.lat, dy=C.lon-A.lon;
-  const t=(dx*s.lon-dy*s.lat)/denom;
-  const u=(dx*r.lon-dy*r.lat)/denom;
-  if(t>=0&&t<=1&&u>=0&&u<=1){
-    return{lat:A.lat+t*r.lat,lon:A.lon+t*r.lon};
-  }
-  return null;
-}
-
-// ── Usar un cruce como coordenada de inicio en nuevo registro ─────────────
 function polyUsarCruce(n){
   const c=_polyResults[n];
   if(!c)return;
@@ -2667,24 +3032,31 @@ function startDrawPolyline(){
   map.on('click',ixClickHandler);
   map.once('dblclick',function(){
     stopIxDraw();
-    document.getElementById('draw-hint-osm').textContent=`Polilinea lista con ${ixPolyPoints.length} puntos. Ahora busca cruces OSM.`;
-    toast('Polilinea dibujada — ahora buscá los cruces OSM');
+    document.getElementById('draw-hint-osm').textContent=`Polilínea lista con ${ixPolyPoints.length} puntos. Detectando cruces automáticamente...`;
+    toast('Polilínea dibujada — detectando cruces automáticamente');
+    // ── DETECCIÓN AUTOMÁTICA: sin necesidad de presionar ningún botón ──
+    setTimeout(()=>detectarCrucesOSM(),300);
   });
 }
 
-// ── Detectar cruces con OpenStreetMap (Overpass API) ──────────────────────────
+// ── Detectar cruces (entrada + salida) con OpenStreetMap ─────────────────────
+// Se ejecuta AUTOMÁTICAMENTE al terminar de dibujar la polilínea (dblclick),
+// o manualmente con el botón "Volver a detectar cruces".
+// Para cada calle/avenida cruzada calcula 2 puntos: ENTRADA y SALIDA del cruce.
+// La longitud de cada cruce se calcula según el ancho real de la calle y el
+// ángulo de cruce de la polilínea (cada cruce tiene su propia longitud).
 async function detectarCrucesOSM(){
-  if(ixPolyPoints.length<2){toast('Dibuja la polilinea primero.');return;}
+  if(ixPolyPoints.length<2){toast('Dibuja la polilínea primero.');return;}
   const loading=document.getElementById('osm-loading');
   const results=document.getElementById('osm-results');
-  loading.style.display='block';results.innerHTML='';
+  loading.style.display='block';
+  loading.textContent='Detectando cruces automáticamente...';
+  results.innerHTML='';
 
-  // Bounding box de la polilinea
   const lats=ixPolyPoints.map(p=>p[0]),lons=ixPolyPoints.map(p=>p[1]);
-  const buf=0.005; // ~500m de margen
+  const buf=0.005;
   const bbox=`${Math.min(...lats)-buf},${Math.min(...lons)-buf},${Math.max(...lats)+buf},${Math.max(...lons)+buf}`;
 
-  // Consulta Overpass: obtener todos los caminos (highway) en la zona
   const query=`[out:json][timeout:25];(way["highway"](${bbox}););out geom;`;
   try{
     const resp=await fetch('https://overpass-api.de/api/interpreter?data='+encodeURIComponent(query));
@@ -2692,65 +3064,124 @@ async function detectarCrucesOSM(){
     const data=await resp.json();
     loading.style.display='none';
 
-    // Calcular intersecciones entre cada segmento de la polilinea y cada segmento de cada camino OSM
-    const cruces=[];
-    const mySeg=[];
-    for(let i=0;i<ixPolyPoints.length-1;i++){
-      mySeg.push({p1:{lat:ixPolyPoints[i][0],lon:ixPolyPoints[i][1]},p2:{lat:ixPolyPoints[i+1][0],lon:ixPolyPoints[i+1][1]}});
-    }
-    data.elements.forEach(way=>{
-      if(!way.geometry||way.geometry.length<2)return;
-      const nombre=way.tags?.name||way.tags?.ref||way.tags?.highway||'(sin nombre)';
-      for(let j=0;j<way.geometry.length-1;j++){
-        const c1={lat:way.geometry[j].lat,lon:way.geometry[j].lon};
-        const c2={lat:way.geometry[j+1].lat,lon:way.geometry[j+1].lon};
-        mySeg.forEach(ms=>{
-          const ix=segIntersect(ms.p1,ms.p2,c1,c2);
-          if(ix){
-            // Evitar duplicados muy cercanos (< 5m)
-            const dup=cruces.some(c=>haversineM(c.lat,c.lon,ix.lat,ix.lon)<5);
-            if(!dup)cruces.push({lat:ix.lat,lon:ix.lon,nombre});
-          }
-        });
-      }
-    });
+    // ── Calcular cruces completos: entrada + salida por cada calle cruzada ──
+    const cruces=calcularCrucesCompletos(ixPolyPoints,data.elements||[]);
+    _polyCrucesCompletos=cruces;
+
+    // Limpiar marcadores de cruces anteriores
+    ixLayers.filter(l=>l._ixCruce).forEach(l=>map.removeLayer(l));
+    for(let i=ixLayers.length-1;i>=0;i--){if(ixLayers[i]._ixCruce)ixLayers.splice(i,1);}
 
     if(!cruces.length){
-      results.innerHTML='<div style="font-size:10px;color:#8a2020;padding:6px">No se encontraron cruces con caminos OSM en esta zona. Probá acercarte mas al lugar y redibujar.</div>';
+      results.innerHTML='<div style="font-size:11px;color:#8a2020;padding:8px;background:#fff0f0;border-radius:6px">No se detectaron cruces con calles OSM en esta zona. Probá acercarte más al lugar y redibujar.</div>';
+      document.getElementById('draw-hint-osm').textContent='Sin cruces detectados. Redibujá la polilínea pasando sobre las calles.';
       return;
     }
 
-    // Mostrar resultados
-    results.innerHTML=`<div style="font-size:14px;font-weight:800;color:#1a5a1a;margin-bottom:8px">${cruces.length} cruce(s) encontrado(s):</div>`+
-      cruces.map((c,i)=>{
-        const gk=llToGK(5,c.lat,c.lon);
-        const gkxS=gk?gk.x.toFixed(2):'--';const gkyS=gk?gk.y.toFixed(2):'--';
-        return `<div style="background:#e8f5e8;border:1px solid #b0d0b0;border-radius:6px;padding:8px;margin-bottom:5px">
-          <div style="font-size:10px;font-weight:700;color:#a0d0a0;margin-bottom:4px">Cruce ${i+1}: ${c.nombre}</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:5px">
-            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">LAT</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${c.lat.toFixed(6)}</div></div>
-            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">LON</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${c.lon.toFixed(6)}</div></div>
-            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK X</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${gkxS}</div></div>
-            <div style="background:#ffffff;border-radius:5px;padding:5px 8px;border:1px solid #d0ddd0"><div style="font-size:10px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK Y</div><div style="font-family:monospace;font-size:13px;color:#1a3a1a;font-weight:600">${gkyS}</div></div>
-          </div>
-          <button onclick="usarOsmCruce(${c.lat},${c.lon},${gk?gk.x:'null'},${gk?gk.y:'null'})" style="width:100%;padding:5px;border-radius:4px;border:1px solid #1a4a6a;background:#1a4a7a;color:#4ab0df;font-size:10px;cursor:pointer">Usar en nuevo registro</button>
-        </div>`;
-      }).join('');
+    // ── Dibujar marcadores rojos de ENTRADA y SALIDA en el mapa ──
+    cruces.forEach((c,n)=>{
+      const mkE=L.circleMarker([c.entry.lat,c.entry.lon],{
+        radius:8,color:'#cc0000',fillColor:'#ff3333',fillOpacity:.95,weight:3
+      }).addTo(map);
+      mkE.bindTooltip(`<b>${n+1}. ${c.nombre} — ENTRADA</b><br>${c.entry.lat.toFixed(6)}, ${c.entry.lon.toFixed(6)}`,{direction:'top'});
+      mkE.on('click',()=>{copyVal(`${c.entry.lat.toFixed(6)}, ${c.entry.lon.toFixed(6)}`);toast('Coordenadas ENTRADA copiadas');});
+      mkE._ixCruce=true;mkE._cruceIdx=n;ixLayers.push(mkE);
 
-    // Marcar todos los cruces en el mapa
-    cruces.forEach((c,i)=>{
-      const mk=L.circleMarker([c.lat,c.lon],{radius:9,color:'#ffff00',fillColor:'#ffff00',fillOpacity:.9,weight:2}).addTo(map);
-      mk.bindTooltip(`Cruce ${i+1}: ${c.nombre}`,{direction:'top'});
-      mk._ixResult=true;ixLayers.push(mk);
+      const mkX=L.circleMarker([c.exit.lat,c.exit.lon],{
+        radius:8,color:'#990000',fillColor:'#cc3333',fillOpacity:.95,weight:3
+      }).addTo(map);
+      mkX.bindTooltip(`<b>${n+1}. ${c.nombre} — SALIDA</b><br>${c.exit.lat.toFixed(6)}, ${c.exit.lon.toFixed(6)}`,{direction:'top'});
+      mkX.on('click',()=>{copyVal(`${c.exit.lat.toFixed(6)}, ${c.exit.lon.toFixed(6)}`);toast('Coordenadas SALIDA copiadas');});
+      mkX._ixCruce=true;mkX._cruceIdx=n;ixLayers.push(mkX);
+
+      const ln=L.polyline([[c.entry.lat,c.entry.lon],[c.exit.lat,c.exit.lon]],{
+        color:'#cc0000',weight:5,opacity:.85
+      }).addTo(map);
+      ln._ixCruce=true;ln._cruceIdx=n;ixLayers.push(ln);
+
+      const lbl=L.marker([c.mid.lat,c.mid.lon],{
+        icon:L.divIcon({
+          html:`<div style="background:#cc0000;color:#fff;font-weight:800;font-size:12px;padding:2px 7px;border-radius:10px;border:2px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.4)">${n+1}</div>`,
+          className:'',iconAnchor:[12,12]
+        })
+      }).addTo(map);
+      lbl._ixCruce=true;lbl._cruceIdx=n;ixLayers.push(lbl);
     });
-    if(cruces.length===1)map.flyTo([cruces[0].lat,cruces[0].lon],16,{duration:1});
-    else{
-      const bb=L.latLngBounds(cruces.map(c=>[c.lat,c.lon]));
-      map.fitBounds(bb,{padding:[60,60],maxZoom:16});
-    }
+
+    // ── Generar HTML con las coordenadas de cada punto ──
+    let html=`<div style="font-size:14px;font-weight:800;color:#1a4a1a;margin-bottom:8px;padding:7px 10px;background:#e8f5e8;border-radius:6px;border-left:4px solid #2a8a2a">
+      &#10003; ${cruces.length} cruce${cruces.length!==1?'s':''} detectado${cruces.length!==1?'s':''} automáticamente — ${cruces.length*2} puntos (entrada+salida)
+    </div>`;
+
+    cruces.forEach((c,i)=>{
+      const gkE=llToGK(5,c.entry.lat,c.entry.lon);
+      const gkS=llToGK(5,c.exit.lat,c.exit.lon);
+      const gkE_x=gkE?gkE.x.toFixed(2):'--',gkE_y=gkE?gkE.y.toFixed(2):'--';
+      const gkS_x=gkS?gkS.x.toFixed(2):'--',gkS_y=gkS?gkS.y.toFixed(2):'--';
+
+      const anchoBadge = c.anchoReal
+        ? `<span style="background:#2a8a2a;color:#fff;padding:1px 5px;border-radius:8px;font-size:9px">OSM</span> ${c.anchoCalle.toFixed(1)} m`
+        : `<span style="background:#d4a020;color:#fff;padding:1px 5px;border-radius:8px;font-size:9px">EST</span> ${c.anchoCalle.toFixed(1)} m`;
+
+      html+=`
+        <div style="background:#fff;border:2px solid #cc4444;border-radius:8px;padding:10px;margin-bottom:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:4px">
+            <div style="font-size:13px;font-weight:800;color:#1a2a1a">${i+1}. ${c.nombre}</div>
+            <div style="font-size:10px;background:#cc4444;color:#fff;padding:2px 7px;border-radius:10px;font-weight:700">Long. cruce: ${c.length.toFixed(1)} m</div>
+          </div>
+          <div style="font-size:10px;color:#6a6a6a;margin-bottom:7px;text-transform:capitalize">${c.tipo.replace(/_/g,' ')}${c.ptCount>1?' · '+c.ptCount+' intersecciones':''}</div>
+
+          <div style="background:#f5f8ff;border:1px solid #b0c4e0;border-radius:5px;padding:6px 8px;margin-bottom:7px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+            <div style="text-align:center">
+              <div style="font-size:8px;color:#3a5a9a;font-weight:800;text-transform:uppercase;margin-bottom:2px">Ancho calle</div>
+              <div style="font-family:monospace;font-size:11px;font-weight:700;color:#1a3a6a">${anchoBadge}</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:8px;color:#3a5a9a;font-weight:800;text-transform:uppercase;margin-bottom:2px">Ángulo cruce</div>
+              <div style="font-family:monospace;font-size:11px;font-weight:700;color:#1a3a6a">${c.angle.toFixed(0)}°</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:8px;color:#3a5a9a;font-weight:800;text-transform:uppercase;margin-bottom:2px">Long. polilínea</div>
+              <div style="font-family:monospace;font-size:11px;font-weight:700;color:#1a3a6a">${c.length.toFixed(1)} m</div>
+            </div>
+          </div>
+
+          <div style="background:#fff0f0;border-left:3px solid #cc0000;border-radius:5px;padding:6px 8px;margin-bottom:5px">
+            <div style="font-size:9px;color:#cc0000;font-weight:800;text-transform:uppercase;margin-bottom:4px">&#9654; ENTRADA</div>
+            <div style="display:grid;gap:3px">
+              <div style="background:#fff;border-radius:4px;padding:4px 7px;border:1px solid #e8c8c8"><div style="font-size:9px;color:#4a6a4a;font-weight:700;text-transform:uppercase">Lat/Lon Decimal</div><div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a3a1a">${c.entry.lat.toFixed(6)}, ${c.entry.lon.toFixed(6)}</div></div>
+              <div style="background:#fff;border-radius:4px;padding:4px 7px;border:1px solid #e8c8c8"><div style="font-size:9px;color:#4a6a4a;font-weight:700;text-transform:uppercase">Lat/Lon GMS</div><div style="font-family:monospace;font-size:11px;font-weight:700;color:#1a3a1a">${decimalToGMS(c.entry.lat,true)} | ${decimalToGMS(c.entry.lon,false)}</div></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
+                <div style="background:#fff;border-radius:4px;padding:4px 7px;border:1px solid #e8c8c8"><div style="font-size:9px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK X</div><div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a3a1a">${gkE_x}</div></div>
+                <div style="background:#fff;border-radius:4px;padding:4px 7px;border:1px solid #e8c8c8"><div style="font-size:9px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK Y</div><div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a3a1a">${gkE_y}</div></div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#fff0f0;border-left:3px solid #cc0000;border-radius:5px;padding:6px 8px;margin-bottom:7px">
+            <div style="font-size:9px;color:#cc0000;font-weight:800;text-transform:uppercase;margin-bottom:4px">&#9664; SALIDA</div>
+            <div style="display:grid;gap:3px">
+              <div style="background:#fff;border-radius:4px;padding:4px 7px;border:1px solid #e8c8c8"><div style="font-size:9px;color:#4a6a4a;font-weight:700;text-transform:uppercase">Lat/Lon Decimal</div><div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a3a1a">${c.exit.lat.toFixed(6)}, ${c.exit.lon.toFixed(6)}</div></div>
+              <div style="background:#fff;border-radius:4px;padding:4px 7px;border:1px solid #e8c8c8"><div style="font-size:9px;color:#4a6a4a;font-weight:700;text-transform:uppercase">Lat/Lon GMS</div><div style="font-family:monospace;font-size:11px;font-weight:700;color:#1a3a1a">${decimalToGMS(c.exit.lat,true)} | ${decimalToGMS(c.exit.lon,false)}</div></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px">
+                <div style="background:#fff;border-radius:4px;padding:4px 7px;border:1px solid #e8c8c8"><div style="font-size:9px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK X</div><div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a3a1a">${gkS_x}</div></div>
+                <div style="background:#fff;border-radius:4px;padding:4px 7px;border:1px solid #e8c8c8"><div style="font-size:9px;color:#4a6a4a;font-weight:700;text-transform:uppercase">GK Y</div><div style="font-family:monospace;font-size:12px;font-weight:700;color:#1a3a1a">${gkS_y}</div></div>
+              </div>
+            </div>
+          </div>
+          <button onclick="usarCruceCompletoEnForm(${i})" style="width:100%;padding:5px;border-radius:4px;border:1px solid #1a5a1a;background:#1a5a1a;color:#fff;font-size:11px;font-weight:700;cursor:pointer">Usar ENTRADA+SALIDA en nuevo registro</button>
+        </div>`;
+    });
+    results.innerHTML=html;
+
+    document.getElementById('draw-hint-osm').textContent=`${cruces.length} cruce(s) detectado(s) automáticamente — ${cruces.length*2} puntos.`;
+
+    const allPts=ixPolyPoints.slice();
+    cruces.forEach(c=>{allPts.push([c.entry.lat,c.entry.lon]);allPts.push([c.exit.lat,c.exit.lon]);});
+    map.fitBounds(L.latLngBounds(allPts),{padding:[60,60],maxZoom:17});
+
   }catch(err){
     loading.style.display='none';
-    results.innerHTML=`<div style="font-size:10px;color:#8a2020;padding:6px">Error: ${err.message}</div>`;
+    results.innerHTML=`<div style="font-size:11px;color:#8a2020;padding:8px;background:#fff0f0;border-radius:6px">Error: ${err.message}</div>`;
   }
 }
 
